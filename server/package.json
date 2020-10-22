@@ -1,0 +1,33 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "client": "cd .. && cd client && npm start",
+    "dev": "concurrently \"nodemon\" \"npm run client\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@koa/cors": "^3.1.0",
+    "@koa/router": "^9.4.0",
+    "bcrypt": "^5.0.0",
+    "concurrently": "^5.3.0",
+    "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "koa": "^2.13.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-combine-routers": "^4.0.2",
+    "koa-json": "^2.0.2",
+    "koa-jwt": "^4.0.0",
+    "koa2-swagger-ui": "^5.0.2",
+    "mongoose": "^5.10.9",
+    "swagger-jsdoc": "^4.3.0",
+    "swagger-koa": "^2.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.5"
+  }
+}
