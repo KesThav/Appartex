@@ -69,7 +69,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
     ctx.status = 200;
     ctx.body = alltenants;
   } catch (err) {
-    ctx.throw(400, error);
+    ctx.throw(500, error);
   }
 });
 
@@ -97,6 +97,8 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *              $ref: '#/components/schemas/Tenant'
  *      '403':
  *         description: Forbidden / Complete all fields / Password should be 6 characters long / Email already exist
+ *      '404':
+ *         description: Tenant not found
  *      '500':
  *         description: Server error
  *
@@ -106,15 +108,13 @@ router.get("/:tenantid", jwt, filterAccess, async (ctx) => {
   try {
     let tenantid = new ObjectId(ctx.params.tenantid);
     let onetenant = await Tenant.find({ _id: tenantid }).exec();
-    if (!onetenant) {
-      ctx.status = 402;
+    if (onetenant.length == 0) {
+      ctx.throw(404, "tenant not found");
     } else {
-      ctx.status = 200;
       ctx.body = onetenant;
     }
   } catch (err) {
-    ctx.status = 404;
-    ctx.body = err;
+    ctx.throw(500, err);
   }
 });
 
@@ -172,7 +172,7 @@ router.post("/add", jwt, adminAccess, async (ctx) => {
     await newtenant.save();
     ctx.body = newtenant;
   } catch (err) {
-    ctx.body = err;
+    ctx.throw(500, err);
   }
 });
 
@@ -234,7 +234,7 @@ router.put("/update/:tenantid", jwt, filterAccess, async (ctx) => {
     });
     ctx.body = updatedtenant;
   } catch (err) {
-    ctx.throw(403, err);
+    ctx.throw(500, err);
   }
 });
 
@@ -275,7 +275,7 @@ router.delete("/delete/:tenantid", jwt, adminAccess, async (ctx) => {
     const deletedtenant = await Tenant.findByIdAndDelete(tenantid);
     ctx.body = deletedtenant;
   } catch (err) {
-    ctx.throw(403, err);
+    ctx.throw(500, err);
   }
 });
 
