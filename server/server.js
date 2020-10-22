@@ -16,6 +16,7 @@ const mongooseOptions = {
   useCreateIndex: true,
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  useFindAndModify: false,
 };
 // Connect to the MongoDB database
 Mongoose.connect(process.env.DB_ONLINE, mongooseOptions, () =>

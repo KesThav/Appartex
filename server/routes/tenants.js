@@ -33,7 +33,7 @@ const bcrypt = require("bcrypt");
  *            example: Actif
  *         dateofbirth:
  *            type: Date
- *            example: 17.02.1996
+ *            example: 1996-02-17
  *       required:
  *          - name
  *          - lastname
@@ -73,7 +73,6 @@ router.get("/", jwt, adminAccess, async (ctx) => {
   }
 });
 
-
 /**
  *  @swagger
  * /tenants/{tenant_id}:
@@ -88,7 +87,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *     - name: tenant_id
  *       in: path
  *       required: true
- *       description: the id of the tenant of return
+ *       description: the id of the tenant
  *    responses:
  *      '200':
  *        description: 'Success'
@@ -102,7 +101,6 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *         description: Server error
  *
  */
-
 
 router.get("/:tenantid", jwt, filterAccess, async (ctx) => {
   try {
@@ -124,8 +122,8 @@ router.get("/:tenantid", jwt, filterAccess, async (ctx) => {
  *  @swagger
  * /tenants/add:
  *  post :
- *    summary : Créer un locataire
- *    operationId : register
+ *    summary : Create a tenant
+ *    operationId : createtenant
  *    tags :
  *        - tenant
  *    security:
@@ -147,9 +145,9 @@ router.get("/:tenantid", jwt, filterAccess, async (ctx) => {
  */
 
 router.post("/add", jwt, adminAccess, async (ctx) => {
-  const { name, lastname, email, date, password } = ctx.request.body;
+  const { name, lastname, email, dateofbirth, password } = ctx.request.body;
   if (!name || !lastname || !email || !password) {
-    ctx.throw(403, "complete all field !");
+    ctx.throw(403, "complete all fields !");
   }
   if (password.trim().length < 6) {
     ctx.throw(403, "Password should be minimum 6 characters long");
@@ -167,7 +165,7 @@ router.post("/add", jwt, adminAccess, async (ctx) => {
       name,
       lastname,
       email,
-      date,
+      dateofbirth,
       password: hashedPassword,
       createdBy: new ObjectId(ctx.request.jwt._id),
     });
@@ -175,6 +173,109 @@ router.post("/add", jwt, adminAccess, async (ctx) => {
     ctx.body = newtenant;
   } catch (err) {
     ctx.body = err;
+  }
+});
+
+/**
+ *  @swagger
+ * /tenants/update/{tenant_id}:
+ *  put :
+ *    summary : Update a tenant
+ *    operationId : updatetenant
+ *    tags :
+ *        - tenant
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: tenant_id
+ *       in: path
+ *       required: true
+ *       description: the id of the tenant
+ *    requestBody :
+ *     required: true
+ *     content :
+ *       application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/Tenant'
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden / Complete all fields / Password should be 6 characters long / Email already exist
+ *      '404':
+ *        description: Tenant not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.put("/update/:tenantid", jwt, filterAccess, async (ctx) => {
+  let tenantid = new ObjectId(ctx.params.tenantid);
+
+  const tenant = await Tenant.find({ _id: tenantid });
+  if (tenant.length == 0) {
+    ctx.throw(404, "No tenant found");
+  }
+  const { name, lastname, email, password, dateofbirth } = ctx.request.body;
+  const update = { name, lastname, email, password, dateofbirth };
+  if (!name || !lastname || !email || !password || !dateofbirth) {
+    ctx.throw(403, "complete all fields !");
+  }
+  if (password.trim().length < 6) {
+    ctx.throw(403, "Password should be minimum 6 characters long");
+  }
+  const emailExist = await Tenant.find({ email });
+  if (emailExist.length !== 0) {
+    ctx.throw(403, `Email already exist`);
+  }
+  try {
+    const updatedtenant = await Tenant.findByIdAndUpdate(tenantid, update, {
+      new: true,
+    });
+    ctx.body = updatedtenant;
+  } catch (err) {
+    ctx.throw(403, err);
+  }
+});
+
+/**
+ *  @swagger
+ * /tenants/delete/{tenant_id}:
+ *  delete :
+ *    summary : Delete a tenant
+ *    operationId : deletetenant
+ *    tags :
+ *        - tenant
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: tenant_id
+ *       in: path
+ *       required: true
+ *       description: the id of the tenant
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Tenant not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.delete("/delete/:tenantid", jwt, adminAccess, async (ctx) => {
+  let tenantid = new ObjectId(ctx.params.tenantid);
+  const tenant = await Tenant.find({ _id: tenantid });
+  if (tenant.length == 0) {
+    ctx.throw(404, "No tenant found");
+  }
+  try {
+    const deletedtenant = await Tenant.findByIdAndDelete(tenantid);
+    ctx.body = deletedtenant;
+  } catch (err) {
+    ctx.throw(403, err);
   }
 });
 

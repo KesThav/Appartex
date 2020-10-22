@@ -20,10 +20,10 @@ const filterAccess = require("../middlewares/filterAccess");
  *            example: New tenant
  *         startDate:
  *            type: Date
- *            example: 18.10.2020
+ *            example: 2020-10-22
  *         endDate:
  *            type: Date
- *            example: 19.10.2020
+ *            example: 2020-10-23
  *         status:
  *            type : String
  *            default : Créer

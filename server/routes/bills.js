@@ -17,7 +17,7 @@ const filterAccess = require("../middlewares/filterAccess");
  *           example: 507f1f77bcf86cd799439011
  *         endDate:
  *           type: Date
- *           example: 17.02.2021
+ *           example: 2021-02-17
  *         amount:
  *           type: Number
  *           example: 1994
