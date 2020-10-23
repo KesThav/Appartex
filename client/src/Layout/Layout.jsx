@@ -107,7 +107,7 @@ const Layout = (props) => {
           id: 0,
           name: "Vue Général",
           icon: <DashboardIcon />,
-          link: "/",
+          link: "/owner",
         },
         {
           id: 1,
@@ -125,7 +125,7 @@ const Layout = (props) => {
           id: 3,
           name: "Les Locataires",
           icon: <GroupIcon />,
-          link: "/",
+          link: "/tenants",
         },
         {
           id: 4,

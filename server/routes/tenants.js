@@ -70,7 +70,9 @@ const { userSchema } = require("../helpers/validation");
 
 router.get("/", jwt, adminAccess, async (ctx) => {
   try {
-    let alltenants = await Tenant.find({ createdBy: ctx.request.jwt._id });
+    let alltenants = await Tenant.find({
+      createdBy: ctx.request.jwt._id,
+    }).sort({ createdAt: -1 });
     ctx.body = alltenants;
   } catch (err) {
     ctx.throw(500, error);

@@ -19,4 +19,12 @@ export default {
     fontFamily: "'Lato', sans-serif",
     textTransform: "none",
   },
+  props: {
+    MuiButton: {
+      disableElevation: true,
+    },
+  },
+  shape: {
+    borderRadius: 0,
+  },
 };
