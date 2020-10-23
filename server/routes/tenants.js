@@ -1,11 +1,16 @@
 const Router = require("@koa/router");
 const router = new Router({ prefix: "/tenants" });
 const Tenant = require("../models/tenant.model");
+const Contract = require("../models/contract.model");
+const Bill = require("../models/bill.model");
+const Appart = require("../models/appartment.model");
+const Building = require("../models/building.model");
 let ObjectId = require("mongodb").ObjectId;
 const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
 const filterAccess = require("../middlewares/filterAccess");
 const bcrypt = require("bcrypt");
+const { userSchema } = require("../helpers/validation");
 
 /**
  * @swagger
@@ -105,9 +110,11 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  */
 
 router.get("/:tenantid", jwt, filterAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.tenantid);
+  if (!validate) return ctx.throw(404, "tenant not found");
   try {
     let tenantid = new ObjectId(ctx.params.tenantid);
-    let onetenant = await Tenant.find({ _id: tenantid }).exec();
+    const onetenant = await Tenant.find({ _id: tenantid }).exec();
     if (onetenant.length == 0) {
       ctx.throw(404, "tenant not found");
     } else {
@@ -146,12 +153,12 @@ router.get("/:tenantid", jwt, filterAccess, async (ctx) => {
 
 router.post("/add", jwt, adminAccess, async (ctx) => {
   const { name, lastname, email, dateofbirth, password } = ctx.request.body;
-  if (!name || !lastname || !email || !password) {
-    ctx.throw(403, "complete all fields !");
+
+  const { error } = userSchema.validate(ctx.request.body);
+  if (error) {
+    ctx.throw(400, error);
   }
-  if (password.trim().length < 6) {
-    ctx.throw(403, "Password should be minimum 6 characters long");
-  }
+
   const emailExist = await Tenant.find({ email });
   if (emailExist.length !== 0) {
     ctx.throw(403, `Email already exist`);
@@ -210,24 +217,28 @@ router.post("/add", jwt, adminAccess, async (ctx) => {
  */
 
 router.put("/update/:tenantid", jwt, filterAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.tenantid);
+  if (!validate) return ctx.throw(404, "No tenant found");
   let tenantid = new ObjectId(ctx.params.tenantid);
 
   const tenant = await Tenant.find({ _id: tenantid });
   if (tenant.length == 0) {
     ctx.throw(404, "No tenant found");
   }
+
   const { name, lastname, email, password, dateofbirth } = ctx.request.body;
-  const update = { name, lastname, email, password, dateofbirth };
-  if (!name || !lastname || !email || !password || !dateofbirth) {
-    ctx.throw(403, "complete all fields !");
+
+  const { error } = userSchema.validate(ctx.request.body);
+  if (error) {
+    ctx.throw(400, error);
   }
-  if (password.trim().length < 6) {
-    ctx.throw(403, "Password should be minimum 6 characters long");
-  }
+
   const emailExist = await Tenant.find({ email });
   if (emailExist.length !== 0) {
     ctx.throw(403, `Email already exist`);
   }
+  const update = { name, lastname, email, password, dateofbirth };
+
   try {
     const updatedtenant = await Tenant.findByIdAndUpdate(tenantid, update, {
       new: true,
@@ -266,6 +277,8 @@ router.put("/update/:tenantid", jwt, filterAccess, async (ctx) => {
  */
 
 router.delete("/delete/:tenantid", jwt, adminAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.tenantid);
+  if (!validate) return ctx.throw(404, "No tenant found");
   let tenantid = new ObjectId(ctx.params.tenantid);
   const tenant = await Tenant.find({ _id: tenantid });
   if (tenant.length == 0) {
@@ -273,7 +286,34 @@ router.delete("/delete/:tenantid", jwt, adminAccess, async (ctx) => {
   }
   try {
     const deletedtenant = await Tenant.findByIdAndDelete(tenantid);
-    ctx.body = deletedtenant;
+    const deletedbills = await Bill.deleteMany({ tenant: tenantid });
+    const appartid = await Contract.find({ tenant: tenantid }).select(
+      "appartmentid"
+    );
+    for (i = 0; i < appartid.length; i++) {
+      Appart.findByIdAndUpdate(appartid[i], { status: "Libre" }, { new: true });
+    }
+
+    const buildingid = await Contract.find({ tenant: tenantid }).select(
+      "buildingid"
+    );
+    for (i = 0; i < buildingid.length; i++) {
+      Appart.findByIdAndUpdate(
+        buildingid[i],
+        { counter: counter - 1 },
+        { new: true }
+      );
+    }
+
+    const deletedcontract = await Contract.deleteMany({ tenant: tenantid });
+
+    ctx.body = [
+      deletedtenant,
+      appartid,
+      buildingid,
+      deletedbills,
+      deletedcontract,
+    ];
   } catch (err) {
     ctx.throw(500, err);
   }

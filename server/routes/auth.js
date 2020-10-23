@@ -4,6 +4,7 @@ const Owner = require("../models/owner.model");
 const Tenant = require("../models/tenant.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { userSchema, loginSchema } = require("../helpers/validation");
 
 /**
  * @swagger
@@ -93,15 +94,15 @@ const jwt = require("jsonwebtoken");
 
 router.post("/register", async (ctx) => {
   const { name, lastname, email, password } = ctx.request.body;
-  if (!name || !lastname || !email || !password) {
-    ctx.throw(403, "complete all field !");
-  }
-  if (password.trim().length < 6) {
-    ctx.throw(403, "Password should be minimum 6 characters long");
-  }
+
   const emailExist = await Owner.find({ email });
   if (emailExist.length !== 0) {
     ctx.throw(403, `Email already exist`);
+  }
+
+  const { error } = userSchema.validate(ctx.request.body);
+  if (error) {
+    ctx.throw(400, error);
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -117,7 +118,11 @@ router.post("/register", async (ctx) => {
     await newowner.save();
     ctx.body = newowner;
   } catch (err) {
-    ctx.throw(404, err);
+    if (err instanceof JoiError) {
+      ctx.throw(400, err);
+    } else {
+      ctx.throw(404, err);
+    }
   }
 });
 
@@ -147,12 +152,12 @@ router.post("/register", async (ctx) => {
 
 router.post("/login", async (ctx) => {
   const { email, password } = ctx.request.body;
-  if (!email || !password) {
-    ctx.throw(403, "complete all field !");
+
+  const { error } = loginSchema.validate(ctx.request.body);
+  if (error) {
+    ctx.throw(400, error);
   }
-  if (password.trim().length < 6) {
-    ctx.throw(403, "Password should be minimum 6 characters long");
-  }
+
   const user = await Owner.findOne({ email: email });
   if (!user) {
     ctx.throw(400, "Wrong Credentials");
@@ -205,12 +210,12 @@ router.post("/login", async (ctx) => {
 
 router.post("/tenant/login", async (ctx) => {
   const { email, password } = ctx.request.body;
-  if (!email || !password) {
-    ctx.throw(403, "complete all field !");
+  
+  const { error } = loginSchema.validate(ctx.request.body);
+  if (error) {
+    ctx.throw(400, error);
   }
-  if (password.trim().length < 6) {
-    ctx.throw(403, "Password should be minimum 6 characters long");
-  }
+
   const user = await Tenant.findOne({ email: email });
   if (!user) {
     ctx.throw(400, "Wrong Credentials");

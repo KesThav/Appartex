@@ -15,6 +15,14 @@ const contractSchema = new Mongoose.Schema(
       required: true,
       ref: "Tenant",
     },
+    appartmentid: {
+      type: Mongoose.Schema.Types.ObjectId,
+      ref: "Appart",
+    },
+    buildingid: {
+      type: Mongoose.Schema.Types.ObjectId,
+      ref: "Building",
+    },
     other: {
       type: String,
     },
