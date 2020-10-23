@@ -59,7 +59,7 @@ const { buildingSchema } = require("../helpers/validation");
 
 router.get("/", jwt, adminAccess, async (ctx) => {
   try {
-    let allbuildings = await Building.find({});
+    let allbuildings = await Building.find({ createdBy: ctx.request.jwt._id });
     ctx.body = allbuildings;
   } catch (err) {
     ctx.throw(400, error);

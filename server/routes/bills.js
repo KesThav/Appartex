@@ -59,8 +59,7 @@ const filterAccess = require("../middlewares/filterAccess");
 
 router.get("/", jwt, adminAccess, async (ctx) => {
   try {
-    let allbills = await Bill.find({});
-    ctx.status = 200;
+    let allbills = await Bill.find({ createdBy: ctx.request.jwt._id });
     ctx.body = allbills;
   } catch (err) {
     ctx.throw(400, error);

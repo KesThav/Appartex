@@ -5,7 +5,6 @@ const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
 const filterAccess = require("../middlewares/filterAccess");
 
-
 /**
  * @swagger
  *
@@ -35,7 +34,7 @@ const filterAccess = require("../middlewares/filterAccess");
  *
  */
 
- /**
+/**
  *  @swagger
  *
  *  /contracts:
@@ -58,8 +57,7 @@ const filterAccess = require("../middlewares/filterAccess");
 
 router.get("/", jwt, adminAccess, async (ctx) => {
   try {
-    let allcontracts = await Contract.find({});
-    ctx.status = 200;
+    let allcontracts = await Contract.find({ createdBy: ctx.request.jwt._id });
     ctx.body = allcontracts;
   } catch (err) {
     ctx.throw(400, error);
@@ -95,8 +93,6 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *
  */
 
-router.get('/:contractid',  filterAccess, async ctx => {
-   
-})
+router.get("/:contractid", filterAccess, async (ctx) => {});
 
 module.exports = router;

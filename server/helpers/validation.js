@@ -25,7 +25,7 @@ const buildingSchema = Joi.object({
 
 const appartSchema = Joi.object({
   size: Joi.number().required(),
-  adress: Joi.string().required(),
+  adress: Joi.string(),
   building: Joi.objectId(),
   picture: [Joi.string()],
   status: Joi.string(),
