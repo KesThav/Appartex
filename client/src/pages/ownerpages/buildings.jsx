@@ -21,9 +21,6 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import AddBuilding from "../../components/AddBuilding";
 import moment from "moment";
-import PersonIcon from "@material-ui/icons/Person";
-import EmailIcon from "@material-ui/icons/Email";
-import LockIcon from "@material-ui/icons/Lock";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
@@ -240,8 +237,8 @@ const Building = () => {
         onClose={() => setDeleteShow(!deleteShow)}
         disableBackdropClick
       >
-        <DialogTitle>Supprimer un locataire</DialogTitle>
-        <DialogContent>{`Êtez-vous sûr de vouloir supprimer le locataire ${data.adress} ${data.postalcode} ${data.city} ? La suppression est irréversible.`}</DialogContent>
+        <DialogTitle>Supprimer un Immeuble</DialogTitle>
+        <DialogContent>{`Êtez-vous sûr de vouloir supprimer l'immeuble ${data.adress} ${data.postalcode} ${data.city} ? Cette action effacera tous les contrats lié à cet immeuble ainsi que les locataires`}</DialogContent>
         <Box className={classes.box}>
           <Button
             className={classes.button}

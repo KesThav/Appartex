@@ -100,7 +100,7 @@ const AddBuilding = () => {
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>{"Créer un locataire"}</DialogTitle>
+        <DialogTitle>{"Créer un immeuble"}</DialogTitle>
         <DialogContent>
           {err && <Alert severity="error">{err}</Alert>}
           {success && <Alert severity="success">{success}</Alert>}
