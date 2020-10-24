@@ -227,23 +227,23 @@ router.put("/update/:tenantid", jwt, filterAccess, async (ctx) => {
     ctx.throw(404, "No tenant found");
   }
 
-  const { name, lastname, email, password, dateofbirth } = ctx.request.body;
-
-  const { error } = userSchema.validate(ctx.request.body);
-  if (error) {
-    ctx.throw(400, error);
+  if (ctx.request.body.email) {
+    const emailExist = await Tenant.findOne({ email: ctx.request.body.email });
+    if (emailExist) {
+      if (!(emailExist._id == ctx.params.tenantid)) {
+        ctx.throw(403, `Email already exist`);
+      }
+    }
   }
-
-  const emailExist = await Tenant.find({ email });
-  if (emailExist.length !== 0) {
-    ctx.throw(403, `Email already exist`);
-  }
-  const update = { name, lastname, email, password, dateofbirth };
 
   try {
-    const updatedtenant = await Tenant.findByIdAndUpdate(tenantid, update, {
-      new: true,
-    });
+    const updatedtenant = await Tenant.findByIdAndUpdate(
+      tenantid,
+      ctx.request.body,
+      {
+        new: true,
+      }
+    );
     ctx.body = updatedtenant;
   } catch (err) {
     ctx.throw(500, err);

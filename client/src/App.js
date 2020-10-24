@@ -49,13 +49,26 @@ const App = () => {
   const [user, setUser] = useState(userData);
   const [loading, setLoading] = useState(false);
   const [tenant, setTenant] = useState("");
+  const [building, setBuilding] = useState("");
 
   //get data here and give it to children via Context API
-  const getTenant = async () => {
+  const getTenants = async () => {
     setLoading(true);
     try {
       const res = await authAxios.get("/tenants");
       setTenant(res.data);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+    }
+  };
+
+  const getBuildings = async () => {
+    setLoading(true);
+    try {
+      const res = await authAxios.get("/buildings");
+      setBuilding(res.data);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -75,7 +88,10 @@ const App = () => {
             authAxios,
             tenant,
             setTenant,
-            getTenant,
+            getTenants,
+            building,
+            setBuilding,
+            getBuildings
           }}
         >
           <Router>

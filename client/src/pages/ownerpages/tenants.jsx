@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
     top: 0,
   },
   box: {
+    width: "100%",
     display: "flex",
     flexDirection: "row-reverse",
   },
@@ -55,13 +56,12 @@ const Tenant = () => {
   const {
     tenant,
     setTenant,
-    getTenant,
+    getTenants,
     loading,
     setLoading,
     authAxios,
   } = useContext(UserContext);
   const [deleteShow, setDeleteShow] = useState(false);
-  /* const [editShow, setEditShow] = useState(false); */
   const [data, setData] = useState("");
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -76,7 +76,7 @@ const Tenant = () => {
 
   const classes = useStyles();
   useEffect(() => {
-    getTenant();
+    getTenants();
   }, []);
 
   const DeleteTenant = (tenantid) => {
@@ -277,6 +277,7 @@ const Tenant = () => {
         onClose={() => setDeleteShow(!deleteShow)}
         disableBackdropClick
       >
+        <DialogTitle>Supprimer un locataire</DialogTitle>
         <DialogContent>{`Êtez-vous sûr de vouloir supprimer le locataire ${data.lastname} ${data.name} ? La suppression est irréversible.`}</DialogContent>
         <Box className={classes.box}>
           <Button

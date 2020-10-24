@@ -42,15 +42,25 @@ const useStyles = makeStyles((theme) => ({
 
 const AdminDashboard = () => {
   const classes = useStyles();
-  const { user, setUser, authAxios, tenant, setTenant, getTenant } = useContext(
-    UserContext
-  );
+  const {
+    user,
+    setUser,
+    authAxios,
+    tenant,
+    setTenant,
+    getTenants,
+    building,
+    setBuilding,
+    getBuildings,
+  } = useContext(UserContext);
 
   useEffect(() => {
-    getTenant();
+    getTenants();
+    getBuildings();
   }, []);
 
   const contract = ["Nom", "Prénom", "Date d'entrée", "Statut", "Email"];
+  
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
@@ -70,10 +80,10 @@ const AdminDashboard = () => {
         </Grid>
 
         <Grid item lg={2} md={12} sm={12} xs={12}>
-          {tenant && (
+          {building && (
             <Badges
               icon={<BusinessIcon className={classes.icons} />}
-              value={4}
+              value={building.length}
               style={{ background: "#9c27b0" }}
               name={"Immeubles"}
             />

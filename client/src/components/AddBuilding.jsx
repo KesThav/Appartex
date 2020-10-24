@@ -34,44 +34,42 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddTenant = () => {
+const AddBuilding = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const { loading, setLoading, authAxios, tenant, getTenants } = useContext(
-    UserContext
-  );
+  const {
+    loading,
+    setLoading,
+    authAxios,
+    building,
+    setBuilding,
+    getBuildings,
+  } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [name, setName] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [dateofbirth, setDate] = useState();
+  const [numberofAppart, setNumberofAppart] = useState("");
+  const [adress, setAdress] = useState("");
+  const [postalcode, setPostalcode] = useState("");
+  const [city, setCity] = useState("");
 
   const submit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (!name || !lastname || !email || !password || !confirm || !dateofbirth) {
+    if (!numberofAppart || !adress || !postalcode || !city) {
       setError("Complétez tous les champs");
-    } else if (password !== confirm) {
-      setError("Les mot de passes ne correspondent pas");
-    } else if (password.length < 6) {
-      setError("Le mot de passe doit faire minimum 6 charactères");
     } else {
       setLoading(true);
       const data = {
-        name,
-        lastname,
-        email,
-        dateofbirth,
-        password,
+        numberofAppart,
+        adress,
+        postalcode,
+        city,
       };
       try {
-        await authAxios.post("/tenants/add", data);
+        await authAxios.post("/buildings/add", data);
         setLoading(false);
-        setSuccess("Locataire créé avec succès");
+        setSuccess("Immeuble créé avec succès");
       } catch (err) {
         setLoading(false);
         setError(err.response.data);
@@ -83,17 +81,15 @@ const AddTenant = () => {
     setOpen(!open);
     setError("");
     setSuccess("");
-    setName("");
-    setLastname("");
-    setEmail("");
-    setPassword("");
-    setConfirm("");
-    setDate();
+    setNumberofAppart("");
+    setPostalcode("");
+    setCity("");
+    setAdress("");
   };
 
   useEffect(() => {
-    getTenants();
-  }, [tenant]);
+    getBuildings();
+  }, [building]);
 
   return (
     <div>
@@ -110,9 +106,9 @@ const AddTenant = () => {
           {success && <Alert severity="success">{success}</Alert>}
           <form onSubmit={submit}>
             <TextField
-              id="name"
-              type="text"
-              onChange={(e) => setName(e.target.value)}
+              id="numberofAppart"
+              type="number"
+              onChange={(e) => setNumberofAppart(e.target.value)}
               fullWidth
               InputProps={{
                 startAdornment: (
@@ -121,13 +117,13 @@ const AddTenant = () => {
                   </InputAdornment>
                 ),
               }}
-              placeholder="Prénom"
+              placeholder="Nombre d'appartment"
               className={classes.form}
             />
             <TextField
-              id="lastname"
+              id="adress"
               type="text"
-              onChange={(e) => setLastname(e.target.value)}
+              onChange={(e) => setAdress(e.target.value)}
               fullWidth
               InputProps={{
                 startAdornment: (
@@ -136,13 +132,13 @@ const AddTenant = () => {
                   </InputAdornment>
                 ),
               }}
-              placeholder="Nom"
+              placeholder="Adresse"
               className={classes.form}
             />
             <TextField
-              id="email"
-              type="email"
-              onChange={(e) => setEmail(e.target.value)}
+              id="codepostal"
+              type="number"
+              onChange={(e) => setPostalcode(e.target.value)}
               fullWidth
               InputProps={{
                 startAdornment: (
@@ -151,13 +147,13 @@ const AddTenant = () => {
                   </InputAdornment>
                 ),
               }}
-              placeholder="Email"
+              placeholder="Code postal"
               className={classes.form}
             />
             <TextField
-              id="password"
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
+              id="city"
+              type="text"
+              onChange={(e) => setCity(e.target.value)}
               fullWidth
               InputProps={{
                 startAdornment: (
@@ -166,40 +162,8 @@ const AddTenant = () => {
                   </InputAdornment>
                 ),
               }}
-              placeholder="Mot de passe"
+              placeholder="Ville"
               className={classes.form}
-            />
-            <TextField
-              id="confirm"
-              type="password"
-              onChange={(e) => setConfirm(e.target.value)}
-              fullWidth
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockIcon />
-                  </InputAdornment>
-                ),
-              }}
-              placeholder="Confirmer le mot de passe"
-              className={classes.form}
-            />
-            <TextField
-              id="date"
-              type="date"
-              value={moment().format("YYYY-MM-DD")}
-              placeholder="Date de naissance"
-              onChange={(e) => setDate(e.target.value)}
-              className={classes.form}
-              InputLabelProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockIcon />
-                  </InputAdornment>
-                ),
-              }}
-              fullWidth
             />
             <Box className={classes.box2}>
               <Button
@@ -221,4 +185,4 @@ const AddTenant = () => {
   );
 };
 
-export default AddTenant;
+export default AddBuilding;

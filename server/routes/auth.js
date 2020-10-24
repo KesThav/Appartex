@@ -220,6 +220,11 @@ router.post("/tenant/login", async (ctx) => {
   if (!user) {
     ctx.throw(400, "Wrong Credentials");
   }
+  if (user) {
+    if (user.status == 'Inactif') {
+      ctx.throw(400, "le compte est désactivé")
+    }
+  }
   const validPass = await bcrypt.compare(password, user.password);
   if (!validPass) {
     ctx.throw(400, "Wrong Credentials");

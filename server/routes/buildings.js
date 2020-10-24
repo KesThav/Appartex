@@ -178,17 +178,13 @@ router.put("/update/:buildingid", jwt, adminAccess, async (ctx) => {
   if (error) {
     ctx.throw(400, error);
   }
-  const emailExist = await Tenant.find({ email });
-  if (emailExist.length !== 0) {
-    ctx.throw(403, `Email already exist`);
-  }
 
   const update = { numberofAppart, adress, postalcode, city };
   try {
-    const updatedtenant = await Tenant.findByIdAndUpdate(buildingid, update, {
+    const updatedbuilding = await Building.findByIdAndUpdate(buildingid, update, {
       new: true,
     });
-    ctx.body = updatedtenant;
+    ctx.body = updatedbuilding;
   } catch (err) {
     ctx.throw(500, err);
   }
