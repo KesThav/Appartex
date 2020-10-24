@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, Fragment } from "react";
 import { UserContext } from "../../middlewares/ContextAPI";
 import {
   TableContainer,
@@ -12,9 +12,10 @@ import {
   Dialog,
   DialogContent,
   Box,
-  InputAdornment,
   TextField,
   DialogTitle,
+  MenuItem,
+  Chip,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -24,6 +25,8 @@ import PersonIcon from "@material-ui/icons/Person";
 import EmailIcon from "@material-ui/icons/Email";
 import LockIcon from "@material-ui/icons/Lock";
 import Alert from "@material-ui/lab/Alert";
+import CloseIcon from "@material-ui/icons/Close";
+import CheckIcon from "@material-ui/icons/Check";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -58,7 +61,7 @@ const Tenant = () => {
     authAxios,
   } = useContext(UserContext);
   const [deleteShow, setDeleteShow] = useState(false);
-  const [editShow, setEditShow] = useState(false);
+  /* const [editShow, setEditShow] = useState(false); */
   const [data, setData] = useState("");
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -68,6 +71,8 @@ const Tenant = () => {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [dateofbirth, setDate] = useState();
+  const [editing, setEditing] = useState(false);
+  const [status, setStatus] = useState("");
 
   const classes = useStyles();
   useEffect(() => {
@@ -79,7 +84,9 @@ const Tenant = () => {
     try {
       authAxios.delete(`tenants/delete/${tenantid}`);
       setLoading(false);
+      setDeleteShow(!deleteShow);
     } catch (err) {
+      setDeleteShow(!deleteShow);
       console.log(err);
       setLoading(false);
     }
@@ -89,34 +96,35 @@ const Tenant = () => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (!name || !lastname || !email || !password || !confirm) {
-      setError("Complétez tous les champs");
-    } else if (password !== confirm) {
-      setError("Les mot de passes ne correspondent pas");
-    } else if (password.length < 6) {
-      setError("Le mot de passe doit faire minimum 6 charactères");
-    } else {
-      setLoading(true);
-      const updatedata = {
-        name,
-        lastname,
-        email,
-        password,
-      };
-      try {
-        await authAxios.put(`/tenants/update/${data}`, updatedata);
-        setLoading(false);
-        setSuccess("Locataire modifié avec succès");
-      } catch (err) {
-        setLoading(false);
-        setError(err.response.data);
-      }
+    setLoading(true);
+    const updatedata = {
+      name,
+      lastname,
+      email,
+      dateofbirth,
+      status,
+    };
+    try {
+      await authAxios.put(`/tenants/update/${data}`, updatedata);
+      setLoading(false);
+      setEditing(false);
+      setSuccess("Locataire modifié avec succès");
+    } catch (err) {
+      setLoading(false);
+      setError(err.response.data);
     }
   };
+
+  const statut = [
+    { value: "Actif", label: "Actif" },
+    { value: "Inactif", label: "Inactif" },
+  ];
 
   return (
     <div>
       <AddTenant />
+      {err && <Alert severity="error">{err}</Alert>}
+      {success && <Alert severity="success">{success}</Alert>}
       <TableContainer className={classes.table}>
         <Table stickyHeader>
           <TableHead style={{ background: "#fff" }}>
@@ -132,39 +140,132 @@ const Tenant = () => {
           </TableHead>
           <TableBody>
             {tenant &&
-              tenant.map((tenant, index) => (
+              tenant.map((tenant) => (
                 <TableRow key={tenant._id}>
                   <TableCell component="th" scope="row">
-                    {tenant.lastname}
+                    {editing && data === tenant._id ? (
+                      <TextField
+                        id={tenant.lastname}
+                        type="text"
+                        value={lastname}
+                        onChange={(e) => setLastname(e.target.value)}
+                        placeholder="Nom"
+                      />
+                    ) : (
+                      tenant.lastname
+                    )}
                   </TableCell>
-                  <TableCell>{tenant.name}</TableCell>
-                  <TableCell>{tenant.email}</TableCell>
-                  <TableCell>{tenant.status}</TableCell>
                   <TableCell>
-                    {moment(tenant.dateofbirth).format("LL")}
+                    {editing && data === tenant._id ? (
+                      <TextField
+                        id={tenant.name}
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Prénom"
+                      />
+                    ) : (
+                      tenant.name
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {editing && data === tenant._id ? (
+                      <TextField
+                        id={tenant.email}
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Email"
+                      />
+                    ) : (
+                      tenant.email
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {editing && data === tenant._id ? (
+                      <TextField
+                        id={tenant.status}
+                        select
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                      >
+                        {statut.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    ) : (
+                      <div>
+                        {tenant.status === "Actif" ? (
+                          <Chip
+                            variant="outlined"
+                            color="primary"
+                            size="small"
+                            label={tenant.status}
+                          />
+                        ) : (
+                          <Chip
+                            variant="outlined"
+                            color="secondary"
+                            size="small"
+                            label={tenant.status}
+                          />
+                        )}
+                      </div>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {editing && data === tenant._id ? (
+                      <TextField
+                        id={tenant.dateofbirth}
+                        type="date"
+                        value={moment(dateofbirth).format("YYYY-MM-DD")}
+                        onChange={(e) => setDate(e.target.value)}
+                        placeholder="Date de naissance"
+                      />
+                    ) : (
+                      moment(tenant.dateofbirth).format("LL")
+                    )}
                   </TableCell>
                   <TableCell>{moment(tenant.createdAt).format("LL")}</TableCell>
                   <TableCell>
-                    <Button>
-                      <EditIcon
-                        onClick={() => {
-                          setName(tenant.name);
-                          setLastname(tenant.lastname);
-                          setEmail(tenant.email);
-                          setDate(tenant.dateofbirth);
-                          setData(tenant._id);
-                          setEditShow(!editShow);
-                        }}
-                      />
-                    </Button>
-                    <Button>
-                      <DeleteIcon
-                        onClick={() => {
-                          setData(tenant);
-                          setDeleteShow(!deleteShow);
-                        }}
-                      />
-                    </Button>{" "}
+                    {editing && data === tenant._id ? (
+                      <Fragment>
+                        <Button>
+                          <CheckIcon onClick={submit} />
+                        </Button>
+                        <Button>
+                          <CloseIcon onClick={() => setEditing(!editing)} />
+                        </Button>
+                      </Fragment>
+                    ) : (
+                      <Fragment>
+                        <Button>
+                          <EditIcon
+                            onClick={() => {
+                              setName(tenant.name);
+                              setLastname(tenant.lastname);
+                              setEmail(tenant.email);
+                              setDate(tenant.dateofbirth);
+                              setData(tenant._id);
+                              setStatus(tenant.status);
+                              setError("");
+                              setSuccess("");
+                              setEditing(!editing);
+                            }}
+                          />
+                        </Button>
+                        <Button>
+                          <DeleteIcon
+                            onClick={() => {
+                              setData(tenant);
+                              setDeleteShow(!deleteShow);
+                            }}
+                          />
+                        </Button>{" "}
+                      </Fragment>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -194,112 +295,6 @@ const Tenant = () => {
             Valider
           </Button>
         </Box>
-      </Dialog>
-
-      <Dialog
-        open={editShow}
-        onClose={() => setEditShow(!editShow)}
-        disableBackdropClick
-      >
-        <DialogTitle>{"Modifier un locataire"}</DialogTitle>
-        <DialogContent>
-          {err && <Alert severity="error">{err}</Alert>}
-          {success && <Alert severity="success">{success}</Alert>}
-          <form onSubmit={submit}>
-            <TextField
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon />
-                  </InputAdornment>
-                ),
-              }}
-              placeholder="Prénom"
-              className={classes.form}
-            />
-            <TextField
-              id="lastname"
-              type="text"
-              value={lastname}
-              onChange={(e) => setLastname(e.target.value)}
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon />
-                  </InputAdornment>
-                ),
-              }}
-              placeholder="Nom"
-              className={classes.form}
-            />
-            <TextField
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <EmailIcon />
-                  </InputAdornment>
-                ),
-              }}
-              placeholder="Email"
-              className={classes.form}
-            />
-            <TextField
-              id="password"
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockIcon />
-                  </InputAdornment>
-                ),
-              }}
-              placeholder="Mot de passe"
-              className={classes.form}
-            />
-            <TextField
-              id="confirm"
-              type="password"
-              onChange={(e) => setConfirm(e.target.value)}
-              fullWidth
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockIcon />
-                  </InputAdornment>
-                ),
-              }}
-              placeholder="Confirmer le mot de passe"
-              className={classes.form}
-            />
-            <Box className={classes.box2}>
-              <Button
-                className={classes.button}
-                color="inherit"
-                onClick={() => setEditShow(!editShow)}
-              >
-                Retour
-              </Button>
-
-              <Button type="submit" color="primary" className={classes.button}>
-                Valider
-              </Button>
-            </Box>
-          </form>
-        </DialogContent>
       </Dialog>
     </div>
   );

@@ -15,6 +15,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import EmailIcon from "@material-ui/icons/Email";
 import LockIcon from "@material-ui/icons/Lock";
 import Alert from "@material-ui/lab/Alert";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -64,6 +65,7 @@ const AddTenant = () => {
         name,
         lastname,
         email,
+        dateofbirth,
         password,
       };
       try {
@@ -186,6 +188,7 @@ const AddTenant = () => {
             <TextField
               id="date"
               type="date"
+              value={moment().format("YYYY-MM-DD")}
               placeholder="Date de naissance"
               onChange={(e) => setDate(e.target.value)}
               className={classes.form}

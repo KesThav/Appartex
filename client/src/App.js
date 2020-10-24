@@ -19,6 +19,10 @@ import Signup from "./pages/signup";
 import Tenantlogin from "./pages/tenantlogin";
 import Axios from "axios";
 import Tenant from "./pages/ownerpages/tenants";
+import Building from "./pages/ownerpages/buildings";
+import Appartment from "./pages/ownerpages/appartments";
+import Bill from "./pages/ownerpages/bills";
+import Contract from "./pages/ownerpages/contracts";
 
 const theme = createMuiTheme(themeSheet);
 
@@ -85,6 +89,14 @@ const App = () => {
                   <Switch>
                     <AdminRoute exact path="/owner" component={Ownerboard} />
                     <AdminRoute exact path="/tenants" component={Tenant} />
+                    <AdminRoute exact path="/buildings" component={Building} />
+                    <AdminRoute
+                      exact
+                      path="/appartments"
+                      component={Appartment}
+                    />
+                    <AdminRoute exact path="/bills" component={Bill} />
+                    <AdminRoute exact path="/contracts" component={Contract} />
                     <ProtectedRoute
                       exact
                       path="/tenant"

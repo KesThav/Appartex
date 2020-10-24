@@ -113,13 +113,13 @@ const Layout = (props) => {
           id: 1,
           name: "Les immeubles",
           icon: <BusinessIcon />,
-          link: "/",
+          link: "/buildings",
         },
         {
           id: 2,
           name: "Les Appartements",
           icon: <HomeIcon />,
-          link: "/",
+          link: "/appartments",
         },
         {
           id: 3,
@@ -131,13 +131,13 @@ const Layout = (props) => {
           id: 4,
           name: "Les Contrats",
           icon: <FolderIcon />,
-          link: "/",
+          link: "/contracts",
         },
         {
           id: 5,
           name: "Les Factures",
           icon: <ReceiptIcon />,
-          link: "/",
+          link: "/bills",
         },
       ].map((data, index) => (
         <Link key={data.id} className={classes.linkmap} to={data.link}>
