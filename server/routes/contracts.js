@@ -181,7 +181,6 @@ router.post("/add", jwt, adminAccess, contractValidation, async (ctx) => {
   } catch (err) {
     ctx.throw(500, err);
   }
-  console.log("ok");
 });
 
 /**

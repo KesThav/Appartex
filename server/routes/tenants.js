@@ -281,27 +281,34 @@ router.delete("/delete/:tenantid", jwt, adminAccess, async (ctx) => {
   let validate = ObjectId.isValid(ctx.params.tenantid);
   if (!validate) return ctx.throw(404, "No tenant found");
   let tenantid = new ObjectId(ctx.params.tenantid);
-  const tenant = await Tenant.findOne({ _id: tenantid });
+  const tenant = await Tenant.findById(tenantid);
   if (!tenant) {
     ctx.throw(404, "No tenant found");
   }
   try {
     const deletedbills = await Bill.deleteMany({ tenant: tenantid });
-    const appartid = await Contract.find({ tenant: tenantid }).select(
-      "appartmentid"
-    );
+    const appartid = await Contract.find({ tenant: tenantid }).select({
+      appartmentid: 1,
+      _id: 0,
+    });
+
     for (i = 0; i < appartid.length; i++) {
-      Appart.findByIdAndUpdate(appartid[i], { status: "Libre" }, { new: true });
-    }
-    const buildingid = await Contract.find({ tenant: tenantid }).select(
-      "buildingid"
-    );
-    for (i = 0; i < buildingid.length; i++) {
-      Appart.findByIdAndUpdate(
-        buildingid[i],
-        { counter: counter - 1 },
+      await Appart.findByIdAndUpdate(
+        appartid[i].appartmentid,
+        { status: "Libre" },
         { new: true }
       );
+    }
+    const buildingid = await Contract.find({ tenant: tenantid }).select({
+      buildingid: 1,
+      _id: 0,
+    });
+
+    for (i = 0; i < buildingid.length; i++) {
+      await Building.findByIdAndUpdate(buildingid[i].buildingid, {
+        $inc: { counter: -1 },
+      });
+      console.log(buildingid[i].buildingid);
     }
 
     const deletedcontract = await Contract.deleteMany({ tenant: tenantid });
