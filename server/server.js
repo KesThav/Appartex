@@ -34,10 +34,7 @@ const swaggerOptions = {
         "Dans le contexte de mon travail de bachelor, j'ai développé une web app pour propriétaire indépendant afin qu'il puisse gérer leurs immeubles/appartements/locataires,... sans passer par une régie",
     },
   },
-  /**
-   * Paths to the API docs. The library will fetch comments marked
-   * by a @swagger tag to create the swagger.json document
-   */
+
   apis: [
     "./routes/auth.js",
     "./routes/tenants.js",
@@ -49,7 +46,7 @@ const swaggerOptions = {
     "./routes/tasks.js",
     "./routes/messages.js",
   ],
-  // where to publish the document
+
   path: "/swagger.json",
 };
 

@@ -85,8 +85,8 @@ const { userSchema, loginSchema } = require("../helpers/validation");
  *    responses:
  *      '200':
  *        description: 'Success'
- *      '403':
- *         description: complete all fields / Password should be 6 characters long / Email already exist
+ *      '400':
+ *         description: Field missing
  *      '500':
  *         description: Server error
  *
@@ -97,7 +97,7 @@ router.post("/register", async (ctx) => {
 
   const emailExist = await Owner.find({ email });
   if (emailExist.length !== 0) {
-    ctx.throw(403, `Email already exist`);
+    ctx.throw(400, `Email already exist`);
   }
 
   const { error } = userSchema.validate(ctx.request.body);
@@ -121,7 +121,7 @@ router.post("/register", async (ctx) => {
     if (err instanceof JoiError) {
       ctx.throw(400, err);
     } else {
-      ctx.throw(404, err);
+      ctx.throw(500, err);
     }
   }
 });
@@ -143,8 +143,10 @@ router.post("/register", async (ctx) => {
  *    responses:
  *      '200':
  *        description: 'Success'
- *      '403':
- *         description: Complete all fields / Password should be 6 characters long / Wrong credentials
+ *      '400':
+ *         description: Field missing
+ *      '404':
+ *         description: Wrong credentials
  *      '500':
  *         description: Server error
  *
@@ -160,11 +162,11 @@ router.post("/login", async (ctx) => {
 
   const user = await Owner.findOne({ email: email });
   if (!user) {
-    ctx.throw(400, "Wrong Credentials");
+    ctx.throw(404, "Wrong Credentials");
   }
   const validPass = await bcrypt.compare(password, user.password);
   if (!validPass) {
-    ctx.throw(400, "Wrong Credentials");
+    ctx.throw(404, "Wrong Credentials");
   }
 
   try {
@@ -201,8 +203,10 @@ router.post("/login", async (ctx) => {
  *    responses:
  *      '200':
  *        description: 'Success'
- *      '403':
- *         description: Complete all fields / Password should be 6 characters long / Wrong credentials
+ *      '400':
+ *         description: Field missing
+ *      '404': 
+ *         description: Wrong credentials
  *      '500':
  *         description: Server error
  *
@@ -210,7 +214,7 @@ router.post("/login", async (ctx) => {
 
 router.post("/tenant/login", async (ctx) => {
   const { email, password } = ctx.request.body;
-  
+
   const { error } = loginSchema.validate(ctx.request.body);
   if (error) {
     ctx.throw(400, error);
@@ -221,13 +225,13 @@ router.post("/tenant/login", async (ctx) => {
     ctx.throw(400, "Wrong Credentials");
   }
   if (user) {
-    if (user.status == 'Inactif') {
-      ctx.throw(400, "le compte est désactivé")
+    if (user.status == "Inactif") {
+      ctx.throw(400, "le compte est désactivé");
     }
   }
   const validPass = await bcrypt.compare(password, user.password);
   if (!validPass) {
-    ctx.throw(400, "Wrong Credentials");
+    ctx.throw(404, "Wrong Credentials");
   }
 
   try {

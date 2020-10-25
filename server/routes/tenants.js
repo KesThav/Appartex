@@ -102,7 +102,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *            schema:
  *              $ref: '#/components/schemas/Tenant'
  *      '403':
- *         description: Forbidden / Complete all fields / Password should be 6 characters long / Email already exist
+ *         description: Forbidden
  *      '404':
  *         description: Tenant not found
  *      '500':
@@ -145,8 +145,10 @@ router.get("/:tenantid", jwt, filterAccess, async (ctx) => {
  *    responses:
  *      '200':
  *        description: 'Success'
+ *      '400':
+ *        description : Field missing
  *      '403':
- *         description: Forbidden / Complete all fields / Password should be 6 characters long / Email already exist
+ *         description: Forbidden
  *      '500':
  *         description: Server error
  *
@@ -162,7 +164,7 @@ router.post("/add", jwt, adminAccess, async (ctx) => {
 
   const emailExist = await Tenant.findOne({ email });
   if (emailExist) {
-    ctx.throw(403, `Email already exist`);
+    ctx.throw(400, `Email already exist`);
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -209,7 +211,7 @@ router.post("/add", jwt, adminAccess, async (ctx) => {
  *      '200':
  *        description: 'Success'
  *      '403':
- *        description: Forbidden / Complete all fields / Password should be 6 characters long / Email already exist
+ *        description: Forbidden
  *      '404':
  *        description: Tenant not found
  *      '500':
@@ -231,7 +233,7 @@ router.put("/update/:tenantid", jwt, filterAccess, async (ctx) => {
     const emailExist = await Tenant.findOne({ email: ctx.request.body.email });
     if (emailExist) {
       if (!(emailExist._id == ctx.params.tenantid)) {
-        ctx.throw(403, `Email already exist`);
+        ctx.throw(400, `Email already exist`);
       }
     }
   }
@@ -308,7 +310,6 @@ router.delete("/delete/:tenantid", jwt, adminAccess, async (ctx) => {
       await Building.findByIdAndUpdate(buildingid[i].buildingid, {
         $inc: { counter: -1 },
       });
-      console.log(buildingid[i].buildingid);
     }
 
     const deletedcontract = await Contract.deleteMany({ tenant: tenantid });
@@ -320,6 +321,171 @@ router.delete("/delete/:tenantid", jwt, adminAccess, async (ctx) => {
       deletedbills,
       deletedcontract,
     ];
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+/*########################################################## Tenant endpoints #####################################################################################*/
+/**
+ *  @swagger
+ * /tenants/buildings/{tenant_id}:
+ *  get :
+ *    summary : Return tenant building
+ *    operationId : gettenantbuilding
+ *    tags :
+ *        - tenant
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: tenant_id
+ *       in: path
+ *       required: true
+ *       description: the id of the tenant
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Building'
+ *      '403':
+ *         description: Forbidden
+ *      '404':
+ *         description: No building found
+ *      '500':
+ *         description: Server error
+ *
+ */
+
+router.get("/buildings/:tenantid", jwt, filterAccess, async (ctx) => {
+  let buildings = [];
+  let validate = ObjectId.isValid(ctx.params.tenantid);
+  if (!validate) return ctx.throw(404, "no building found");
+  try {
+    let tenantid = new ObjectId(ctx.params.tenantid);
+    const buildingid = await Contract.find({ tenant: tenantid }).select({
+      buildingid: 1,
+      _id: 0,
+    });
+
+    for (i = 0; i < buildingid.length; i++) {
+      buildings.push(await Building.findById(buildingid[i].buildingid));
+    }
+
+    if (!buildingid) {
+      ctx.throw(404, "no building found");
+    } else {
+      ctx.body = buildings;
+    }
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+/**
+ *  @swagger
+ * /tenants/appartments/{tenant_id}:
+ *  get :
+ *    summary : Return tenant appartment
+ *    operationId : gettenantappartment
+ *    tags :
+ *        - tenant
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: tenant_id
+ *       in: path
+ *       required: true
+ *       description: the id of the tenant
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Appartment'
+ *      '403':
+ *         description: Forbidden
+ *      '404':
+ *         description: No appartment found
+ *      '500':
+ *         description: Server error
+ *
+ */
+
+router.get("/appartments/:tenantid", jwt, filterAccess, async (ctx) => {
+  let appartments = [];
+  let validate = ObjectId.isValid(ctx.params.tenantid);
+  if (!validate) return ctx.throw(404, "no appartment found");
+  try {
+    let tenantid = new ObjectId(ctx.params.tenantid);
+    const appartid = await Contract.find({ tenant: tenantid }).select({
+      appartmentid: 1,
+      _id: 0,
+    });
+
+    for (i = 0; i < appartid.length; i++) {
+      if (appartid[i].appartmentid !== null) {
+        appartments.push(await Appart.findById(appartid[i].appartmentid));
+      }
+    }
+
+    if (!appartid) {
+      ctx.throw(404, "no appartment found");
+    } else {
+      ctx.body = appartments;
+    }
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+/**
+ *  @swagger
+ * /tenants/contracts/{tenant_id}:
+ *  get :
+ *    summary : Return tenant contracts
+ *    operationId : gettenantcontract
+ *    tags :
+ *        - tenant
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: tenant_id
+ *       in: path
+ *       required: true
+ *       description: the id of the tenant
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Contract'
+ *      '403':
+ *         description: Forbidden
+ *      '404':
+ *         description: No contract found
+ *      '500':
+ *         description: Server error
+ *
+ */
+
+router.get("/contracts/:tenantid", jwt, filterAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.tenantid);
+  if (!validate) return ctx.throw(404, "no contract found");
+  try {
+    let tenantid = new ObjectId(ctx.params.tenantid);
+    const contracts = await Contract.find({ tenant: tenantid })
+      .populate("appartmentid", "adress")
+      .populate("buildingid", "adress postalcode city");
+
+    if (!contracts) {
+      ctx.throw(404, "no contract found");
+    } else {
+      ctx.body = contracts;
+    }
   } catch (err) {
     ctx.throw(500, err);
   }

@@ -1,9 +1,9 @@
 const Router = require("@koa/router");
 const router = new Router({ prefix: "/buildings" });
 const Building = require("../models/building.model");
+const Contract = require("../models/contract.model");
 const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
-const filterAccess = require("../middlewares/filterAccess");
 let ObjectId = require("mongodb").ObjectId;
 const { buildingSchema } = require("../helpers/validation");
 
@@ -49,7 +49,7 @@ const { buildingSchema } = require("../helpers/validation");
  *        - bearerAuth: []
  *    responses:
  *      '200':
- *        description: 'Success'
+ *        description: Success
  *      '403':
  *         description: Forbidden
  *      '500':
@@ -59,10 +59,12 @@ const { buildingSchema } = require("../helpers/validation");
 
 router.get("/", jwt, adminAccess, async (ctx) => {
   try {
-    let allbuildings = await Building.find({ createdBy: ctx.request.jwt._id });
+    let allbuildings = await Building.find({
+      createdBy: ctx.request.jwt._id,
+    }).sort({ createdAt: -1 });
     ctx.body = allbuildings;
   } catch (err) {
-    ctx.throw(400, error);
+    ctx.throw(500, error);
   }
 });
 
@@ -90,12 +92,14 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *              $ref: '#/components/schemas/Building'
  *      '403':
  *         description: Forbidden
+ *      '404':
+ *         description : Building not found
  *      '500':
  *         description: Server error
  *
  */
 
-router.get("/:buildingid", jwt, filterAccess, async (ctx) => {
+router.get("/:buildingid", jwt, adminAccess, async (ctx) => {
   let validate = ObjectId.isValid(ctx.params.buildingid);
   console.log(ctx.params.buildingid);
   if (!validate) return ctx.throw(404, "building not found");
@@ -111,6 +115,8 @@ router.get("/:buildingid", jwt, filterAccess, async (ctx) => {
     ctx.throw(500, err);
   }
 });
+
+
 
 /**
  *  @swagger
@@ -130,9 +136,11 @@ router.get("/:buildingid", jwt, filterAccess, async (ctx) => {
  *            $ref: '#/components/schemas/Building'
  *    responses:
  *      '200':
- *        description: 'Success'
+ *        description: Success
+ *      '400':
+ *        description: Field missing
  *      '403':
- *         description: Forbidden / Complete all fields
+ *         description: Forbidden
  *      '500':
  *         description: Server error
  *
@@ -188,7 +196,7 @@ router.post("/add", jwt, adminAccess, async (ctx) => {
  *      '403':
  *        description: Forbidden
  *      '404':
- *        description: Tenant not found
+ *        description: Building not found
  *      '500':
  *        description: Server error
  *
@@ -196,12 +204,12 @@ router.post("/add", jwt, adminAccess, async (ctx) => {
 
 router.put("/update/:buildingid", jwt, adminAccess, async (ctx) => {
   let validate = ObjectId.isValid(ctx.params.buildingid);
-  if (!validate) return ctx.throw(404, "No building found");
+  if (!validate) return ctx.throw(404, "building not found");
   let buildingid = new ObjectId(ctx.params.buildingid);
 
   const building = await Building.find({ _id: buildingid });
   if (building.length == 0) {
-    ctx.throw(404, "No building found");
+    ctx.throw(404, "building not found");
   }
 
   const { numberofAppart, adress, postalcode, city } = ctx.request.body;

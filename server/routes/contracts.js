@@ -3,7 +3,6 @@ const router = new Router({ prefix: "/contracts" });
 const Contract = require("../models/contract.model");
 const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
-const filterAccess = require("../middlewares/filterAccess");
 let ObjectId = require("mongodb").ObjectId;
 const contractValidation = require("../helpers/contractValidation");
 const Appart = require("../models/appartment.model");
@@ -36,7 +35,8 @@ const Building = require("../models/building.model");
  *            example: Two rent paid in advance
  *         status:
  *            type: String
- *            default: Actif
+ *            example: Actif
+ *            default : Actif
  *       required:
  *          - charge
  *          - rent
@@ -70,10 +70,11 @@ router.get("/", jwt, adminAccess, async (ctx) => {
     let allcontracts = await Contract.find({ createdBy: ctx.request.jwt._id })
       .populate("tenant")
       .populate({ path: "appartmentid", populate: { path: "building" } })
-      .populate("buildingid");
+      .populate("buildingid")
+      .sort({ createdAt: -1 });
     ctx.body = allcontracts;
   } catch (err) {
-    ctx.throw(400, err);
+    ctx.throw(err);
   }
 });
 
@@ -101,12 +102,14 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *              $ref: '#/components/schemas/Contract'
  *      '403':
  *         description: Forbidden
+ *      '404':
+ *         description: Contract not found
  *      '500':
  *         description: Server error
  *
  */
 
-router.get("/:contractid", jwt, filterAccess, async (ctx) => {
+router.get("/:contractid", jwt, adminAccess, async (ctx) => {
   let validate = ObjectId.isValid(ctx.params.contractid);
   if (!validate) return ctx.throw(404, "contract not found");
   try {
@@ -114,7 +117,7 @@ router.get("/:contractid", jwt, filterAccess, async (ctx) => {
     const onecontract = await Contract.findById(contractid)
       .populate("tenant")
       .populate("appartmentid")
-      .populate("buildingid");
+      .populate("buildingid", "adress postalcode city");
     if (!onecontract) {
       ctx.throw(404, "contract not found");
     } else {
@@ -143,7 +146,9 @@ router.get("/:contractid", jwt, filterAccess, async (ctx) => {
  *            $ref: '#/components/schemas/Contract'
  *    responses:
  *      '200':
- *        description: 'Success'
+ *        description: Success
+ *      '400':
+ *        description: Field missing
  *      '403':
  *         description: Forbidden
  *      '500':
@@ -223,12 +228,12 @@ router.put(
   contractValidation,
   async (ctx) => {
     let validate = ObjectId.isValid(ctx.params.contractid);
-    if (!validate) return ctx.throw(404, "No contract found");
+    if (!validate) return ctx.throw(404, "contract not found");
     let contractid = new ObjectId(ctx.params.contractid);
 
     const contract = await Contract.findById(contractid);
     if (!contract) {
-      ctx.throw(404, "No contract found");
+      ctx.throw(404, "contract not found");
     }
 
     const {
