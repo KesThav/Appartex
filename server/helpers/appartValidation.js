@@ -1,5 +1,6 @@
 const { appartSchema } = require("./validation");
 const Building = require("../models/building.model");
+let ObjectId = require("mongodb").ObjectId;
 
 module.exports = async (ctx, next) => {
   const { size, adress, building } = ctx.request.body;
