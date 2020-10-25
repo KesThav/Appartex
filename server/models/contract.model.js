@@ -18,10 +18,12 @@ const contractSchema = new Mongoose.Schema(
     appartmentid: {
       type: Mongoose.Schema.Types.ObjectId,
       ref: "Appart",
+      default: null,
     },
     buildingid: {
       type: Mongoose.Schema.Types.ObjectId,
       ref: "Building",
+      default: null,
     },
     other: {
       type: String,

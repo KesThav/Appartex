@@ -101,9 +101,8 @@ router.get("/:buildingid", jwt, filterAccess, async (ctx) => {
   if (!validate) return ctx.throw(404, "building not found");
   try {
     let buildingid = new ObjectId(ctx.params.buildingid);
-    const onebuilding = await Building.find({ _id: buildingid }).exec();
-    ctx.body = onebuilding;
-    if (onebuilding.length == 0) {
+    const onebuilding = await Building.findById(buildingid).exec();
+    if (!onebuilding) {
       ctx.throw(404, "Building not found");
     } else {
       ctx.body = onebuilding;
@@ -162,6 +161,39 @@ router.post("/add", jwt, adminAccess, async (ctx) => {
   }
 });
 
+/**
+ *  @swagger
+ * /buildings/update/{building_id}:
+ *  put :
+ *    summary : Update a building
+ *    operationId : updatebuilding
+ *    tags :
+ *        - building
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: building_id
+ *       in: path
+ *       required: true
+ *       description: the id of the building
+ *    requestBody :
+ *     required: true
+ *     content :
+ *       application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/Building'
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Tenant not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
 router.put("/update/:buildingid", jwt, adminAccess, async (ctx) => {
   let validate = ObjectId.isValid(ctx.params.buildingid);
   if (!validate) return ctx.throw(404, "No building found");
@@ -181,9 +213,13 @@ router.put("/update/:buildingid", jwt, adminAccess, async (ctx) => {
 
   const update = { numberofAppart, adress, postalcode, city };
   try {
-    const updatedbuilding = await Building.findByIdAndUpdate(buildingid, update, {
-      new: true,
-    });
+    const updatedbuilding = await Building.findByIdAndUpdate(
+      buildingid,
+      update,
+      {
+        new: true,
+      }
+    );
     ctx.body = updatedbuilding;
   } catch (err) {
     ctx.throw(500, err);

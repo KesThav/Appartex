@@ -13,6 +13,7 @@ const appartSchema = new Mongoose.Schema(
     building: {
       type: Mongoose.Schema.Types.ObjectId,
       ref: "Building",
+      default: null,
     },
     picture: [
       {

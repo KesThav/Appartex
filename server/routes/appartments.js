@@ -4,6 +4,8 @@ const Appart = require("../models/appartment.model");
 const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
 const filterAccess = require("../middlewares/filterAccess");
+let ObjectId = require("mongodb").ObjectId;
+const appartValidation = require("../helpers/appartValidation");
 
 /**
  * @swagger
@@ -33,7 +35,7 @@ const filterAccess = require("../middlewares/filterAccess");
 /**
  *  @swagger
  *
- *  /appartements:
+ *  /appartments:
  *  get :
  *    summary : Return all appartments
  *    operationId : getappartment
@@ -53,8 +55,9 @@ const filterAccess = require("../middlewares/filterAccess");
 
 router.get("/", jwt, adminAccess, async (ctx) => {
   try {
-    let allapparts = await Appart.find({ createdBy: ctx.request.jwt._id });
-    ctx.status = 200;
+    let allapparts = await Appart.find({
+      createdBy: ctx.request.jwt._id,
+    }).populate("building");
     ctx.body = allapparts;
   } catch (err) {
     ctx.throw(400, error);
@@ -75,7 +78,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *     - name: appart_id
  *       in: path
  *       required: true
- *       description: the id of the tenant of return
+ *       description: the id of the appartment
  *    responses:
  *      '200':
  *        description: 'Success'
@@ -90,6 +93,125 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *
  */
 
-router.get("/:appartid", filterAccess, async (ctx) => {});
+router.get("/:appartid", jwt, filterAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.appartid);
+  if (!validate) return ctx.throw(404, "appartment not found");
+  try {
+    let appartid = new ObjectId(ctx.params.appartid);
+    const oneappart = await Appart.findById(appartid).populate("building");
+    if (!oneappart) {
+      ctx.throw(404, "Appart not found");
+    } else {
+      ctx.body = oneappart;
+    }
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+/**
+ *  @swagger
+ * /appartments/add:
+ *  post :
+ *    summary : Create a Appartment
+ *    operationId : createappartment
+ *    tags :
+ *        - appartment
+ *    security:
+ *        - bearerAuth: []
+ *    requestBody :
+ *     required: true
+ *     content :
+ *       application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/Appartment'
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *         description: Forbidden / Complete all fields
+ *      '500':
+ *         description: Server error
+ *
+ */
+
+router.post("/add", jwt, adminAccess, appartValidation, async (ctx) => {
+  const { size, adress, building } = ctx.request.body;
+
+  try {
+    let newappart = new Appart({
+      size,
+      adress,
+      building,
+      createdBy: new ObjectId(ctx.request.jwt._id),
+    });
+    await newappart.save();
+    ctx.body = newappart;
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+/**
+ *  @swagger
+ * /appartments/update/{appart_id}:
+ *  put :
+ *    summary : Update a appartment
+ *    operationId : updateappartment
+ *    tags :
+ *        - appartment
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: appart_id
+ *       in: path
+ *       required: true
+ *       description: the id of the appartment
+ *    requestBody :
+ *     required: true
+ *     content :
+ *       application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/Appartment'
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Tenant not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.put(
+  "/update/:appartid",
+  jwt,
+  adminAccess,
+  appartValidation,
+  async (ctx) => {
+    let validate = ObjectId.isValid(ctx.params.appartid);
+    if (!validate) return ctx.throw(404, "No appartment found");
+    let appartid = new ObjectId(ctx.params.appartid);
+
+    const appart = await Appart.findById(appartid);
+    if (!appart) {
+      ctx.throw(404, "No appartment found");
+    }
+
+    const { size, adress, building } = ctx.request.body;
+
+    const update = { size, building, adress };
+    try {
+      const updatedappart = await Appart.findByIdAndUpdate(appartid, update, {
+        new: true,
+      });
+      ctx.body = updatedappart;
+    } catch (err) {
+      ctx.throw(500, err);
+    }
+  }
+);
 
 module.exports = router;
