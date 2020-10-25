@@ -1,4 +1,4 @@
-import { rgbToHex } from "@material-ui/core";
+import green from "@material-ui/core/colors/green";
 
 export default {
   palette: {
@@ -9,9 +9,13 @@ export default {
       contrastText: "#fff",
     },
     secondary: {
-      light: "#ff4081",
-      main: "#B686D7",
-      dark: "#c51162",
+      light: "#ed4b82",
+      main: "#e91e63",
+      dark: "#a31545",
+      contrastText: "#fff",
+    },
+    success: {
+      main: green[500],
       contrastText: "#fff",
     },
   },

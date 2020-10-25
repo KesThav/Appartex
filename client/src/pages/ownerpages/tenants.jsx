@@ -16,6 +16,8 @@ import {
   DialogTitle,
   MenuItem,
   Chip,
+  List,
+  ListItem,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -24,6 +26,7 @@ import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
+import green from "@material-ui/core/colors/green";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -196,14 +199,12 @@ const Tenant = () => {
                       <div>
                         {tenant.status === "Actif" ? (
                           <Chip
-                            variant="outlined"
                             color="primary"
                             size="small"
                             label={tenant.status}
                           />
                         ) : (
                           <Chip
-                            variant="outlined"
                             color="secondary"
                             size="small"
                             label={tenant.status}
@@ -275,7 +276,24 @@ const Tenant = () => {
         disableBackdropClick
       >
         <DialogTitle>Supprimer un locataire</DialogTitle>
-        <DialogContent>{`Êtez-vous sûr de vouloir supprimer le locataire ${data.lastname} ${data.name} ? La suppression est irréversible.`}</DialogContent>
+        <DialogContent>
+          Êtez-vous sûr de vouloir supprimer le locataire{" "}
+          <strong>
+            {data.lastname} {data.name}
+          </strong>{" "}
+          ? <br />
+          Cette action entrainera : <br />
+          <List>
+            <ListItem>la suppression du locataire</ListItem>
+            <ListItem>
+              la suppression de tous les contrats liés au locataire
+            </ListItem>
+            <ListItem>
+              la suppression de toutes les factures liées au locataire
+            </ListItem>
+          </List>
+          Une fois validé, il n'est plus possible de revenir en arrière.
+        </DialogContent>
         <Box className={classes.box}>
           <Button
             className={classes.button}

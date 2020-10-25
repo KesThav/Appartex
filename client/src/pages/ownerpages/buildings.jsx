@@ -14,8 +14,8 @@ import {
   Box,
   TextField,
   DialogTitle,
-  MenuItem,
-  Chip,
+  List,
+  ListItem,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -238,7 +238,26 @@ const Building = () => {
         disableBackdropClick
       >
         <DialogTitle>Supprimer un Immeuble</DialogTitle>
-        <DialogContent>{`Êtez-vous sûr de vouloir supprimer l'immeuble ${data.adress} ${data.postalcode} ${data.city} ? Cette action effacera tous les contrats lié à cet immeuble ainsi que les locataires`}</DialogContent>
+        <DialogContent>
+          {" "}
+          <DialogContent>
+            Êtez-vous sûr de vouloir supprimer l'immeuble se trouvant à <br />
+            <strong>
+              {data.adress} {data.postalcode} {data.city}
+            </strong>{" "}
+            ? <br />
+            Cette action entrainera : <br />
+            <List>
+              <ListItem>
+                la suppression de tous les locataires habitant dans l'immeuble
+              </ListItem>
+              <ListItem>
+                le suppression de tous les contrats liés à l'immeuble
+              </ListItem>
+            </List>
+            Une fois validé, il n'est plus possible de revenir en arrière.
+          </DialogContent>
+        </DialogContent>
         <Box className={classes.box}>
           <Button
             className={classes.button}
