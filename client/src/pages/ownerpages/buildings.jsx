@@ -173,19 +173,7 @@ const Building = () => {
                       building.city
                     )}
                   </TableCell>
-                  <TableCell>
-                    {editing && data === building._id ? (
-                      <TextField
-                        id={building.numberofAppart}
-                        type="number"
-                        value={numberofAppart}
-                        onChange={(e) => setNumberofAppart(e.target.value)}
-                        placeholder="Nombre d'appartements"
-                      />
-                    ) : (
-                      building.numberofAppart
-                    )}
-                  </TableCell>
+                  <TableCell>{building.numberofAppart}</TableCell>
                   <TableCell>{building.counter}</TableCell>
                   <TableCell>
                     {moment(building.createdAt).format("LL")}

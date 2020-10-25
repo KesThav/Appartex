@@ -29,7 +29,6 @@ const { buildingSchema } = require("../helpers/validation");
  *            type: String
  *            example: Fribourg
  *       required:
- *          - numberofAppart
  *          - adress
  *          - postalcode
  *          - city
@@ -115,8 +114,6 @@ router.get("/:buildingid", jwt, adminAccess, async (ctx) => {
     ctx.throw(500, err);
   }
 });
-
-
 
 /**
  *  @swagger

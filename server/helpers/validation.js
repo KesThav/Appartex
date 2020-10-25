@@ -16,7 +16,7 @@ const loginSchema = Joi.object({
 });
 
 const buildingSchema = Joi.object({
-  numberofAppart: Joi.number().required(),
+  numberofAppart: Joi.number(),
   adress: Joi.string().required(),
   postalcode: Joi.number().required(),
   city: Joi.string().required(),

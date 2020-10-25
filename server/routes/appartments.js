@@ -1,6 +1,7 @@
 const Router = require("@koa/router");
 const router = new Router({ prefix: "/appartments" });
 const Appart = require("../models/appartment.model");
+const Building = require("../models/building.model");
 const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
 let ObjectId = require("mongodb").ObjectId;
@@ -148,6 +149,11 @@ router.post("/add", jwt, adminAccess, appartValidation, async (ctx) => {
       building,
       createdBy: new ObjectId(ctx.request.jwt._id),
     });
+    if (building) {
+      await Building.findByIdAndUpdate(building, {
+        $inc: { numberofAppart: 1 },
+      });
+    }
     await newappart.save();
     ctx.body = newappart;
   } catch (err) {
@@ -195,12 +201,12 @@ router.put(
   appartValidation,
   async (ctx) => {
     let validate = ObjectId.isValid(ctx.params.appartid);
-    if (!validate) return ctx.throw(404, "No appartment found");
+    if (!validate) return ctx.throw(404, "appartment not found");
     let appartid = new ObjectId(ctx.params.appartid);
 
     const appart = await Appart.findById(appartid);
     if (!appart) {
-      ctx.throw(404, "No appartment found");
+      ctx.throw(404, "appartment not found");
     }
 
     const { size, adress, building } = ctx.request.body;

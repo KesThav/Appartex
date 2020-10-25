@@ -47,7 +47,6 @@ const AddBuilding = () => {
   } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [numberofAppart, setNumberofAppart] = useState("");
   const [adress, setAdress] = useState("");
   const [postalcode, setPostalcode] = useState("");
   const [city, setCity] = useState("");
@@ -56,12 +55,11 @@ const AddBuilding = () => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (!numberofAppart || !adress || !postalcode || !city) {
+    if (!adress || !postalcode || !city) {
       setError("Complétez tous les champs");
     } else {
       setLoading(true);
       const data = {
-        numberofAppart,
         adress,
         postalcode,
         city,
@@ -81,7 +79,6 @@ const AddBuilding = () => {
     setOpen(!open);
     setError("");
     setSuccess("");
-    setNumberofAppart("");
     setPostalcode("");
     setCity("");
     setAdress("");
@@ -105,21 +102,6 @@ const AddBuilding = () => {
           {err && <Alert severity="error">{err}</Alert>}
           {success && <Alert severity="success">{success}</Alert>}
           <form onSubmit={submit}>
-            <TextField
-              id="numberofAppart"
-              type="number"
-              onChange={(e) => setNumberofAppart(e.target.value)}
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon />
-                  </InputAdornment>
-                ),
-              }}
-              placeholder="Nombre d'appartment"
-              className={classes.form}
-            />
             <TextField
               id="adress"
               type="text"
