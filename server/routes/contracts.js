@@ -6,6 +6,8 @@ const adminAccess = require("../middlewares/adminAccess");
 const filterAccess = require("../middlewares/filterAccess");
 let ObjectId = require("mongodb").ObjectId;
 const contractValidation = require("../helpers/contractValidation");
+const Appart = require("../models/appartment.model");
+const Building = require("../models/building.model");
 
 /**
  * @swagger
@@ -168,6 +170,12 @@ router.post("/add", jwt, adminAccess, contractValidation, async (ctx) => {
       other,
       createdBy: new ObjectId(ctx.request.jwt._id),
     });
+    if (appartmentid) {
+      await Appart.findByIdAndUpdate(appartmentid, { status: "Occupé" });
+    }
+    if (buildingid) {
+      await Building.findByIdAndUpdate(buildingid, { $inc: { counter: 1 } });
+    }
     await newcontract.save();
     ctx.body = newcontract;
   } catch (err) {

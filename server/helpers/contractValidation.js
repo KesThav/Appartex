@@ -37,11 +37,17 @@ module.exports = async (ctx, next) => {
     if (!oneappart) {
       ctx.throw(400, "appartment not found");
     }
+    if (oneappart.status == "Occupé") {
+      ctx.throw(400, "appartment is already taken");
+    }
   }
   const tenantid = new ObjectId(tenant);
   const onetenant = await Tenant.findById(tenantid);
   if (!onetenant) {
     ctx.throw(400, "tenant not found");
+  }
+  if (onetenant.status == "Inactif") {
+    ctx.throw(400, "can't use inactive tenant");
   }
 
   await next();
