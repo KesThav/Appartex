@@ -3,16 +3,16 @@ const Building = require("../models/building.model");
 let ObjectId = require("mongodb").ObjectId;
 
 module.exports = async (ctx, next) => {
-  const { size, adress, building } = ctx.request.body;
+  const { size, adress, building, postalcode, city } = ctx.request.body;
   const { error } = appartSchema.validate(ctx.request.body);
 
   if (error) {
     ctx.throw(400, error);
   }
-  if (adress && building) {
+  if ((adress || postalcode || city) && building) {
     ctx.throw(400, "Adress and building can't be filled at the same time");
   }
-  if (!adress && !building) {
+  if ((!adress || !postalcode || !city) && !building) {
     ctx.throw(400, "Adress and building can't be empty at the same time");
   }
   if (building) {

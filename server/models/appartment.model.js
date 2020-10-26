@@ -10,6 +10,14 @@ const appartSchema = new Mongoose.Schema(
       type: String,
       default: null,
     },
+    postalcode: {
+      type: Number,
+      default: null,
+    },
+    city: {
+      type: String,
+      default: null,
+    },
     building: {
       type: Mongoose.Schema.Types.ObjectId,
       ref: "Building",

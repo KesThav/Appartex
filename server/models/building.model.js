@@ -8,7 +8,6 @@ const buildingSchema = new Mongoose.Schema(
     },
     numberofAppart: {
       type: Number,
-      required: true,
       default: 0,
     },
     adress: {

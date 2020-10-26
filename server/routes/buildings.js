@@ -2,6 +2,7 @@ const Router = require("@koa/router");
 const router = new Router({ prefix: "/buildings" });
 const Building = require("../models/building.model");
 const Contract = require("../models/contract.model");
+const Appart = require("../models/appartment.model");
 const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
 let ObjectId = require("mongodb").ObjectId;
@@ -144,7 +145,7 @@ router.get("/:buildingid", jwt, adminAccess, async (ctx) => {
  */
 
 router.post("/add", jwt, adminAccess, async (ctx) => {
-  const { numberofAppart, adress, postalcode, city } = ctx.request.body;
+  const { adress, postalcode, city } = ctx.request.body;
   const { error } = buildingSchema.validate(ctx.request.body);
   if (error) {
     ctx.throw(400, error);
@@ -152,11 +153,9 @@ router.post("/add", jwt, adminAccess, async (ctx) => {
 
   try {
     let newbuilding = new Building({
-      numberofAppart,
       adress,
       postalcode,
       city,
-      counter: 0,
       createdBy: new ObjectId(ctx.request.jwt._id),
     });
     await newbuilding.save();
@@ -204,19 +203,19 @@ router.put("/update/:buildingid", jwt, adminAccess, async (ctx) => {
   if (!validate) return ctx.throw(404, "building not found");
   let buildingid = new ObjectId(ctx.params.buildingid);
 
-  const building = await Building.find({ _id: buildingid });
+  const building = await Building.findById(buildingid);
   if (building.length == 0) {
     ctx.throw(404, "building not found");
   }
 
-  const { numberofAppart, adress, postalcode, city } = ctx.request.body;
+  const { adress, postalcode, city } = ctx.request.body;
 
   const { error } = buildingSchema.validate(ctx.request.body);
   if (error) {
     ctx.throw(400, error);
   }
 
-  const update = { numberofAppart, adress, postalcode, city };
+  const update = { adress, postalcode, city };
   try {
     const updatedbuilding = await Building.findByIdAndUpdate(
       buildingid,
@@ -226,6 +225,62 @@ router.put("/update/:buildingid", jwt, adminAccess, async (ctx) => {
       }
     );
     ctx.body = updatedbuilding;
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+/**
+ *  @swagger
+ * /buildings/delete/{building_id}:
+ *  delete :
+ *    summary : Delete a building
+ *    operationId : deletebuilding
+ *    tags :
+ *        - building
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: building_id
+ *       in: path
+ *       required: true
+ *       description: the id of the building
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Building not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.delete("/delete/:buildingid", jwt, adminAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.buildingid);
+  if (!validate) return ctx.throw(404, "building not found");
+  let buildingid = new ObjectId(ctx.params.buildingid);
+
+  const building = await Building.findById(buildingid);
+  if (building.length == 0) {
+    ctx.throw(404, "building not found");
+  }
+
+  try {
+    const appart = await Appart.find({ building: buildingid }).select({
+      _id: 1,
+    });
+    for (i = 0; i < appart.length; i++) {
+      await Contract.deleteMany({ appartmentid: appart[i]._id });
+    }
+
+    for (i = 0; appart.length; i++) {
+      await Appart.findByIdAndDelete(appart[i]._id);
+    }
+
+    await Building.findByIdAndDelete(buildingid);
+    ctx.body = "ok";
   } catch (err) {
     ctx.throw(500, err);
   }

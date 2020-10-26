@@ -116,8 +116,7 @@ router.get("/:contractid", jwt, adminAccess, async (ctx) => {
     let contractid = new ObjectId(ctx.params.contractid);
     const onecontract = await Contract.findById(contractid)
       .populate("tenant")
-      .populate("appartmentid")
-      .populate("buildingid", "adress postalcode city");
+      .populate({ path: "appartmentid", populate: { path: "building" } });
     if (!onecontract) {
       ctx.throw(404, "contract not found");
     } else {
@@ -157,30 +156,26 @@ router.get("/:contractid", jwt, adminAccess, async (ctx) => {
  */
 
 router.post("/add", jwt, adminAccess, contractValidation, async (ctx) => {
-  const {
-    charge,
-    rent,
-    tenant,
-    appartmentid,
-    buildingid,
-    other,
-  } = ctx.request.body;
+  const { charge, rent, tenant, appartmentid, other } = ctx.request.body;
   try {
     let newcontract = new Contract({
       charge,
       rent,
       tenant,
       appartmentid,
-      buildingid,
       other,
       createdBy: new ObjectId(ctx.request.jwt._id),
     });
-    if (appartmentid) {
-      await Appart.findByIdAndUpdate(appartmentid, { status: "Occupé" });
+
+    await Appart.findByIdAndUpdate(appartmentid, { status: "Occupé" });
+
+    const appart = await Appart.findById(appartmentid);
+    if (appart.building) {
+      await Building.findByIdAndUpdate(appart.building, {
+        $inc: { counter: 1 },
+      });
     }
-    if (buildingid) {
-      await Building.findByIdAndUpdate(buildingid, { $inc: { counter: 1 } });
-    }
+
     await newcontract.save();
     ctx.body = newcontract;
   } catch (err) {
@@ -227,8 +222,6 @@ router.put(
   adminAccess,
   contractValidation,
   async (ctx) => {
-    let validate = ObjectId.isValid(ctx.params.contractid);
-    if (!validate) return ctx.throw(404, "contract not found");
     let contractid = new ObjectId(ctx.params.contractid);
 
     const contract = await Contract.findById(contractid);
@@ -236,14 +229,11 @@ router.put(
       ctx.throw(404, "contract not found");
     }
 
-    const {
-      charge,
-      rent,
-      tenant,
-      appartmentid,
-      buildingid,
-      other,
-    } = ctx.request.body;
+    const { charge, rent, tenant, appartmentid, other } = ctx.request.body;
+
+    if (appartmentid !== contract.appartmentid) {
+      ctx.throw(400, "can't modify appartment, create a new contract");
+    }
 
     const update = { charge, rent, tenant, appartmentid, buildingid, other };
     try {
@@ -260,5 +250,59 @@ router.put(
     }
   }
 );
+
+/**
+ *  @swagger
+ * /contracts/delete/{contract_id}:
+ *  delete :
+ *    summary : Delete a contract
+ *    operationId : deletecontract
+ *    tags :
+ *        - contract
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: contract_id
+ *       in: path
+ *       required: true
+ *       description: the id of the contract
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Contract not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.delete("/delete/:contractid", jwt, adminAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.contractid);
+  if (!validate) return ctx.throw(404, "contract not found");
+  const contractid = new ObjectId(ctx.params.contractid);
+  const contract = await Contract.findById(contractid);
+  if (!contract) return ctx.throw(404, "contract not found");
+
+  console.log(contract);
+  try {
+    await Appart.findByIdAndUpdate(contract.appartmentid, { status: "Libre" });
+
+    const buildingid = await Appart.findById(contract.appartmentid).select({
+      building: 1,
+      _id: 0,
+    });
+
+    await Building.findByIdAndUpdate(buildingid.building, {
+      $inc: { counter: -1 },
+    });
+
+    await Contract.findByIdAndDelete(contractid);
+    ctx.body = "ok";
+  } catch (err) {
+    ctx.throw(err);
+  }
+});
 
 module.exports = router;

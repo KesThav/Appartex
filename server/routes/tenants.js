@@ -280,6 +280,7 @@ router.put("/update/:tenantid", jwt, filterAccess, async (ctx) => {
  */
 
 router.delete("/delete/:tenantid", jwt, adminAccess, async (ctx) => {
+  let buildingid = [];
   let validate = ObjectId.isValid(ctx.params.tenantid);
   if (!validate) return ctx.throw(404, "No tenant found");
   let tenantid = new ObjectId(ctx.params.tenantid);
@@ -288,7 +289,9 @@ router.delete("/delete/:tenantid", jwt, adminAccess, async (ctx) => {
     ctx.throw(404, "No tenant found");
   }
   try {
-    const deletedbills = await Bill.deleteMany({ tenant: tenantid });
+    await Bill.deleteMany({ tenant: tenantid });
+
+    //change appartment statut
     const appartid = await Contract.find({ tenant: tenantid }).select({
       appartmentid: 1,
       _id: 0,
@@ -301,26 +304,30 @@ router.delete("/delete/:tenantid", jwt, adminAccess, async (ctx) => {
         { new: true }
       );
     }
-    const buildingid = await Contract.find({ tenant: tenantid }).select({
-      buildingid: 1,
-      _id: 0,
-    });
 
-    for (i = 0; i < buildingid.length; i++) {
-      await Building.findByIdAndUpdate(buildingid[i].buildingid, {
-        $inc: { counter: -1 },
-      });
+    //decrement building counter
+    for (i = 0; i < appartid.length; i++) {
+      if (appartid[i].appartmentid) {
+        buildingid.push(
+          await Appart.findById(appartid[i].appartmentid).select({
+            building: 1,
+            _id: 0,
+          })
+        );
+      }
     }
 
-    const deletedcontract = await Contract.deleteMany({ tenant: tenantid });
-    const deletedtenant = await Tenant.findByIdAndDelete(tenantid);
-    ctx.body = [
-      deletedtenant,
-      appartid,
-      buildingid,
-      deletedbills,
-      deletedcontract,
-    ];
+    for (i = 0; i < buildingid.length; i++) {
+      if (buildingid[i].building) {
+        await Building.findByIdAndUpdate(buildingid[i].building, {
+          $inc: { counter: -1 },
+        });
+      }
+    }
+
+    await Contract.deleteMany({ tenant: tenantid });
+    await Tenant.findByIdAndDelete(tenantid);
+    ctx.body = "ok";
   } catch (err) {
     ctx.throw(500, err);
   }

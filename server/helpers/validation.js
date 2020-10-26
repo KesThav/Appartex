@@ -16,16 +16,16 @@ const loginSchema = Joi.object({
 });
 
 const buildingSchema = Joi.object({
-  numberofAppart: Joi.number(),
   adress: Joi.string().required(),
-  postalcode: Joi.number().required(),
+  postalcode: Joi.number().min(1000).max(9999).required(),
   city: Joi.string().required(),
-  counter: Joi.number(),
 });
 
 const appartSchema = Joi.object({
   size: Joi.number().required(),
   adress: Joi.string(),
+  postalcode: Joi.number().min(1000).max(9999),
+  city: Joi.string(),
   building: Joi.objectId(),
   picture: [Joi.string()],
   status: Joi.string(),
@@ -35,8 +35,7 @@ const contractSchema = Joi.object({
   charge: Joi.number().required(),
   rent: Joi.number().required(),
   tenant: Joi.objectId().required(),
-  appartmentid: Joi.objectId(),
-  buildingid: Joi.objectId(),
+  appartmentid: Joi.objectId().required(),
   other: Joi.string(),
   status: Joi.string(),
 });
