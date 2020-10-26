@@ -50,6 +50,8 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [tenant, setTenant] = useState("");
   const [building, setBuilding] = useState("");
+  const [appart, setAppart] = useState("");
+  const [contract, setContract] = useState("");
 
   //get data here and give it to children via Context API
   const getTenants = async () => {
@@ -76,6 +78,30 @@ const App = () => {
     }
   };
 
+  const getApparts = async () => {
+    setLoading(true);
+    try {
+      const res = await authAxios.get("/appartments");
+      setAppart(res.data);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+    }
+  };
+
+  const getContracts = async () => {
+    setLoading(true);
+    try {
+      const res = await authAxios.get("/contracts");
+      setContract(res.data);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+    }
+  };
+
   return (
     <Fragment>
       <MuiThemeProvider theme={theme}>
@@ -91,7 +117,13 @@ const App = () => {
             getTenants,
             building,
             setBuilding,
-            getBuildings
+            getBuildings,
+            appart,
+            setAppart,
+            getApparts,
+            contract,
+            setContract,
+            getContracts,
           }}
         >
           <Router>

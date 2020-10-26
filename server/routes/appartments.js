@@ -216,33 +216,61 @@ router.put(
       building: 1,
       _id: 0,
     });
-    if (!checkifbuilding.building && ctx.request.body.building) {
-      ctx.throw(
-        400,
-        "Appartment can't be add to building, delete appartment and add it to building during creation"
-      );
-    }
-    if (checkifbuilding.building && !ctx.request.body.building) {
-      ctx.throw(
-        400,
-        "Appartment can't be remove from building, delete appartment and create a new one"
-      );
-    }
 
     const { size, adress, building, postalcode, city } = ctx.request.body;
 
     const update = { size, building, adress, postalcode, city };
     try {
-      const updatedappart = await Appart.findByIdAndUpdate(appartid, update, {
+      //if there's not building and we add one
+      if (!checkifbuilding.building && building) {
+        if (appart.status == "Libre") {
+          await Building.findByIdAndUpdate(building, {
+            $inc: { numberofAppart: 1 },
+          });
+        }
+        if (appart.status == "Occupé") {
+          await Building.findByIdAndUpdate(building, {
+            $inc: { numberofAppart: 1, counter: 1 },
+          });
+        }
+      }
+
+      //if there's a building but we remove it
+      if (checkifbuilding.building && !building) {
+        if (appart.status == "Libre") {
+          await Building.findByIdAndUpdate(checkifbuilding.building, {
+            $inc: { numberofAppart: -1 },
+          });
+        }
+        if (appart.status == "Occupé") {
+          await Building.findByIdAndUpdate(checkifbuilding.building, {
+            $inc: { numberofAppart: -1, counter: -1 },
+          });
+        }
+      }
+
+      await Appart.findByIdAndUpdate(appartid, update, {
         new: true,
       });
+
+      //changing building id
       if (checkifbuilding.building !== building) {
-        await Building.findByIdAndUpdate(checkifbuilding.building, {
-          $inc: { numberofAppart: -1 },
-        });
-        await Building.findByIdAndUpdate(building, {
-          $inc: { numberofAppart: 1 },
-        });
+        if (appart.status == "Libre") {
+          await Building.findByIdAndUpdate(checkifbuilding.building, {
+            $inc: { numberofAppart: -1 },
+          });
+          await Building.findByIdAndUpdate(building, {
+            $inc: { numberofAppart: 1 },
+          });
+        }
+        if (appart.status == "Occupé") {
+          await Building.findByIdAndUpdate(checkifbuilding.building, {
+            $inc: { numberofAppart: -1, counter: -1 },
+          });
+          await Building.findByIdAndUpdate(building, {
+            $inc: { numberofAppart: 1, counter: 1 },
+          });
+        }
       }
       ctx.body = updatedappart;
     } catch (err) {

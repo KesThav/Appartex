@@ -52,15 +52,23 @@ const AdminDashboard = () => {
     building,
     setBuilding,
     getBuildings,
+    appart,
+    setAppart,
+    getApparts,
+    contract,
+    setContract,
+    getContracts,
   } = useContext(UserContext);
 
   useEffect(() => {
     getTenants();
     getBuildings();
+    getApparts();
+    getContracts();
   }, []);
 
-  const contract = ["Nom", "Prénom", "Date d'entrée", "Statut", "Email"];
-  
+  const contractHeader = ["Nom", "Prénom", "Date d'entrée", "Statut", "Email"];
+
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
@@ -91,10 +99,10 @@ const AdminDashboard = () => {
         </Grid>
 
         <Grid item lg={2} md={12} sm={12} xs={12}>
-          {tenant && (
+          {appart && (
             <Badges
               icon={<HomeIcon className={classes.icons} />}
-              value={37}
+              value={appart.length}
               style={{ background: "#007bb2" }}
               name={"Appartements"}
             />
@@ -102,10 +110,10 @@ const AdminDashboard = () => {
         </Grid>
 
         <Grid item lg={2} md={12} sm={12} xs={12}>
-          {tenant && (
+          {contract && (
             <Badges
               icon={<FolderIcon className={classes.icons} />}
-              value={150}
+              value={contract.length}
               style={{ background: "#e91e63" }}
               name={"Contrats"}
             />
@@ -139,7 +147,7 @@ const AdminDashboard = () => {
               data={tenant}
               title={"Dernières factures"}
               link={"/add"}
-              header={contract}
+              header={contractHeader}
             />
           )}
         </Grid>
@@ -150,7 +158,7 @@ const AdminDashboard = () => {
               data={tenant}
               title={"Derniers Contrats"}
               link={"/link"}
-              header={contract}
+              header={contractHeader}
             />
           )}
         </Grid>

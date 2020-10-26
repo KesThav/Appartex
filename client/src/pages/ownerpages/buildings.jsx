@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
   table: {
     maxWidth: "100%",
     height: "60vh",
-    overflowY: "scroll",
   },
   header: {
     backgroundColor: "#fff",
@@ -237,7 +236,7 @@ const Building = () => {
             Cette action entrainera : <br />
             <List>
               <ListItem>
-                la suppression de tous les locataires habitant dans l'immeuble
+                la suppression de tous les appartements liés dans l'immeuble
               </ListItem>
               <ListItem>
                 le suppression de tous les contrats liés à l'immeuble

@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
   table: {
     maxWidth: "100%",
     height: "60vh",
-    overflowY: "scroll",
   },
   header: {
     backgroundColor: "#fff",

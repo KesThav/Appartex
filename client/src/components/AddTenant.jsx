@@ -53,7 +53,10 @@ const AddTenant = () => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (!name || !lastname || !email || !password || !confirm || !dateofbirth) {
+    if (!dateofbirth) {
+      setDate(moment().format("YYYY-MM-DD"));
+    }
+    if (!name || !lastname || !email || !password || !confirm) {
       setError("Complétez tous les champs");
     } else if (password !== confirm) {
       setError("Les mot de passes ne correspondent pas");
@@ -188,9 +191,11 @@ const AddTenant = () => {
             <TextField
               id="date"
               type="date"
-              value={moment().format("YYYY-MM-DD")}
+              defaultValue={moment().format("YYYY-MM-DD")}
               placeholder="Date de naissance"
-              onChange={(e) => setDate(e.target.value)}
+              onChange={(e) => {
+                setDate(moment(e.target.value).format("YYYY-MM-DD"));
+              }}
               className={classes.form}
               InputLabelProps={{
                 startAdornment: (
