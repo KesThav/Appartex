@@ -42,10 +42,15 @@ const contractSchema = Joi.object({
 
 const billSchema = Joi.object({
   tenant: Joi.objectId().required(),
+  reference: Joi.string().required(),
   endDate: Joi.date().required(),
   amount: Joi.number().required(),
   reason: Joi.string().required(),
-  status: Joi.string(),
+  status: Joi.objectId().required(),
+});
+
+const statusSchema = Joi.object({
+  name: Joi.string().required(),
 });
 
 module.exports = {
@@ -55,4 +60,5 @@ module.exports = {
   appartSchema,
   contractSchema,
   billSchema,
+  statusSchema,
 };

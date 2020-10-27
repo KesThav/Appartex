@@ -253,6 +253,61 @@ router.put(
 
 /**
  *  @swagger
+ * /contracts/archive/{contract_id}:
+ *  put :
+ *    summary : Archive a contract
+ *    operationId : archivecontract
+ *    tags :
+ *        - contract
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: contract_id
+ *       in: path
+ *       required: true
+ *       description: the id of the contract
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Contract not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.put("/archive/:contractid", jwt, adminAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.contractid);
+  if (!validate) return ctx.throw(404, "contract not found");
+  const contractid = new ObjectId(ctx.params.contractid);
+  const contract = await Contract.findById(contractid);
+  if (!contract) return ctx.throw(404, "contract not found");
+
+  console.log(contract);
+  try {
+    await Appart.findByIdAndUpdate(contract.appartmentid, { status: "Libre" });
+
+    const buildingid = await Appart.findById(contract.appartmentid).select({
+      building: 1,
+      _id: 0,
+    });
+
+    await Building.findByIdAndUpdate(buildingid.building, {
+      $inc: { counter: -1 },
+    });
+
+    await Contract.findByIdAndUpdate(contractid, { status: "Archivé" });
+
+    ctx.body = "ok";
+  } catch (err) {
+    ctx.throw(err);
+  }
+});
+
+/**
+ *  @swagger
  * /contracts/delete/{contract_id}:
  *  delete :
  *    summary : Delete a contract

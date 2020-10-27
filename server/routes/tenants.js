@@ -498,4 +498,52 @@ router.get("/contracts/:tenantid", jwt, filterAccess, async (ctx) => {
   }
 });
 
+/**
+ *  @swagger
+ * /tenants/bills/{tenant_id}:
+ *  get :
+ *    summary : Return tenant bills
+ *    operationId : gettenantbill
+ *    tags :
+ *        - tenant
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: tenant_id
+ *       in: path
+ *       required: true
+ *       description: the id of the tenant
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Bill'
+ *      '403':
+ *         description: Forbidden
+ *      '404':
+ *         description: No bill found
+ *      '500':
+ *         description: Server error
+ *
+ */
+
+router.get("/bills/:tenantid", jwt, filterAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.tenantid);
+  if (!validate) return ctx.throw(404, "no bill found");
+  try {
+    let tenantid = new ObjectId(ctx.params.tenantid);
+    const bills = await Bill.find({ tenant: tenantid }).populate("status");
+
+    if (!bills) {
+      ctx.throw(404, "no contract found");
+    } else {
+      ctx.body = bills;
+    }
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
 module.exports = router;

@@ -11,6 +11,10 @@ const billSchema = new Mongoose.Schema(
       type: Date,
       required: true,
     },
+    reference: {
+      type: String,
+      required: true,
+    },
     amount: {
       type: Number,
       required: true,
@@ -20,8 +24,9 @@ const billSchema = new Mongoose.Schema(
       required: true,
     },
     status: {
-      type: String,
-      default: "A venir",
+      type: Mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Status",
     },
     createdBy: {
       type: Mongoose.Schema.Types.ObjectId,

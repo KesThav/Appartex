@@ -6,8 +6,10 @@ const appartmentRouter = require("./appartments");
 const billRouter = require("./bills");
 const contractRouter = require("./contracts");
 const messageRouter = require("./messages");
-const taskRoute = require("./tasks");
-const repairRoute = require("./repairs");
+const taskRouter = require("./tasks");
+const repairRouter = require("./repairs");
+const statusRouter = require("./status");
+const billstatusRouter = require("./billstatus");
 
 const router = combineRouters(
   authRouter,
@@ -17,8 +19,10 @@ const router = combineRouters(
   billRouter,
   contractRouter,
   messageRouter,
-  taskRoute,
-  repairRoute
+  taskRouter,
+  repairRouter,
+  statusRouter,
+  billstatusRouter
 );
 
 module.exports = router;

@@ -101,7 +101,6 @@ router.get("/", jwt, adminAccess, async (ctx) => {
 
 router.get("/:buildingid", jwt, adminAccess, async (ctx) => {
   let validate = ObjectId.isValid(ctx.params.buildingid);
-  console.log(ctx.params.buildingid);
   if (!validate) return ctx.throw(404, "building not found");
   try {
     let buildingid = new ObjectId(ctx.params.buildingid);
