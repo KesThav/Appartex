@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
+  MenuItem,
 } from "@material-ui/core";
 
 import Alert from "@material-ui/lab/Alert";
@@ -29,40 +30,53 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddBuilding = () => {
+const AddAppart = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const {
-    loading,
+    building,
     setLoading,
     authAxios,
-    building,
-    setBuilding,
     getBuildings,
+    appart,
+    setAppart,
+    getApparts,
   } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [adress, setAdress] = useState("");
-  const [postalcode, setPostalcode] = useState("");
-  const [city, setCity] = useState("");
+  const [adress, setAdress] = useState(null);
+  const [postalcode, setPostalcode] = useState(null);
+  const [city, setCity] = useState(null);
+  const [size, setSize] = useState("");
+  const [build, setBuild] = useState(null);
 
   const submit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (!adress || !postalcode || !city) {
-      setError("Complétez tous les champs");
+    if ((!adress || !postalcode || !city) && !build) {
+      setError(
+        "L'adresse et l'immeuble ne peuvent pas être vide en même temps"
+      );
+    } else if ((adress || postalcode || city) && build) {
+      setError(
+        "L'adresse et l'immeuble ne peuvent pas être rempli en même temps"
+      );
+    } else if (!size) {
+      setError("La taille ne peut pas être vide");
     } else {
       setLoading(true);
       const data = {
         adress,
         postalcode,
         city,
+        size,
+        building: build,
       };
       try {
-        await authAxios.post("/buildings/add", data);
+        await authAxios.post("/appartments/add", data);
         setLoading(false);
-        setSuccess("Immeuble créé avec succès");
+        setSuccess("Appartement créé avec succès");
       } catch (err) {
         setLoading(false);
         setError(err.response.data);
@@ -77,11 +91,14 @@ const AddBuilding = () => {
     setPostalcode("");
     setCity("");
     setAdress("");
+    setBuild("");
+    setSize("");
   };
 
   useEffect(() => {
     getBuildings();
-  }, [building]);
+    getApparts();
+  }, [appart]);
 
   return (
     <div>
@@ -92,7 +109,7 @@ const AddBuilding = () => {
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>{"Créer un immeuble"}</DialogTitle>
+        <DialogTitle>{"Créer un Appartment"}</DialogTitle>
         <DialogContent>
           {err && <Alert severity="error">{err}</Alert>}
           {success && <Alert severity="success">{success}</Alert>}
@@ -124,6 +141,31 @@ const AddBuilding = () => {
               placeholder="Ville"
               className={classes.form}
             />
+            <TextField
+              id="size"
+              type="number"
+              variant="outlined"
+              onChange={(e) => setSize(e.target.value)}
+              fullWidth
+              placeholder="taille"
+              className={classes.form}
+            />
+            <TextField
+              variant="outlined"
+              id="building"
+              select
+              label="Select"
+              onChange={(e) => setBuild(e.target.value)}
+              helperText="Selectionner un immeuble"
+              fullWidth
+            >
+              {building &&
+                building.map((option) => (
+                  <MenuItem key={option._id} value={option._id}>
+                    {option.adress} {option.postalcode} {option.city}
+                  </MenuItem>
+                ))}
+            </TextField>
             <Box className={classes.box2}>
               <Button
                 className={classes.button}
@@ -144,4 +186,4 @@ const AddBuilding = () => {
   );
 };
 
-export default AddBuilding;
+export default AddAppart;

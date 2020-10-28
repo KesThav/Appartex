@@ -8,6 +8,7 @@ import BusinessIcon from "@material-ui/icons/Business";
 import HomeIcon from "@material-ui/icons/Home";
 import FolderIcon from "@material-ui/icons/Folder";
 import PeopleIcon from "@material-ui/icons/People";
+import HistoryIcon from "@material-ui/icons/History";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,6 +59,12 @@ const AdminDashboard = () => {
     contract,
     setContract,
     getContracts,
+    bill,
+    setBill,
+    getBills,
+    billhistory,
+    setBillhistory,
+    getBillHistories,
   } = useContext(UserContext);
 
   useEffect(() => {
@@ -65,6 +72,8 @@ const AdminDashboard = () => {
     getBuildings();
     getApparts();
     getContracts();
+    getBills();
+    getBillHistories();
   }, []);
 
   const contractHeader = ["Nom", "Prénom", "Date d'entrée", "Statut", "Email"];
@@ -121,22 +130,22 @@ const AdminDashboard = () => {
         </Grid>
 
         <Grid item lg={2} md={12} sm={12} xs={12}>
-          {tenant && (
+          {bill && (
             <Badges
               icon={<ReceiptIcon className={classes.icons} />}
-              value={1752}
+              value={bill.length}
               style={{ background: "#00a152" }}
               name={"Factures"}
             />
           )}
         </Grid>
         <Grid item lg={2} md={12} sm={12} xs={12}>
-          {tenant && (
+          {billhistory && (
             <Badges
-              icon={<PeopleIcon className={classes.icons} />}
-              value={tenant.length}
-              style={{ background: "#ff6f00" }}
-              name={"Locataires"}
+              icon={<HistoryIcon className={classes.icons} />}
+              value={billhistory.length}
+              style={{ background: "#482880" }}
+              name={"Historiques des factures"}
             />
           )}
         </Grid>

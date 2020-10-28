@@ -113,6 +113,7 @@ const AddTenant = () => {
           {success && <Alert severity="success">{success}</Alert>}
           <form onSubmit={submit}>
             <TextField
+              variant="outlined"
               id="name"
               type="text"
               onChange={(e) => setName(e.target.value)}
@@ -128,6 +129,7 @@ const AddTenant = () => {
               className={classes.form}
             />
             <TextField
+              variant="outlined"
               id="lastname"
               type="text"
               onChange={(e) => setLastname(e.target.value)}
@@ -143,6 +145,7 @@ const AddTenant = () => {
               className={classes.form}
             />
             <TextField
+              variant="outlined"
               id="email"
               type="email"
               onChange={(e) => setEmail(e.target.value)}
@@ -158,6 +161,7 @@ const AddTenant = () => {
               className={classes.form}
             />
             <TextField
+              variant="outlined"
               id="password"
               type="password"
               onChange={(e) => setPassword(e.target.value)}
@@ -173,6 +177,7 @@ const AddTenant = () => {
               className={classes.form}
             />
             <TextField
+              variant="outlined"
               id="confirm"
               type="password"
               onChange={(e) => setConfirm(e.target.value)}
@@ -189,6 +194,7 @@ const AddTenant = () => {
               className={classes.form}
             />
             <TextField
+              variant="outlined"
               id="date"
               type="date"
               defaultValue={moment().format("YYYY-MM-DD")}

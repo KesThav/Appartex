@@ -18,6 +18,9 @@ import {
   Chip,
   List,
   ListItem,
+  Paper,
+  Typography,
+  Divider,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -26,7 +29,6 @@ import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
-import green from "@material-ui/core/colors/green";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -50,6 +52,14 @@ const useStyles = makeStyles((theme) => ({
   form: {
     marginBottom: 17,
   },
+  box3: {
+    marginBottom: 13,
+    paddingRight: 120,
+    width: "100%",
+  },
+  divider: {
+    marginBottom: 20,
+  },
 }));
 const Tenant = () => {
   const {
@@ -67,11 +77,10 @@ const Tenant = () => {
   const [name, setName] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
   const [dateofbirth, setDate] = useState();
   const [editing, setEditing] = useState(false);
   const [status, setStatus] = useState("");
+  const [search, setSearch] = useState("");
 
   const classes = useStyles();
   useEffect(() => {
@@ -119,29 +128,81 @@ const Tenant = () => {
     { value: "Inactif", label: "Inactif" },
   ];
 
+  const dynamicSearch = () => {
+    if (tenant)
+      return tenant.filter(
+        (name) =>
+          name._id
+            .toString()
+            .toLowerCase()
+            .includes(search.toString().toLowerCase()) ||
+          name.name.toLowerCase().includes(search.toLowerCase()) ||
+          name.lastname.toLowerCase().includes(search.toLowerCase()) ||
+          name.email.toLowerCase().includes(search.toLowerCase()) ||
+          name.status.toLowerCase().includes(search.toLowerCase())
+      );
+  };
+
   return (
     <div>
-      <AddTenant />
+      <Typography variant="h4" color="primary">
+        Les locataires
+      </Typography>
+      <Divider className={classes.divider} />
       {err && <Alert severity="error">{err}</Alert>}
       {success && <Alert severity="success">{success}</Alert>}
-      <TableContainer className={classes.table}>
+      <Box className={classes.box3}>
+        <TextField
+          variant="outlined"
+          id="search"
+          type="text"
+          value={search}
+          placeholder="Filter"
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+          style={{ width: "40%" }}
+        />
+        {tenant && dynamicSearch().length}
+      </Box>
+      <TableContainer className={classes.table} component={Paper} square>
         <Table stickyHeader>
           <TableHead style={{ background: "#fff" }}>
             <TableRow>
-              <TableCell>Nom</TableCell>
-              <TableCell>Prénom</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Statut</TableCell>
-              <TableCell>Né le</TableCell>
-              <TableCell>Créé le</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>
+                <strong>Locataire n°</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Nom</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Prénom</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Email</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Statut</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Né le</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Créé le</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Actions</strong>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {tenant &&
-              tenant.map((tenant) => (
+              dynamicSearch().map((tenant) => (
                 <TableRow key={tenant._id}>
                   <TableCell component="th" scope="row">
+                    {tenant._id}
+                  </TableCell>
+                  <TableCell>
                     {editing && data === tenant._id ? (
                       <TextField
                         id={tenant.lastname}
@@ -196,16 +257,14 @@ const Tenant = () => {
                       </TextField>
                     ) : (
                       <div>
-                        {tenant.status === "Actif" ? (
+                        {tenant.status == "Actif" ? (
                           <Chip
-                            color="primary"
-                            size="small"
+                            style={{ background: "#52b202", color: "#fff" }}
                             label={tenant.status}
                           />
                         ) : (
                           <Chip
-                            color="secondary"
-                            size="small"
+                            style={{ background: "red", color: "#fff" }}
                             label={tenant.status}
                           />
                         )}
@@ -269,6 +328,9 @@ const Tenant = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <div style={{ marginTop: "13px" }}>
+        <AddTenant />
+      </div>
       <Dialog
         open={deleteShow}
         onClose={() => setDeleteShow(!deleteShow)}

@@ -16,6 +16,10 @@ import {
   DialogTitle,
   List,
   ListItem,
+  Paper,
+  Avatar,
+  Typography,
+  Divider,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -47,6 +51,19 @@ const useStyles = makeStyles((theme) => ({
   form: {
     marginBottom: 17,
   },
+  box3: {
+    marginBottom: 13,
+    paddingRight: 120,
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+  },
+  avatar: {
+    background: [theme.palette.secondary.main],
+  },
+  divider: {
+    marginBottom: 20,
+  },
 }));
 const Building = () => {
   const {
@@ -65,6 +82,7 @@ const Building = () => {
   const [postalcode, setPostalcode] = useState("");
   const [city, setCity] = useState("");
   const [editing, setEditing] = useState(false);
+  const [search, setSearch] = useState("");
 
   const classes = useStyles();
   useEffect(() => {
@@ -106,34 +124,83 @@ const Building = () => {
     }
   };
 
-  const statut = [
-    { value: "Actif", label: "Actif" },
-    { value: "Inactif", label: "Inactif" },
-  ];
+  const dynamicSearch = () => {
+    if (building)
+      return building.filter(
+        (name) =>
+          name._id
+            .toString()
+            .toLowerCase()
+            .includes(search.toString().toLowerCase()) ||
+          name.postalcode.toString().includes(search.toString()) ||
+          name.adress.toLowerCase().includes(search.toLowerCase()) ||
+          name.city.toLowerCase().includes(search.toLowerCase())
+      );
+  };
 
   return (
     <div>
-      <AddBuilding />
+      <Typography variant="h4" color="primary">
+        Les immeubles
+      </Typography>
+      <Divider className={classes.divider} />
       {err && <Alert severity="error">{err}</Alert>}
       {success && <Alert severity="success">{success}</Alert>}
-      <TableContainer className={classes.table}>
+
+      <Box className={classes.box3}>
+        <TextField
+          variant="outlined"
+          id="search"
+          type="text"
+          value={search}
+          placeholder="Filter"
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+          style={{ width: "40%" }}
+        />
+        <Avatar className={classes.avatar}>
+          {building && dynamicSearch().length}
+        </Avatar>
+      </Box>
+      <TableContainer className={classes.table} component={Paper} square>
         <Table stickyHeader>
           <TableHead style={{ background: "#fff" }}>
             <TableRow>
-              <TableCell>Adresse</TableCell>
-              <TableCell>Code postale</TableCell>
-              <TableCell>Ville</TableCell>
-              <TableCell>Nombre d'appartements</TableCell>
-              <TableCell>Nombre d'appartements occupés</TableCell>
-              <TableCell>Créé le </TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>
+                <strong>Immeuble n°</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Adresse</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Code postale</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Ville</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Nombre d'appartements</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Nombre d'appartements occupés</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Créé le </strong>
+              </TableCell>
+              <TableCell>
+                <strong>Actions</strong>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {building &&
-              building.map((building) => (
+              dynamicSearch().map((building) => (
                 <TableRow key={building._id}>
                   <TableCell component="th" scope="row">
+                    {building._id}
+                  </TableCell>
+                  <TableCell>
                     {editing && data === building._id ? (
                       <TextField
                         id={building.adress}
@@ -219,6 +286,10 @@ const Building = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <div style={{ marginTop: "13px" }}>
+        <AddBuilding />
+      </div>
+
       <Dialog
         open={deleteShow}
         onClose={() => setDeleteShow(!deleteShow)}
