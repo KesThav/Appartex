@@ -17,7 +17,7 @@ import {
   List,
   ListItem,
   Paper,
-  Avatar,
+  Chip,
   Typography,
   Divider,
 } from "@material-ui/core";
@@ -75,7 +75,7 @@ const Appart = () => {
   const [success, setSuccess] = useState("");
   const [size, setSize] = useState(null);
   const [adress, setAdress] = useState(null);
-  const [postalcode, setPostalcode] = useState(null);
+  const [postalcode, setPostalcode] = useState(-1);
   const [city, setCity] = useState(null);
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
@@ -123,25 +123,39 @@ const Appart = () => {
   };
 
   const dynamicSearch = () => {
-    if (appart && !appart.building) {
-      return appart.filter(
-        (name) =>
-          name._id
-            .toString()
-            .toLowerCase()
-            .includes(search.toString().toLowerCase()) ||
-          name.adress.toLowerCase().includes(search.toLowerCase()) ||
-          name.city.toLowerCase().includes(search.toLowerCase())
-      );
-    } else {
-      return appart.filter(
-        (name) =>
-          name._id
-            .toString()
-            .toLowerCase()
-            .includes(search.toString().toLowerCase()) ||
-          name.building.adress.toLowerCase().includes(search.toLowerCase()) ||
-          name.building.city.toLowerCase().includes(search.toLowerCase())
+    if (appart) {
+      return appart.filter((name) =>
+        !name.building
+          ? name._id
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.postalcode
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.adress.toLowerCase().includes(search.toLowerCase()) ||
+            name.city.toLowerCase().includes(search.toLowerCase()) ||
+            name.size
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.status.toLowerCase().includes(search.toString().toLowerCase())
+          : name._id
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.building.postalcode
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.building.adress.toLowerCase().includes(search.toLowerCase()) ||
+            name.building.city.toLowerCase().includes(search.toLowerCase()) ||
+            name.size
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.status.toLowerCase().includes(search.toString().toLowerCase())
       );
     }
   };
@@ -171,200 +185,221 @@ const Appart = () => {
         <Table stickyHeader>
           <TableHead style={{ background: "#fff" }}>
             <TableRow>
-              <TableCell>Immeuble ?</TableCell>
-              <TableCell>
-                <strong>Appartment n°</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Adresse</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Code postale</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Ville</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Taille</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Statut</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Créé le </strong>
-              </TableCell>
-              <TableCell>
-                <strong>Actions</strong>
-              </TableCell>
+              {[
+                "Immeuble ?",
+                "Appartment n°",
+                "Adresse",
+                "Code postale",
+                "Ville",
+                "Taille",
+                "Statut",
+                "Créé le",
+                "Actions",
+              ].map((title, index) => (
+                <TableCell key={index}>
+                  <strong>{title}</strong>
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {appart &&
-              dynamicSearch().map((appart) => {
-                return !appart.building ? (
-                  <TableRow key={appart._id}>
-                    <TableCell component="th" scope="row">
-                      Non
-                    </TableCell>
-                    <TableCell>{appart._id}</TableCell>
-                    <TableCell>
-                      {editing && data === appart._id ? (
-                        <TextField
-                          id={appart.adress}
-                          type="text"
-                          value={adress}
-                          onChange={(e) => setAdress(e.target.value)}
-                          placeholder="Adresse"
-                        />
-                      ) : (
-                        appart.adress
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === appart._id ? (
-                        <TextField
-                          id={appart.postalcode}
-                          type="number"
-                          value={postalcode}
-                          onChange={(e) => setPostalcode(e.target.value)}
-                          placeholder="Code postale"
-                        />
-                      ) : (
-                        appart.postalcode
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === appart._id ? (
-                        <TextField
-                          id={appart.city}
-                          type="text"
-                          value={city}
-                          onChange={(e) => setCity(e.target.value)}
-                          placeholder="Ville"
-                        />
-                      ) : (
-                        appart.city
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === appart._id ? (
-                        <TextField
-                          id={appart.size}
-                          type="number"
-                          value={size}
-                          onChange={(e) => setSize(e.target.value)}
-                          placeholder="Ville"
-                        />
-                      ) : (
-                        appart.size
-                      )}
-                    </TableCell>
-                    <TableCell>{appart.status}</TableCell>
-                    <TableCell>
-                      {moment(appart.createdAt).format("LL")}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === appart._id ? (
-                        <Fragment>
-                          <Button>
-                            <CheckIcon onClick={submit} />
-                          </Button>
-                          <Button>
-                            <CloseIcon onClick={() => setEditing(!editing)} />
-                          </Button>
-                        </Fragment>
-                      ) : (
-                        <Fragment>
-                          <Button>
-                            <EditIcon
-                              onClick={() => {
-                                setSize(appart.size);
-                                setAdress(appart.adress);
-                                setPostalcode(appart.postalcode);
-                                setCity(appart.city);
-                                setData(appart._id);
-                                setError("");
-                                setSuccess("");
-                                setEditing(!editing);
-                              }}
+            <Fragment>
+              {appart &&
+                dynamicSearch().map((appart) => {
+                  return !appart.building ? (
+                    <TableRow key={appart._id}>
+                      <TableCell component="th" scope="row">
+                        Non
+                      </TableCell>
+                      <TableCell>{appart._id}</TableCell>
+                      <TableCell>
+                        {editing && data === appart._id ? (
+                          <TextField
+                            id={appart.adress}
+                            type="text"
+                            value={adress}
+                            onChange={(e) => setAdress(e.target.value)}
+                            placeholder="Adresse"
+                          />
+                        ) : (
+                          appart.adress
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editing && data === appart._id ? (
+                          <TextField
+                            id={appart.postalcode}
+                            type="number"
+                            value={postalcode}
+                            onChange={(e) => setPostalcode(e.target.value)}
+                            placeholder="Code postale"
+                          />
+                        ) : (
+                          appart.postalcode
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editing && data === appart._id ? (
+                          <TextField
+                            id={appart.city}
+                            type="text"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
+                            placeholder="Ville"
+                          />
+                        ) : (
+                          appart.city
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editing && data === appart._id ? (
+                          <TextField
+                            id={appart.size}
+                            type="number"
+                            value={size}
+                            onChange={(e) => setSize(e.target.value)}
+                            placeholder="Ville"
+                          />
+                        ) : (
+                          appart.size
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div>
+                          {appart.status == "Libre" ? (
+                            <Chip
+                              style={{ background: "#52b202", color: "#fff" }}
+                              label={appart.status}
                             />
-                          </Button>
-                          <Button>
-                            <DeleteIcon
-                              onClick={() => {
-                                setData(appart);
-                                setDeleteShow(!deleteShow);
-                              }}
+                          ) : (
+                            <Chip
+                              style={{ background: "red", color: "#fff" }}
+                              label={appart.status}
                             />
-                          </Button>{" "}
-                        </Fragment>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  <TableRow key={appart._id}>
-                    <TableCell component="th" scope="row">
-                      Oui
-                    </TableCell>
-                    <TableCell>{appart._id}</TableCell>
-                    <TableCell>{appart.building.adress}</TableCell>
-                    <TableCell>{appart.building.postalcode}</TableCell>
-                    <TableCell>{appart.building.city}</TableCell>
-                    <TableCell>
-                      {editing && data === appart._id ? (
-                        <TextField
-                          id={appart.size}
-                          type="number"
-                          value={size}
-                          onChange={(e) => setSize(e.target.value)}
-                          placeholder="Ville"
-                        />
-                      ) : (
-                        appart.size
-                      )}
-                    </TableCell>
-                    <TableCell>{appart.status}</TableCell>
-                    <TableCell>
-                      {moment(appart.createdAt).format("LL")}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === appart._id ? (
-                        <Fragment>
-                          <Button>
-                            <CheckIcon onClick={submit} />
-                          </Button>
-                          <Button>
-                            <CloseIcon onClick={() => setEditing(!editing)} />
-                          </Button>
-                        </Fragment>
-                      ) : (
-                        <Fragment>
-                          <Button>
-                            <EditIcon
-                              onClick={() => {
-                                setSize(appart.size);
-                                setBuild(appart.building._id);
-                                setData(appart._id);
-                                setError("");
-                                setSuccess("");
-                                setEditing(!editing);
-                              }}
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {moment(appart.createdAt).format("LL")}
+                      </TableCell>
+                      <TableCell>
+                        {editing && data === appart._id ? (
+                          <Fragment>
+                            <Button>
+                              <CheckIcon onClick={submit} />
+                            </Button>
+                            <Button>
+                              <CloseIcon onClick={() => setEditing(!editing)} />
+                            </Button>
+                          </Fragment>
+                        ) : (
+                          <Fragment>
+                            <Button>
+                              <EditIcon
+                                onClick={() => {
+                                  setSize(appart.size);
+                                  setAdress(appart.adress);
+                                  setPostalcode(appart.postalcode);
+                                  setCity(appart.city);
+                                  setData(appart._id);
+                                  setError("");
+                                  setSuccess("");
+                                  setEditing(!editing);
+                                }}
+                              />
+                            </Button>
+                            <Button>
+                              <DeleteIcon
+                                onClick={() => {
+                                  setData(appart);
+                                  setDeleteShow(!deleteShow);
+                                }}
+                              />
+                            </Button>{" "}
+                          </Fragment>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    <TableRow key={appart._id}>
+                      <TableCell component="th" scope="row">
+                        Oui
+                      </TableCell>
+                      <TableCell>{appart._id}</TableCell>
+                      <TableCell>{appart.building.adress}</TableCell>
+                      <TableCell>{appart.building.postalcode}</TableCell>
+                      <TableCell>{appart.building.city}</TableCell>
+                      <TableCell>
+                        {editing && data === appart._id ? (
+                          <TextField
+                            id={appart.size}
+                            type="number"
+                            value={size}
+                            onChange={(e) => setSize(e.target.value)}
+                            placeholder="Ville"
+                          />
+                        ) : (
+                          appart.size
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div>
+                          {appart.status == "Libre" ? (
+                            <Chip
+                              style={{ background: "#52b202", color: "#fff" }}
+                              label={appart.status}
                             />
-                          </Button>
-                          <Button>
-                            <DeleteIcon
-                              onClick={() => {
-                                setData(appart);
-                                setDeleteShow(!deleteShow);
-                              }}
+                          ) : (
+                            <Chip
+                              style={{ background: "red", color: "#fff" }}
+                              label={appart.status}
                             />
-                          </Button>{" "}
-                        </Fragment>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                          )}
+                        </div>
+                      </TableCell>
+
+                      <TableCell>
+                        {moment(appart.createdAt).format("LL")}
+                      </TableCell>
+                      <TableCell>
+                        {editing && data === appart._id ? (
+                          <Fragment>
+                            <Button>
+                              <CheckIcon onClick={submit} />
+                            </Button>
+                            <Button>
+                              <CloseIcon onClick={() => setEditing(!editing)} />
+                            </Button>
+                          </Fragment>
+                        ) : (
+                          <Fragment>
+                            <Button>
+                              <EditIcon
+                                onClick={() => {
+                                  setSize(appart.size);
+                                  setBuild(appart.building._id);
+                                  setData(appart._id);
+                                  setError("");
+                                  setSuccess("");
+                                  setEditing(!editing);
+                                }}
+                              />
+                            </Button>
+                            <Button>
+                              <DeleteIcon
+                                onClick={() => {
+                                  setData(appart);
+                                  setDeleteShow(!deleteShow);
+                                }}
+                              />
+                            </Button>{" "}
+                          </Fragment>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+            </Fragment>
           </TableBody>
         </Table>
       </TableContainer>
@@ -381,19 +416,12 @@ const Appart = () => {
         <DialogContent>
           {" "}
           <DialogContent>
-            Êtez-vous sûr de vouloir supprimer l'immeuble se trouvant à <br />
-            <strong>
-              {data.adress} {data.postalcode} {data.city}
-            </strong>{" "}
-            ? <br />
+            Êtez-vous sûr de vouloir supprimer l'appartment
+            <br />
+            <strong>{data._id}</strong> ? <br />
             Cette action entrainera : <br />
             <List>
-              <ListItem>
-                la suppression de tous les appartements liés dans l'immeuble
-              </ListItem>
-              <ListItem>
-                le suppression de tous les contrats liés à l'immeuble
-              </ListItem>
+              <ListItem>le suppression du contract lié à l'appartment</ListItem>
             </List>
             Une fois validé, il n'est plus possible de revenir en arrière.
           </DialogContent>

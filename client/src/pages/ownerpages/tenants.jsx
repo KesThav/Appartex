@@ -163,168 +163,164 @@ const Tenant = () => {
           }}
           style={{ width: "40%" }}
         />
-        {tenant && dynamicSearch().length}
+        <Fragment>{tenant && dynamicSearch().length}</Fragment>
       </Box>
       <TableContainer className={classes.table} component={Paper} square>
         <Table stickyHeader>
           <TableHead style={{ background: "#fff" }}>
             <TableRow>
-              <TableCell>
-                <strong>Locataire n°</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Nom</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Prénom</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Email</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Statut</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Né le</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Créé le</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Actions</strong>
-              </TableCell>
+              <Fragment>
+                {[
+                  "Locataire n°",
+                  "Nom",
+                  "Prénom",
+                  "Email",
+                  "Statut",
+                  "Né le",
+                  "Créé le",
+                  "Actions",
+                ].map((title, index) => (
+                  <TableCell key={index}>
+                    <strong>{title}</strong>
+                  </TableCell>
+                ))}
+              </Fragment>
             </TableRow>
           </TableHead>
           <TableBody>
-            {tenant &&
-              dynamicSearch().map((tenant) => (
-                <TableRow key={tenant._id}>
-                  <TableCell component="th" scope="row">
-                    {tenant._id}
-                  </TableCell>
-                  <TableCell>
-                    {editing && data === tenant._id ? (
-                      <TextField
-                        id={tenant.lastname}
-                        type="text"
-                        value={lastname}
-                        onChange={(e) => setLastname(e.target.value)}
-                        placeholder="Nom"
-                      />
-                    ) : (
-                      tenant.lastname
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {editing && data === tenant._id ? (
-                      <TextField
-                        id={tenant.name}
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Prénom"
-                      />
-                    ) : (
-                      tenant.name
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {editing && data === tenant._id ? (
-                      <TextField
-                        id={tenant.email}
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Email"
-                      />
-                    ) : (
-                      tenant.email
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {editing && data === tenant._id ? (
-                      <TextField
-                        id={tenant.status}
-                        select
-                        value={status}
-                        onChange={(e) => setStatus(e.target.value)}
-                      >
-                        {statut.map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    ) : (
-                      <div>
-                        {tenant.status == "Actif" ? (
-                          <Chip
-                            style={{ background: "#52b202", color: "#fff" }}
-                            label={tenant.status}
-                          />
-                        ) : (
-                          <Chip
-                            style={{ background: "red", color: "#fff" }}
-                            label={tenant.status}
-                          />
-                        )}
-                      </div>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {editing && data === tenant._id ? (
-                      <TextField
-                        id={tenant.dateofbirth}
-                        type="date"
-                        value={moment(dateofbirth).format("YYYY-MM-DD")}
-                        onChange={(e) => setDate(e.target.value)}
-                        placeholder="Date de naissance"
-                      />
-                    ) : (
-                      moment(tenant.dateofbirth).format("LL")
-                    )}
-                  </TableCell>
-                  <TableCell>{moment(tenant.createdAt).format("LL")}</TableCell>
-                  <TableCell>
-                    {editing && data === tenant._id ? (
-                      <Fragment>
-                        <Button>
-                          <CheckIcon onClick={submit} />
-                        </Button>
-                        <Button>
-                          <CloseIcon onClick={() => setEditing(!editing)} />
-                        </Button>
-                      </Fragment>
-                    ) : (
-                      <Fragment>
-                        <Button>
-                          <EditIcon
-                            onClick={() => {
-                              setName(tenant.name);
-                              setLastname(tenant.lastname);
-                              setEmail(tenant.email);
-                              setDate(tenant.dateofbirth);
-                              setData(tenant._id);
-                              setStatus(tenant.status);
-                              setError("");
-                              setSuccess("");
-                              setEditing(!editing);
-                            }}
-                          />
-                        </Button>
-                        <Button>
-                          <DeleteIcon
-                            onClick={() => {
-                              setData(tenant);
-                              setDeleteShow(!deleteShow);
-                            }}
-                          />
-                        </Button>{" "}
-                      </Fragment>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
+            <Fragment>
+              {tenant &&
+                dynamicSearch().map((tenant) => (
+                  <TableRow key={tenant._id}>
+                    <TableCell component="th" scope="row">
+                      {tenant._id}
+                    </TableCell>
+                    <TableCell>
+                      {editing && data === tenant._id ? (
+                        <TextField
+                          id={tenant.lastname}
+                          type="text"
+                          value={lastname}
+                          onChange={(e) => setLastname(e.target.value)}
+                          placeholder="Nom"
+                        />
+                      ) : (
+                        tenant.lastname
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {editing && data === tenant._id ? (
+                        <TextField
+                          id={tenant.name}
+                          type="text"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          placeholder="Prénom"
+                        />
+                      ) : (
+                        tenant.name
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {editing && data === tenant._id ? (
+                        <TextField
+                          id={tenant.email}
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="Email"
+                        />
+                      ) : (
+                        tenant.email
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {editing && data === tenant._id ? (
+                        <TextField
+                          id={tenant.status}
+                          select
+                          value={status}
+                          onChange={(e) => setStatus(e.target.value)}
+                        >
+                          {statut.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      ) : (
+                        <div>
+                          {tenant.status == "Actif" ? (
+                            <Chip
+                              style={{ background: "#52b202", color: "#fff" }}
+                              label={tenant.status}
+                            />
+                          ) : (
+                            <Chip
+                              style={{ background: "red", color: "#fff" }}
+                              label={tenant.status}
+                            />
+                          )}
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {editing && data === tenant._id ? (
+                        <TextField
+                          id={tenant.dateofbirth}
+                          type="date"
+                          value={moment(dateofbirth).format("YYYY-MM-DD")}
+                          onChange={(e) => setDate(e.target.value)}
+                          placeholder="Date de naissance"
+                        />
+                      ) : (
+                        moment(tenant.dateofbirth).format("LL")
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {moment(tenant.createdAt).format("LL")}
+                    </TableCell>
+                    <TableCell>
+                      {editing && data === tenant._id ? (
+                        <Fragment>
+                          <Button>
+                            <CheckIcon onClick={submit} />
+                          </Button>
+                          <Button>
+                            <CloseIcon onClick={() => setEditing(!editing)} />
+                          </Button>
+                        </Fragment>
+                      ) : (
+                        <Fragment>
+                          <Button>
+                            <EditIcon
+                              onClick={() => {
+                                setName(tenant.name);
+                                setLastname(tenant.lastname);
+                                setEmail(tenant.email);
+                                setDate(tenant.dateofbirth);
+                                setData(tenant._id);
+                                setStatus(tenant.status);
+                                setError("");
+                                setSuccess("");
+                                setEditing(!editing);
+                              }}
+                            />
+                          </Button>
+                          <Button>
+                            <DeleteIcon
+                              onClick={() => {
+                                setData(tenant);
+                                setDeleteShow(!deleteShow);
+                              }}
+                            />
+                          </Button>{" "}
+                        </Fragment>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </Fragment>
           </TableBody>
         </Table>
       </TableContainer>

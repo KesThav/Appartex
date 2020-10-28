@@ -29,12 +29,11 @@ const MyTable = ({ data, title, link, header }) => {
     <div>
       <Typography variant="h6">{title}</Typography>
       <TableContainer component={Paper} square>
-        {" "}
-        <Table className={classes.table} aria-label="simple table">
+        <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              {header.map((header) => (
-                <TableCell>{header}</TableCell>
+              {header.map((header, index) => (
+                <TableCell key={index}>{header}</TableCell>
               ))}
             </TableRow>
           </TableHead>
@@ -42,20 +41,21 @@ const MyTable = ({ data, title, link, header }) => {
             {data.slice(0, 5).map((data) => (
               <TableRow key={data._id}>
                 <TableCell component="th" scope="row">
-                  {data.lastname}
+                  {data._id}
                 </TableCell>
-                <TableCell>{data.name}</TableCell>
                 <TableCell>{data.createdAt}</TableCell>
                 <TableCell>{data.status}</TableCell>
-                <TableCell>{data.email}</TableCell>
               </TableRow>
             ))}
           </TableBody>
-          <TableFooter style={{ textAlign: "center" }}>
+          <TableFooter
+            component={Link}
+            to={link}
+            className={classes.link}
+            style={{ textAlign: "center" }}
+          >
             <Typography variant="overline" display="block" gutterBottom>
-              <Link to={link} className={classes.link}>
-                Voir tous les {title.split(" ")[1]}
-              </Link>
+              Voir tous les {title.split(" ")[1]}
             </Typography>
           </TableFooter>
         </Table>

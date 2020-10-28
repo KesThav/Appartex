@@ -34,49 +34,42 @@ const AddAppart = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const {
-    building,
     setLoading,
     authAxios,
-    getBuildings,
     appart,
-    setAppart,
     getApparts,
+    tenant,
+    getTenants,
+    contract,
+    getContracts,
   } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [adress, setAdress] = useState(null);
-  const [postalcode, setPostalcode] = useState(null);
-  const [city, setCity] = useState(null);
-  const [size, setSize] = useState("");
-  const [build, setBuild] = useState(null);
+  const [charge, setCharge] = useState(null);
+  const [tenantid, setTenantid] = useState(null);
+  const [appartid, setAppartid] = useState(null);
+  const [rent, setRent] = useState("");
+  const [other, setOther] = useState(null);
 
   const submit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if ((!adress || !postalcode || !city) && !build) {
-      setError(
-        "L'adresse et l'immeuble ne peuvent pas être vide en même temps"
-      );
-    } else if ((adress || postalcode || city) && build) {
-      setError(
-        "L'adresse et l'immeuble ne peuvent pas être rempli en même temps"
-      );
-    } else if (!size) {
-      setError("La taille ne peut pas être vide");
+    if (!charge || !rent || !tenantid || !appartid) {
+      setError("Complétez tous les champs");
     } else {
       setLoading(true);
       const data = {
-        adress,
-        postalcode,
-        city,
-        size,
-        building: build,
+        charge,
+        rent,
+        other,
+        tenant: tenantid,
+        appartmentid: appartid,
       };
       try {
-        await authAxios.post("/appartments/add", data);
+        await authAxios.post("/contracts/add", data);
         setLoading(false);
-        setSuccess("Appartement créé avec succès");
+        setSuccess("Contrat créé avec succès");
       } catch (err) {
         setLoading(false);
         setError(err.response.data);
@@ -88,17 +81,18 @@ const AddAppart = () => {
     setOpen(!open);
     setError("");
     setSuccess("");
-    setPostalcode("");
-    setCity("");
-    setAdress("");
-    setBuild("");
-    setSize("");
+    setOther("");
+    setRent("");
+    setCharge("");
+    setTenantid("");
+    setAppartid("");
   };
 
   useEffect(() => {
-    getBuildings();
+    getTenants();
     getApparts();
-  }, [appart]);
+    getContracts();
+  }, []);
 
   return (
     <div>
@@ -109,64 +103,86 @@ const AddAppart = () => {
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>{"Créer un Appartment"}</DialogTitle>
+        <DialogTitle>{"Créer un Contrat"}</DialogTitle>
         <DialogContent>
           {err && <Alert severity="error">{err}</Alert>}
           {success && <Alert severity="success">{success}</Alert>}
           <form onSubmit={submit}>
             <TextField
-              id="adress"
-              type="text"
               variant="outlined"
-              onChange={(e) => setAdress(e.target.value)}
+              id="Tenant"
+              select
+              value={tenantid}
+              label="Locataire"
+              onChange={(e) => setTenantid(e.target.value)}
               fullWidth
-              placeholder="Adresse"
+              className={classes.form}
+            >
+              {tenant &&
+                tenant.map((option) => (
+                  <MenuItem key={option._id} value={option._id}>
+                    {option.name} {option.lastname}
+                  </MenuItem>
+                ))}
+            </TextField>
+            <TextField
+              variant="outlined"
+              id="Appartment"
+              select
+              value={appartid}
+              label="Appartement"
+              onChange={(e) => setAppartid(e.target.value)}
+              fullWidth
+              className={classes.form}
+            >
+              {appart &&
+                appart.map((option) => (
+                  <MenuItem key={option._id} value={option._id}>
+                    {option.status == "Libre"
+                      ? !option.building
+                        ? option.adress +
+                          " " +
+                          option.postalcode +
+                          " " +
+                          option.city
+                        : option.building.adress +
+                          " " +
+                          option.building.postalcode +
+                          " " +
+                          option.building.city
+                      : ""}
+                  </MenuItem>
+                ))}
+            </TextField>
+            <TextField
+              id="rent"
+              type="number"
+              variant="outlined"
+              onChange={(e) => setRent(e.target.value)}
+              fullWidth
+              placeholder="Loyer"
               className={classes.form}
             />
             <TextField
               id="codepostal"
               variant="outlined"
               type="number"
-              onChange={(e) => setPostalcode(e.target.value)}
+              onChange={(e) => setCharge(e.target.value)}
               fullWidth
-              placeholder="Code postal"
+              placeholder="Charge"
               className={classes.form}
             />
+
             <TextField
-              id="city"
+              id="other"
               type="text"
               variant="outlined"
-              onChange={(e) => setCity(e.target.value)}
+              onChange={(e) => setOther(e.target.value)}
               fullWidth
-              placeholder="Ville"
+              placeholder="Autre"
               className={classes.form}
             />
-            <TextField
-              id="size"
-              type="number"
-              variant="outlined"
-              onChange={(e) => setSize(e.target.value)}
-              fullWidth
-              placeholder="taille"
-              className={classes.form}
-            />
-            <TextField
-              variant="outlined"
-              id="building"
-              select
-              value={build}
-              label="Immeuble"
-              onChange={(e) => setBuild(e.target.value)}
-              helperText="Selectionner un immeuble"
-              fullWidth
-            >
-              {building &&
-                building.map((option) => (
-                  <MenuItem key={option._id} value={option._id}>
-                    {option.adress} {option.postalcode} {option.city}
-                  </MenuItem>
-                ))}
-            </TextField>
+
             <Box className={classes.box2}>
               <Button
                 className={classes.button}

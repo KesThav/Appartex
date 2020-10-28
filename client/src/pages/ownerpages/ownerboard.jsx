@@ -76,7 +76,7 @@ const AdminDashboard = () => {
     getBillHistories();
   }, []);
 
-  const contractHeader = ["Nom", "Prénom", "Date d'entrée", "Statut", "Email"];
+  const contractHeader = ["Contract n°", "Date d'entrée", "Statut"];
 
   return (
     <div className={classes.root}>
@@ -85,92 +85,92 @@ const AdminDashboard = () => {
           <Typography variant="h3">Adminboard</Typography>
         </Grid>
 
-        <Grid item lg={2} md={12} sm={12} xs={12}>
-          {tenant && (
+        {tenant && (
+          <Grid item lg={2} md={12} sm={12} xs={12}>
             <Badges
               icon={<PeopleIcon className={classes.icons} />}
               value={tenant.length}
               style={{ background: "#ff6f00" }}
               name={"Locataires"}
             />
-          )}
-        </Grid>
+          </Grid>
+        )}
 
-        <Grid item lg={2} md={12} sm={12} xs={12}>
-          {building && (
+        {building && (
+          <Grid item lg={2} md={12} sm={12} xs={12}>
             <Badges
               icon={<BusinessIcon className={classes.icons} />}
               value={building.length}
               style={{ background: "#9c27b0" }}
               name={"Immeubles"}
             />
-          )}
-        </Grid>
+          </Grid>
+        )}
 
-        <Grid item lg={2} md={12} sm={12} xs={12}>
-          {appart && (
+        {appart && (
+          <Grid item lg={2} md={12} sm={12} xs={12}>
             <Badges
               icon={<HomeIcon className={classes.icons} />}
               value={appart.length}
               style={{ background: "#007bb2" }}
               name={"Appartements"}
             />
-          )}
-        </Grid>
+          </Grid>
+        )}
 
-        <Grid item lg={2} md={12} sm={12} xs={12}>
-          {contract && (
+        {contract && (
+          <Grid item lg={2} md={12} sm={12} xs={12}>
             <Badges
               icon={<FolderIcon className={classes.icons} />}
               value={contract.length}
               style={{ background: "#e91e63" }}
               name={"Contrats"}
             />
-          )}
-        </Grid>
+          </Grid>
+        )}
 
-        <Grid item lg={2} md={12} sm={12} xs={12}>
-          {bill && (
+        {bill && (
+          <Grid item lg={2} md={12} sm={12} xs={12}>
             <Badges
               icon={<ReceiptIcon className={classes.icons} />}
               value={bill.length}
               style={{ background: "#00a152" }}
               name={"Factures"}
             />
-          )}
-        </Grid>
-        <Grid item lg={2} md={12} sm={12} xs={12}>
-          {billhistory && (
+          </Grid>
+        )}
+        {billhistory && (
+          <Grid item lg={2} md={12} sm={12} xs={12}>
             <Badges
               icon={<HistoryIcon className={classes.icons} />}
               value={billhistory.length}
               style={{ background: "#482880" }}
               name={"Historiques des factures"}
             />
-          )}
-        </Grid>
+          </Grid>
+        )}
 
-        <Grid item lg={6} md={12}>
-          {tenant && (
+        {tenant && (
+          <Grid item lg={6} md={12}>
             <MyTable
               data={tenant}
               title={"Dernières factures"}
-              link={"/add"}
+              link={"/bills"}
               header={contractHeader}
             />
-          )}
-        </Grid>
+          </Grid>
+        )}
 
-        <Grid item lg={6} md={12}>
-          {tenant && (
+        {contract && (
+          <Grid item lg={6} md={12}>
             <MyTable
-              data={tenant}
+              data={contract}
               title={"Derniers Contrats"}
-              link={"/link"}
+              link={"/contracts"}
               header={contractHeader}
             />
-          )}
-        </Grid>
+          </Grid>
+        )}
       </Grid>
     </div>
   );

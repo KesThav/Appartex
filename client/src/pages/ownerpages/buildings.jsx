@@ -64,6 +64,9 @@ const useStyles = makeStyles((theme) => ({
   divider: {
     marginBottom: 20,
   },
+  box4: {
+    display: "flex",
+  },
 }));
 const Building = () => {
   const {
@@ -141,8 +144,9 @@ const Building = () => {
   return (
     <div>
       <Typography variant="h4" color="primary">
-        Les immeubles
+        Les immeubles{" "}
       </Typography>
+
       <Divider className={classes.divider} />
       {err && <Alert severity="error">{err}</Alert>}
       {success && <Alert severity="success">{success}</Alert>}
@@ -159,130 +163,121 @@ const Building = () => {
           }}
           style={{ width: "40%" }}
         />
-        <Avatar className={classes.avatar}>
-          {building && dynamicSearch().length}
-        </Avatar>
       </Box>
       <TableContainer className={classes.table} component={Paper} square>
         <Table stickyHeader>
           <TableHead style={{ background: "#fff" }}>
             <TableRow>
-              <TableCell>
-                <strong>Immeuble n°</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Adresse</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Code postale</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Ville</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Nombre d'appartements</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Nombre d'appartements occupés</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Créé le </strong>
-              </TableCell>
-              <TableCell>
-                <strong>Actions</strong>
-              </TableCell>
+              <Fragment>
+                {[
+                  "Immeuble n°",
+                  "Adresse",
+                  "Code postale",
+                  "Ville",
+                  "Nombre d'appartements",
+                  "Nombre d'appartements occupés",
+                  "Créé le",
+                  "Actions",
+                ].map((title, index) => (
+                  <TableCell key={index}>
+                    <strong>{title}</strong>
+                  </TableCell>
+                ))}
+              </Fragment>
             </TableRow>
           </TableHead>
           <TableBody>
-            {building &&
-              dynamicSearch().map((building) => (
-                <TableRow key={building._id}>
-                  <TableCell component="th" scope="row">
-                    {building._id}
-                  </TableCell>
-                  <TableCell>
-                    {editing && data === building._id ? (
-                      <TextField
-                        id={building.adress}
-                        type="text"
-                        value={adress}
-                        onChange={(e) => setAdress(e.target.value)}
-                        placeholder="Adresse"
-                      />
-                    ) : (
-                      building.adress
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {editing && data === building._id ? (
-                      <TextField
-                        id={building.postalcode}
-                        type="number"
-                        value={postalcode}
-                        onChange={(e) => setPostalcode(e.target.value)}
-                        placeholder="Code postale"
-                      />
-                    ) : (
-                      building.postalcode
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {editing && data === building._id ? (
-                      <TextField
-                        id={building.city}
-                        type="text"
-                        value={city}
-                        onChange={(e) => setCity(e.target.value)}
-                        placeholder="Ville"
-                      />
-                    ) : (
-                      building.city
-                    )}
-                  </TableCell>
-                  <TableCell>{building.numberofAppart}</TableCell>
-                  <TableCell>{building.counter}</TableCell>
-                  <TableCell>
-                    {moment(building.createdAt).format("LL")}
-                  </TableCell>
-                  <TableCell>
-                    {editing && data === building._id ? (
-                      <Fragment>
-                        <Button>
-                          <CheckIcon onClick={submit} />
-                        </Button>
-                        <Button>
-                          <CloseIcon onClick={() => setEditing(!editing)} />
-                        </Button>
-                      </Fragment>
-                    ) : (
-                      <Fragment>
-                        <Button>
-                          <EditIcon
-                            onClick={() => {
-                              setNumberofAppart(building.numberofAppart);
-                              setAdress(building.adress);
-                              setPostalcode(building.postalcode);
-                              setCity(building.city);
-                              setData(building._id);
-                              setError("");
-                              setSuccess("");
-                              setEditing(!editing);
-                            }}
-                          />
-                        </Button>
-                        <Button>
-                          <DeleteIcon
-                            onClick={() => {
-                              setData(building);
-                              setDeleteShow(!deleteShow);
-                            }}
-                          />
-                        </Button>{" "}
-                      </Fragment>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
+            <Fragment>
+              {building &&
+                dynamicSearch().map((building) => (
+                  <TableRow key={building._id}>
+                    <TableCell component="th" scope="row">
+                      {building._id}
+                    </TableCell>
+                    <TableCell>
+                      {editing && data === building._id ? (
+                        <TextField
+                          id={building.adress}
+                          type="text"
+                          value={adress}
+                          onChange={(e) => setAdress(e.target.value)}
+                          placeholder="Adresse"
+                        />
+                      ) : (
+                        building.adress
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {editing && data === building._id ? (
+                        <TextField
+                          id={building.postalcode}
+                          type="number"
+                          value={postalcode}
+                          onChange={(e) => setPostalcode(e.target.value)}
+                          placeholder="Code postale"
+                        />
+                      ) : (
+                        building.postalcode
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {editing && data === building._id ? (
+                        <TextField
+                          id={building.city}
+                          type="text"
+                          value={city}
+                          onChange={(e) => setCity(e.target.value)}
+                          placeholder="Ville"
+                        />
+                      ) : (
+                        building.city
+                      )}
+                    </TableCell>
+                    <TableCell>{building.numberofAppart}</TableCell>
+                    <TableCell>{building.counter}</TableCell>
+                    <TableCell>
+                      {moment(building.createdAt).format("LL")}
+                    </TableCell>
+                    <TableCell>
+                      {editing && data === building._id ? (
+                        <Fragment>
+                          <Button>
+                            <CheckIcon onClick={submit} />
+                          </Button>
+                          <Button>
+                            <CloseIcon onClick={() => setEditing(!editing)} />
+                          </Button>
+                        </Fragment>
+                      ) : (
+                        <Fragment>
+                          <Button>
+                            <EditIcon
+                              onClick={() => {
+                                setNumberofAppart(building.numberofAppart);
+                                setAdress(building.adress);
+                                setPostalcode(building.postalcode);
+                                setCity(building.city);
+                                setData(building._id);
+                                setError("");
+                                setSuccess("");
+                                setEditing(!editing);
+                              }}
+                            />
+                          </Button>
+                          <Button>
+                            <DeleteIcon
+                              onClick={() => {
+                                setData(building);
+                                setDeleteShow(!deleteShow);
+                              }}
+                            />
+                          </Button>
+                        </Fragment>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </Fragment>
           </TableBody>
         </Table>
       </TableContainer>
