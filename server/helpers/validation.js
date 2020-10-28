@@ -23,11 +23,10 @@ const buildingSchema = Joi.object({
 
 const appartSchema = Joi.object({
   size: Joi.number().required(),
-  adress: Joi.string(),
-  postalcode: Joi.number().min(1000).max(9999),
-  city: Joi.string(),
-  building: Joi.objectId(),
-  picture: [Joi.string()],
+  adress: Joi.string().allow(null, "").default(null),
+  postalcode: Joi.number().min(1000).max(9999).allow("").default(-1),
+  city: Joi.string().allow(null, "").default(null),
+  building: Joi.objectId().allow(null, "").default(null),
   status: Joi.string(),
 });
 
@@ -36,7 +35,7 @@ const contractSchema = Joi.object({
   rent: Joi.number().required(),
   tenant: Joi.objectId().required(),
   appartmentid: Joi.objectId().required(),
-  other: Joi.string(),
+  other: Joi.string().allow("", null),
   status: Joi.string(),
 });
 

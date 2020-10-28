@@ -8,15 +8,15 @@ const appartSchema = new Mongoose.Schema(
     },
     adress: {
       type: String,
-      default: null,
+      default: "",
     },
     postalcode: {
       type: Number,
-      default: null,
+      default: -1,
     },
     city: {
       type: String,
-      default: null,
+      default: "",
     },
     building: {
       type: Mongoose.Schema.Types.ObjectId,

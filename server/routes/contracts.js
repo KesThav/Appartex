@@ -70,7 +70,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
     let allcontracts = await Contract.find({ createdBy: ctx.request.jwt._id })
       .populate("tenant")
       .populate({ path: "appartmentid", populate: { path: "building" } })
-      .populate("buildingid")
+      /*       .populate("buildingid") */
       .sort({ createdAt: -1 });
     ctx.body = allcontracts;
   } catch (err) {
@@ -155,7 +155,7 @@ router.get("/:contractid", jwt, adminAccess, async (ctx) => {
  *
  */
 
-router.post("/add", jwt, adminAccess, contractValidation, async (ctx) => {
+router.post("/add", jwt, adminAccess, async (ctx) => {
   const { charge, rent, tenant, appartmentid, other } = ctx.request.body;
   try {
     let newcontract = new Contract({
@@ -231,11 +231,18 @@ router.put(
 
     const { charge, rent, tenant, appartmentid, other } = ctx.request.body;
 
-    if (appartmentid !== contract.appartmentid) {
+    if (contract.appartmentid.status == "Occupé") {
+      if (appartmentid !== contract.appartmentid) {
+        ctx.throw(400, "appartment is already taken");
+      }
+    }
+    console.log(appartmentid != contract.appartmentid);
+
+    if (appartmentid != contract.appartmentid) {
       ctx.throw(400, "can't modify appartment, create a new contract");
     }
 
-    const update = { charge, rent, tenant, appartmentid, buildingid, other };
+    const update = { charge, rent, tenant, appartmentid, other };
     try {
       const updatedcontract = await Contract.findByIdAndUpdate(
         contractid,

@@ -142,8 +142,17 @@ router.get("/:appartid", jwt, adminAccess, async (ctx) => {
  */
 
 router.post("/add", jwt, adminAccess, appartValidation, async (ctx) => {
-  const { size, adress, building, postalcode, city } = ctx.request.body;
+  const { size, adress, city } = ctx.request.body;
+  let { building, postalcode } = ctx.request.body;
 
+  console.log(ctx.request.body);
+  if (building == "") {
+    building = undefined;
+  }
+
+  if (postalcode == "") {
+    postalcode = -1;
+  }
   try {
     let newappart = new Appart({
       size,
@@ -153,6 +162,7 @@ router.post("/add", jwt, adminAccess, appartValidation, async (ctx) => {
       building,
       createdBy: new ObjectId(ctx.request.jwt._id),
     });
+
     if (building) {
       await Building.findByIdAndUpdate(building, {
         $inc: { numberofAppart: 1 },
@@ -272,7 +282,7 @@ router.put(
           });
         }
       }
-      ctx.body = updatedappart;
+      ctx.body = "ok";
     } catch (err) {
       ctx.throw(500, err);
     }
