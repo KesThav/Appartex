@@ -161,7 +161,7 @@ const Building = () => {
           onChange={(e) => {
             setSearch(e.target.value);
           }}
-          style={{ width: "40%" }}
+          style={{ width: "20%" }}
         />
       </Box>
       <TableContainer className={classes.table} component={Paper} square>
@@ -177,6 +177,7 @@ const Building = () => {
                   "Nombre d'appartements",
                   "Nombre d'appartements occupés",
                   "Créé le",
+                  "Dernière modification",
                   "Actions",
                 ].map((title, index) => (
                   <TableCell key={index}>
@@ -188,7 +189,7 @@ const Building = () => {
           </TableHead>
           <TableBody>
             <Fragment>
-              {building &&
+              {building.length > 0 &&
                 dynamicSearch().map((building) => (
                   <TableRow key={building._id}>
                     <TableCell component="th" scope="row">
@@ -236,7 +237,10 @@ const Building = () => {
                     <TableCell>{building.numberofAppart}</TableCell>
                     <TableCell>{building.counter}</TableCell>
                     <TableCell>
-                      {moment(building.createdAt).format("LL")}
+                      {moment(building.createdAt).format("YYYY-MM-DD")}
+                    </TableCell>
+                    <TableCell>
+                      {moment(building.updatedAt).format("YYYY-MM-DD")}
                     </TableCell>
                     <TableCell>
                       {editing && data === building._id ? (

@@ -178,7 +178,7 @@ const Appart = () => {
           onChange={(e) => {
             setSearch(e.target.value);
           }}
-          style={{ width: "40%" }}
+          style={{ width: "20%" }}
         />
       </Box>
       <TableContainer className={classes.table} component={Paper} square>
@@ -194,6 +194,7 @@ const Appart = () => {
                 "Taille",
                 "Statut",
                 "Créé le",
+                "Dernière modification",
                 "Actions",
               ].map((title, index) => (
                 <TableCell key={index}>
@@ -204,7 +205,7 @@ const Appart = () => {
           </TableHead>
           <TableBody>
             <Fragment>
-              {appart &&
+              {appart.length > 0 &&
                 dynamicSearch().map((appart) => {
                   return !appart.building ? (
                     <TableRow key={appart._id}>
@@ -280,7 +281,10 @@ const Appart = () => {
                         </div>
                       </TableCell>
                       <TableCell>
-                        {moment(appart.createdAt).format("LL")}
+                        {moment(appart.createdAt).format("YYYY-MM-DD")}
+                      </TableCell>
+                      <TableCell>
+                        {moment(appart.updatedAt).format("YYYY-MM-DD")}
                       </TableCell>
                       <TableCell>
                         {editing && data === appart._id ? (
@@ -359,7 +363,10 @@ const Appart = () => {
                       </TableCell>
 
                       <TableCell>
-                        {moment(appart.createdAt).format("LL")}
+                        {moment(appart.createdAt).format("YYYY-MM-DD")}
+                      </TableCell>
+                      <TableCell>
+                        {moment(appart.updatedAt).format("YYYY-MM-DD")}
                       </TableCell>
                       <TableCell>
                         {editing && data === appart._id ? (

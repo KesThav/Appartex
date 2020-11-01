@@ -8,18 +8,25 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  TableFooter,
+  Box,
   Paper,
   makeStyles,
 } from "@material-ui/core";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 650,
+    boxShadow: "none",
   },
   link: {
     textDecoration: "none",
-    color: "#000000",
+    color: [theme.palette.primary.dark],
+  },
+  box: {
+    paddingTop: 7,
+    marginLeft: 10,
+    marginBotton: 3,
   },
 }));
 
@@ -27,39 +34,44 @@ const MyTable = ({ data, title, link, header }) => {
   const classes = useStyles();
   return (
     <div>
-      <Typography variant="h6">{title}</Typography>
-      <TableContainer component={Paper} square>
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-              {header.map((header, index) => (
-                <TableCell key={index}>{header}</TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.slice(0, 5).map((data) => (
-              <TableRow key={data._id}>
-                <TableCell component="th" scope="row">
-                  {data._id}
-                </TableCell>
-                <TableCell>{data.createdAt}</TableCell>
-                <TableCell>{data.status}</TableCell>
+      <Paper>
+        <Box className={classes.box}>
+          <Typography variant="h6" color="primary">
+            {title}
+          </Typography>
+        </Box>
+        <TableContainer component={Paper} square className={classes.table}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                {header.map((header, index) => (
+                  <TableCell key={index}>{header}</TableCell>
+                ))}
               </TableRow>
-            ))}
-          </TableBody>
-          <TableFooter
-            component={Link}
-            to={link}
-            className={classes.link}
-            style={{ textAlign: "center" }}
-          >
-            <Typography variant="overline" display="block" gutterBottom>
+            </TableHead>
+            <TableBody>
+              {data.slice(0, 5).map((data) => (
+                <TableRow key={data._id}>
+                  <TableCell component="th" scope="row">
+                    {data._id}
+                  </TableCell>
+                  <TableCell>
+                    {moment(data.createdAt).format("YYYY-MM-DD")}
+                  </TableCell>
+                  <TableCell>{data.status}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Box className={classes.box}>
+          <Typography variant="overline">
+            <Link to={link} className={classes.link}>
               Voir tous les {title.split(" ")[1]}
-            </Typography>
-          </TableFooter>
-        </Table>
-      </TableContainer>
+            </Link>
+          </Typography>
+        </Box>
+      </Paper>
     </div>
   );
 };

@@ -30,6 +30,7 @@ import HomeIcon from "@material-ui/icons/Home";
 import FolderIcon from "@material-ui/icons/Folder";
 import StorageIcon from "@material-ui/icons/Storage";
 import Chip from "@material-ui/core/Chip";
+import Axios from "axios";
 
 const drawerWidth = 250;
 
@@ -89,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Layout = (props) => {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, authAxios } = useContext(UserContext);
   const { window } = props;
   const classes = useStyles();
   const theme = useTheme();

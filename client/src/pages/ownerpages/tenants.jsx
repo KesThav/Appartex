@@ -161,7 +161,7 @@ const Tenant = () => {
           onChange={(e) => {
             setSearch(e.target.value);
           }}
-          style={{ width: "40%" }}
+          style={{ width: "20%" }}
         />
         <Fragment>{tenant && dynamicSearch().length}</Fragment>
       </Box>
@@ -178,6 +178,7 @@ const Tenant = () => {
                   "Statut",
                   "Né le",
                   "Créé le",
+                  "Dernière modification",
                   "Actions",
                 ].map((title, index) => (
                   <TableCell key={index}>
@@ -189,7 +190,7 @@ const Tenant = () => {
           </TableHead>
           <TableBody>
             <Fragment>
-              {tenant &&
+              {tenant.length > 0 &&
                 dynamicSearch().map((tenant) => (
                   <TableRow key={tenant._id}>
                     <TableCell component="th" scope="row">
@@ -274,11 +275,14 @@ const Tenant = () => {
                           placeholder="Date de naissance"
                         />
                       ) : (
-                        moment(tenant.dateofbirth).format("LL")
+                        moment(tenant.dateofbirth).format("YYYY-MM-DD")
                       )}
                     </TableCell>
                     <TableCell>
-                      {moment(tenant.createdAt).format("LL")}
+                      {moment(tenant.createdAt).format("YYYY-MM-DD")}
+                    </TableCell>
+                    <TableCell>
+                      {moment(tenant.updatedAt).format("YYYY-MM-DD")}
                     </TableCell>
                     <TableCell>
                       {editing && data === tenant._id ? (

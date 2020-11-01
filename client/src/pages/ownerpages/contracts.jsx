@@ -86,7 +86,7 @@ const Contract = () => {
   const [charge, setCharge] = useState(null);
   const [tenantid, setTenantid] = useState(null);
   const [appartid, setAppartid] = useState(null);
-  const [rent, setRent] = useState("");
+  const [rent, setRent] = useState(null);
   const [other, setOther] = useState(null);
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
@@ -209,7 +209,7 @@ const Contract = () => {
           onChange={(e) => {
             setSearch(e.target.value);
           }}
-          style={{ width: "40%" }}
+          style={{ width: "20%" }}
         />
       </Box>
       <TableContainer className={classes.table} component={Paper} square>
@@ -226,6 +226,7 @@ const Contract = () => {
                   "Autre",
                   "Statut",
                   "Créé le",
+                  "Dernière modification",
                   "Actions",
                 ].map((title, index) => (
                   <TableCell key={index}>
@@ -237,7 +238,7 @@ const Contract = () => {
           </TableHead>
           <TableBody>
             <Fragment>
-              {contract &&
+              {contract.length > 0 &&
                 dynamicSearch().map((contract) => (
                   <TableRow key={contract._id}>
                     <TableCell component="th" scope="row">
@@ -292,7 +293,10 @@ const Contract = () => {
                     </TableCell>
                     <TableCell>{contract.status}</TableCell>
                     <TableCell>
-                      {moment(contract.createdAt).format("LL")}
+                      {moment(contract.createdAt).format("YYYY-MM-DD")}
+                    </TableCell>
+                    <TableCell>
+                      {moment(contract.updatedAt).format("YYYY-MM-DD")}
                     </TableCell>
                     <TableCell>
                       {editing && data === contract._id ? (

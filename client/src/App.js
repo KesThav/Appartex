@@ -38,7 +38,7 @@ if (token) {
   }
 }
 
-const authAxios = Axios.create({
+let authAxios = Axios.create({
   baseURL: "http://localhost:5000",
   headers: {
     Authorization: token,
@@ -54,6 +54,9 @@ const App = () => {
   const [contract, setContract] = useState("");
   const [bill, setBill] = useState("");
   const [billhistory, setBillhistory] = useState("");
+  const [err, setError] = useState();
+  const [success, setSuccess] = useState("");
+  const [status, setStatus] = useState("");
 
   //get data here and give it to children via Context API
   const getTenants = async () => {
@@ -128,11 +131,27 @@ const App = () => {
     }
   };
 
+  const getStatus = async () => {
+    setLoading(true);
+    try {
+      const res = await authAxios.get("/status");
+      setStatus(res.data);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+    }
+  };
+
   return (
     <Fragment>
       <MuiThemeProvider theme={theme}>
         <UserContext.Provider
           value={{
+            err,
+            setError,
+            success,
+            setSuccess,
             user,
             setUser,
             loading,
@@ -156,6 +175,9 @@ const App = () => {
             billhistory,
             setBillhistory,
             getBillHistories,
+            status,
+            setStatus,
+            getStatus,
           }}
         >
           <Router>

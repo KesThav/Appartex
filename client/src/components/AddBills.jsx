@@ -30,46 +30,49 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddAppart = () => {
+const AddBills = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const {
-    setLoading,
-    authAxios,
-    appart,
-    getApparts,
+    bill,
     tenant,
     getTenants,
-    contract,
-    getContracts,
+    setLoading,
+    authAxios,
+    getBills,
+    getStatus,
+    status,
+    getBillHistories,
   } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [charge, setCharge] = useState(null);
-  const [tenantid, setTenantid] = useState(null);
-  const [appartid, setAppartid] = useState(null);
-  const [rent, setRent] = useState("");
-  const [other, setOther] = useState(null);
+  const [endDate, setEndDate] = useState("");
+  const [reference, setReference] = useState("");
+  const [amount, setAmount] = useState("");
+  const [reason, setReason] = useState("");
+  const [tenantid, setTenantid] = useState("");
+  const [statusid, setStatusid] = useState("");
 
   const submit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (!charge || !rent || !tenantid || !appartid) {
-      setError("Complétez tous les champs");
+    if (!statusid || !endDate || !tenantid || !reason || !amount) {
+      setError("Complétez les champs obligatoires");
     } else {
       setLoading(true);
       const data = {
-        charge,
-        rent,
-        other,
+        endDate,
+        reference,
+        amount,
         tenant: tenantid,
-        appartmentid: appartid,
+        status: statusid,
+        reason,
       };
       try {
-        await authAxios.post("/contracts/add", data);
+        await authAxios.post("/bills/add", data);
         setLoading(false);
-        setSuccess("Contrat créé avec succès");
+        setSuccess("Facture créé avec succès");
       } catch (err) {
         setLoading(false);
         setError(err.response.data);
@@ -81,17 +84,18 @@ const AddAppart = () => {
     setOpen(!open);
     setError("");
     setSuccess("");
-    setOther("");
-    setRent("");
-    setCharge("");
     setTenantid("");
-    setAppartid("");
+    setStatusid("");
+    setReason("");
+    setReference("");
+    setAmount("");
+    setEndDate("");
   };
 
   useEffect(() => {
     getTenants();
-    getApparts();
-    getContracts();
+    getStatus();
+    getBills();
   }, []);
 
   return (
@@ -127,59 +131,57 @@ const AddAppart = () => {
             </TextField>
             <TextField
               variant="outlined"
-              id="Appartment"
+              id="Status"
               select
-              value={appartid}
-              label="Appartement"
-              onChange={(e) => setAppartid(e.target.value)}
+              value={statusid}
+              label="Statut"
+              onChange={(e) => setStatusid(e.target.value)}
               fullWidth
               className={classes.form}
             >
-              {appart &&
-                appart
-                  .filter((option) => option.status == "Libre")
-                  .map((option) => (
-                    <MenuItem key={option._id} value={option._id}>
-                      {!option.building
-                        ? option.adress +
-                          " " +
-                          option.postalcode +
-                          " " +
-                          option.city
-                        : option.building.adress +
-                          " " +
-                          option.building.postalcode +
-                          " " +
-                          option.building.city}
-                    </MenuItem>
-                  ))}
+              {status &&
+                status.map((option) => (
+                  <MenuItem key={option._id} value={option._id}>
+                    {option.name}
+                  </MenuItem>
+                ))}
             </TextField>
             <TextField
-              id="rent"
-              type="number"
+              id="reference"
+              type="string"
               variant="outlined"
-              onChange={(e) => setRent(e.target.value)}
+              onChange={(e) => setReference(e.target.value)}
               fullWidth
-              placeholder="Loyer"
+              placeholder="Réference"
               className={classes.form}
             />
             <TextField
-              id="codepostal"
+              id="amount"
               variant="outlined"
               type="number"
-              onChange={(e) => setCharge(e.target.value)}
+              onChange={(e) => setAmount(e.target.value)}
               fullWidth
-              placeholder="Charge"
+              placeholder="Montant"
               className={classes.form}
             />
 
             <TextField
-              id="other"
+              id="reason"
               type="text"
               variant="outlined"
-              onChange={(e) => setOther(e.target.value)}
+              onChange={(e) => setReason(e.target.value)}
               fullWidth
-              placeholder="Autre"
+              placeholder="Raison"
+              className={classes.form}
+            />
+
+            <TextField
+              id="reason"
+              type="date"
+              variant="outlined"
+              onChange={(e) => setEndDate(e.target.value)}
+              fullWidth
+              placeholder="Raison"
               className={classes.form}
             />
 
@@ -203,4 +205,4 @@ const AddAppart = () => {
   );
 };
 
-export default AddAppart;
+export default AddBills;
