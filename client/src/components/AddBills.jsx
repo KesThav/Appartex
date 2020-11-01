@@ -107,7 +107,7 @@ const AddBills = () => {
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>{"Créer un Contrat"}</DialogTitle>
+        <DialogTitle>{"Créer une facture"}</DialogTitle>
         <DialogContent>
           {err && <Alert severity="error">{err}</Alert>}
           {success && <Alert severity="success">{success}</Alert>}

@@ -150,43 +150,29 @@ const Bills = () => {
     }
   };
 
-  /*   const dynamicSearch = () => {
-    if (appart) {
-      return appart.filter((name) =>
-        !name.building
-          ? name._id
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.postalcode
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.adress.toLowerCase().includes(search.toLowerCase()) ||
-            name.city.toLowerCase().includes(search.toLowerCase()) ||
-            name.size
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.status.toLowerCase().includes(search.toString().toLowerCase())
-          : name._id
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.building.postalcode
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.building.adress.toLowerCase().includes(search.toLowerCase()) ||
-            name.building.city.toLowerCase().includes(search.toLowerCase()) ||
-            name.size
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.status.toLowerCase().includes(search.toString().toLowerCase())
+  const dynamicSearch = () => {
+    if (bill) {
+      return bill.filter(
+        (name) =>
+          name._id
+            .toString()
+            .toLowerCase()
+            .includes(search.toString().toLowerCase()) ||
+          name.tenant.name.toLowerCase().includes(search.toLowerCase()) ||
+          name.tenant.lastname.toLowerCase().includes(search.toLowerCase()) ||
+          name.reference
+            .toString()
+            .toLowerCase()
+            .includes(search.toString().toLowerCase()) ||
+          name.amount
+            .toString()
+            .toLowerCase()
+            .includes(search.toString().toLowerCase()) ||
+          name.reason.toLowerCase().includes(search.toLowerCase()) ||
+          name.status.name.toLowerCase().includes(search.toLowerCase())
       );
     }
-  }; */
+  };
   return (
     <div>
       <Typography variant="h4" color="primary">
@@ -234,7 +220,7 @@ const Bills = () => {
           <TableBody>
             <Fragment>
               {bill.length > 0 &&
-                bill.map((bill) => (
+                dynamicSearch().map((bill) => (
                   <TableRow key={bill._id}>
                     <TableCell>{bill._id}</TableCell>
                     <TableCell>
