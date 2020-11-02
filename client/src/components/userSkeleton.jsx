@@ -17,14 +17,12 @@ import {
   TableCell,
   TableHead,
   TableBody,
-  TextField,
-  Divider,
   Button,
 } from "@material-ui/core";
-import { UserContext } from "../../middlewares/ContextAPI";
+import { UserContext } from "../middlewares/ContextAPI";
 import moment from "moment";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import Alert from "@material-ui/lab/Alert";
+import KeyboardBackspaceIcon from "@material-ui/icons/KeyboardBackspace";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -51,47 +49,38 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: "none",
     color: "#000000",
   },
-  details: {
-    marginBottom: 10,
-    padding: 10,
-  },
-  form: {
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  field: {
-    width: "45%",
-    marginRight: 10,
-    marginBottom: 25,
-  },
-  box: {
-    marginTop: 10,
-    width: "98%",
-    display: "flex",
-    flexDirection: "row-reverse",
-  },
 }));
 
-const Tenantboard = (props) => {
+const UserSkeleton = (props) => {
   const classes = useStyles();
-  const { authAxios, setLoading, user } = useContext(UserContext);
+  const { authAxios, setLoading } = useContext(UserContext);
 
-  const [tenant, setTenant] = useState("");
-  const [bills, setBills] = useState("");
-  const [contract, setContracts] = useState("");
-  const [name, setName] = useState(user.name);
-  const [lastname, setLastname] = useState(user.lastname);
-  const [email, setEmail] = useState(user.email);
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [dateofbirth, setDate] = useState(user.dateofbirth);
-  const [err, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  console.log(props.match.params.tenantid);
+
+  const [tenant, setTenant] = useState(null);
+  const [bills, setBills] = useState(null);
+  const [contract, setContracts] = useState(null);
+
+  const getTenants = async () => {
+    setLoading(true);
+    try {
+      const res = await authAxios.get(
+        `/tenants/${props.match.params.tenantid}`
+      );
+      setTenant(res.data);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+    }
+  };
 
   const getBills = async () => {
     setLoading(true);
     try {
-      const res = await authAxios.get(`tenants/bills/${user._id}`);
+      const res = await authAxios.get(
+        `tenants/bills/${props.match.params.tenantid}`
+      );
       setBills(res.data);
       setLoading(false);
     } catch (err) {
@@ -103,7 +92,9 @@ const Tenantboard = (props) => {
   const getContracts = async () => {
     setLoading(true);
     try {
-      const res = await authAxios.get(`tenants/contracts/${user._id}`);
+      const res = await authAxios.get(
+        `tenants/contracts/${props.match.params.tenantid}`
+      );
       setContracts(res.data);
       setLoading(false);
     } catch (err) {
@@ -112,42 +103,8 @@ const Tenantboard = (props) => {
     }
   };
 
-  const submit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-    setLoading(true);
-    if (!dateofbirth) {
-      setDate(moment().format("YYYY-MM-DD"));
-    }
-    if (!name || !lastname || !email || !password || !confirm) {
-      setError("Complétez tous les champs");
-    } else if (password !== confirm) {
-      setError("Les mot de passes ne correspondent pas");
-    } else if (password.length < 6) {
-      setError("Le mot de passe doit faire minimum 6 charactères");
-    } else {
-      const updatedata = {
-        name,
-        lastname,
-        email,
-        dateofbirth,
-      };
-      try {
-        await authAxios.put(`/tenants/update/${user._id}`, updatedata);
-        await authAxios.put(`/tenants/update/password/${user._id}`, {
-          password: password,
-        });
-        setLoading(false);
-        setSuccess("Locataire modifié avec succès");
-      } catch (err) {
-        setLoading(false);
-        setError(err.response.data);
-      }
-    }
-  };
-
   useEffect(() => {
+    getTenants();
     getBills();
     getContracts();
   }, []);
@@ -155,88 +112,39 @@ const Tenantboard = (props) => {
   return (
     <div>
       <Container>
-        {err && <Alert severity="error">{err}</Alert>}
-        {success && <Alert severity="success">{success}</Alert>}
+        <Button
+          startIcon={<KeyboardBackspaceIcon />}
+          className={classes.button}
+        >
+          <Link to="/tenants" className={classes.link}>
+            Retour aux locataires
+          </Link>
+        </Button>
         <Grid container>
-          <Grid item md={3}>
+          <Grid item>
             <Paper className={classes.paper}>
+              {" "}
               <Avatar className={classes.avatar}>
                 <Typography variant="h3">
-                  {user &&
-                    user.name.charAt(0).toUpperCase() +
-                      user.lastname.charAt(0).toUpperCase()}
+                  {" "}
+                  {tenant &&
+                    tenant.name.charAt(0).toUpperCase() +
+                      tenant.lastname.charAt(0).toUpperCase()}
                 </Typography>
               </Avatar>
               <Typography variant="h3">
-                {user && user.name + " " + user.lastname}
+                {tenant && tenant.name + " " + tenant.lastname}
               </Typography>
               <Typography variant="overline">
                 Créé le{" "}
-                {user && moment(user.createdAt).format("YYYY-MM-DD")}
+                {tenant && moment(tenant.createdAt).format("YYYY-MM-DD")}
               </Typography>
               <Typography variant="caption">
-                {user && user.email}
+                {tenant && tenant.email}
               </Typography>
             </Paper>
           </Grid>
-          <Grid item md={8}>
-            <Paper className={classes.details}>
-              <Typography variant="h6">Profil</Typography>
-              <Divider />
-              <form className={classes.form} onSubmit={submit}>
-                <TextField
-                  variant="outlined"
-                  label="Prénom"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className={classes.field}
-                />
-
-                <TextField
-                  variant="outlined"
-                  label="Nom"
-                  value={lastname}
-                  onChange={(e) => setLastname(e.target.value)}
-                  className={classes.field}
-                />
-                <TextField
-                  variant="outlined"
-                  label="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={classes.field}
-                />
-                <TextField
-                  variant="outlined"
-                  label="Email"
-                  type="date"
-                  value={moment(dateofbirth).format("YYYY-MM-DD")}
-                  onChange={(e) =>
-                    setDate(moment(e.target.value).format("YYYY-MM-DD"))
-                  }
-                  className={classes.field}
-                />
-                <TextField
-                  variant="outlined"
-                  label="Mot de passe"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={classes.field}
-                />
-                <TextField
-                  variant="outlined"
-                  label="Confirmer le mot de passe"
-                  value={confirm}
-                  onChange={(e) => setConfirm(e.target.value)}
-                  className={classes.field}
-                />
-                <Box className={classes.box}>
-                  <Button color="primary" variant="contained" type="submit">
-                    Enregistrer les changements
-                  </Button>
-                </Box>
-              </form>
-            </Paper>
+          <Grid item>
             <div>
               <Accordion>
                 <AccordionSummary
@@ -260,15 +168,15 @@ const Tenantboard = (props) => {
                             "Loyer",
                             "Statut",
                             "Date",
-                          ].map((data, index) => (
-                            <TableCell key={index}>{data}</TableCell>
+                          ].map((data) => (
+                            <TableCell>{data}</TableCell>
                           ))}
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {contract.length > 0 &&
+                        {contract &&
                           contract.map((data) => (
-                            <TableRow key={data._id}>
+                            <TableRow>
                               <TableCell>{data._id}</TableCell>
                               <TableCell>
                                 {data.appartmentid.building
@@ -314,15 +222,15 @@ const Tenantboard = (props) => {
                             "Montant",
                             "Statut",
                             "Echéance",
-                          ].map((data, index) => (
-                            <TableCell key={index}>{data}</TableCell>
+                          ].map((data) => (
+                            <TableCell>{data}</TableCell>
                           ))}
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {bills.length > 0 &&
+                        {bills &&
                           bills.map((data) => (
-                            <TableRow key={data._id}>
+                            <TableRow>
                               <TableCell>{data._id}</TableCell>
                               <TableCell>{data.reference}</TableCell>
                               <TableCell>{data.reason}</TableCell>
@@ -346,4 +254,4 @@ const Tenantboard = (props) => {
   );
 };
 
-export default Tenantboard;
+export default UserSkeleton;

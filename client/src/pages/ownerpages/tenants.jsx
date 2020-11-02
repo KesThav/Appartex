@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect, Fragment } from "react";
 import { UserContext } from "../../middlewares/ContextAPI";
+import { Link } from "react-router-dom";
 import {
   TableContainer,
   Table,
@@ -29,6 +30,7 @@ import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
+import HistoryIcon from "@material-ui/icons/History";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -59,6 +61,10 @@ const useStyles = makeStyles((theme) => ({
   },
   divider: {
     marginBottom: 20,
+  },
+  link: {
+    textDecoration: "none",
+    color: "#000000",
   },
 }));
 const Tenant = () => {
@@ -296,6 +302,14 @@ const Tenant = () => {
                         </Fragment>
                       ) : (
                         <Fragment>
+                          <Button>
+                            <Link
+                              to={`/tenant/${tenant._id}`}
+                              className={classes.link}
+                            >
+                              <HistoryIcon />
+                            </Link>
+                          </Button>
                           <Button>
                             <EditIcon
                               onClick={() => {

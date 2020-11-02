@@ -49,9 +49,9 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   appBar: {
-    backgroundColor: "#fff",
+    backgroundColor: "transparent",
+    boxShadow: "none",
     color: "#000000",
-    backgroundColor: "#fff",
     display: "flex",
     alignItems: "flex-end",
   },
@@ -96,6 +96,7 @@ const Layout = (props) => {
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [checked, setChecked] = useState(true);
+  const [select, setSelect] = useState(null);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -140,9 +141,14 @@ const Layout = (props) => {
           icon: <ReceiptIcon />,
           link: "/bills",
         },
-      ].map((data, index) => (
-        <Link key={data.id} className={classes.linkmap} to={data.link}>
-          <ListItem button key={data.id}>
+      ].map((data) => (
+        <Link
+          key={data.id}
+          className={classes.linkmap}
+          to={data.link}
+          onClick={() => setSelect(data.id)}
+        >
+          <ListItem button key={data.id} selected={select === data.id}>
             <ListItemIcon style={{ color: "#fff" }}>{data.icon}</ListItemIcon>
             <ListItemText primary={data.name} />
           </ListItem>
@@ -173,8 +179,13 @@ const Layout = (props) => {
           link: "/",
         },
       ].map((data, index) => (
-        <Link key={data.id} className={classes.linkmap} to={data.link}>
-          <ListItem button key={data.id}>
+        <Link
+          key={data.id}
+          className={classes.linkmap}
+          to={data.link}
+          onClick={() => setSelect(data.id)}
+        >
+          <ListItem button key={data.id} selected={select === data.id}>
             <ListItemIcon style={{ color: "#fff" }}>{data.icon}</ListItemIcon>
             <ListItemText primary={data.name} />
           </ListItem>
