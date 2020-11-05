@@ -2,7 +2,12 @@ import React, { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../middlewares/ContextAPI";
 import MyTable from "../../components/myTable";
 import Badges from "../../components/badges";
-import { Grid, Typography, makeStyles } from "@material-ui/core";
+import {
+  Grid,
+  Typography,
+  makeStyles,
+  CircularProgress,
+} from "@material-ui/core";
 import ReceiptIcon from "@material-ui/icons/Receipt";
 import BusinessIcon from "@material-ui/icons/Business";
 import HomeIcon from "@material-ui/icons/Home";
@@ -41,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AdminDashboard = () => {
+const AdminDashboard = (props) => {
   const classes = useStyles();
   const {
     user,
@@ -74,9 +79,11 @@ const AdminDashboard = () => {
     getContracts();
     getBills();
     getBillHistories();
+    if (!window.location.hash) {
+      window.location = window.location + "#loaded";
+      window.location.reload();
+    }
   }, []);
-
-  const contractHeader = ["Contract n°", "Date d'entrée", "Statut"];
 
   return (
     <div className={classes.root}>
@@ -85,7 +92,9 @@ const AdminDashboard = () => {
           <Typography variant="h3">Adminboard</Typography>
         </Grid>
 
-        {tenant && (
+        {!tenant ? (
+          <CircularProgress />
+        ) : (
           <Grid item lg={2} md={12} sm={12} xs={12}>
             <Badges
               icon={<PeopleIcon className={classes.icons} />}
@@ -96,7 +105,9 @@ const AdminDashboard = () => {
           </Grid>
         )}
 
-        {building && (
+        {!building ? (
+          <CircularProgress />
+        ) : (
           <Grid item lg={2} md={12} sm={12} xs={12}>
             <Badges
               icon={<BusinessIcon className={classes.icons} />}
@@ -107,7 +118,9 @@ const AdminDashboard = () => {
           </Grid>
         )}
 
-        {appart && (
+        {!appart ? (
+          <CircularProgress />
+        ) : (
           <Grid item lg={2} md={12} sm={12} xs={12}>
             <Badges
               icon={<HomeIcon className={classes.icons} />}
@@ -118,7 +131,9 @@ const AdminDashboard = () => {
           </Grid>
         )}
 
-        {contract && (
+        {!contract ? (
+          <CircularProgress />
+        ) : (
           <Grid item lg={2} md={12} sm={12} xs={12}>
             <Badges
               icon={<FolderIcon className={classes.icons} />}
@@ -129,7 +144,9 @@ const AdminDashboard = () => {
           </Grid>
         )}
 
-        {bill && (
+        {!bill ? (
+          <CircularProgress />
+        ) : (
           <Grid item lg={2} md={12} sm={12} xs={12}>
             <Badges
               icon={<ReceiptIcon className={classes.icons} />}
@@ -139,7 +156,9 @@ const AdminDashboard = () => {
             />
           </Grid>
         )}
-        {billhistory && (
+        {!billhistory ? (
+          <CircularProgress />
+        ) : (
           <Grid item lg={2} md={12} sm={12} xs={12}>
             <Badges
               icon={<HistoryIcon className={classes.icons} />}
@@ -150,24 +169,28 @@ const AdminDashboard = () => {
           </Grid>
         )}
 
-        {tenant && (
+        {!bill ? (
+          <CircularProgress />
+        ) : (
           <Grid item lg={6} md={12}>
             <MyTable
-              data={tenant}
+              data={bill}
               title={"Dernières factures"}
               link={"/bills"}
-              header={contractHeader}
+              header={["Facture n°", "Date", "Statut"]}
             />
           </Grid>
         )}
 
-        {contract && (
+        {!contract ? (
+          <CircularProgress />
+        ) : (
           <Grid item lg={6} md={12}>
             <MyTable
               data={contract}
               title={"Derniers Contrats"}
               link={"/contracts"}
-              header={contractHeader}
+              header={["Contract n°", "Date", "Statut"]}
             />
           </Grid>
         )}

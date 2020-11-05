@@ -24,6 +24,7 @@ import Appartment from "./pages/ownerpages/appartments";
 import Bill from "./pages/ownerpages/bills";
 import Contract from "./pages/ownerpages/contracts";
 import UserSkeleton from "./components/userSkeleton";
+import Status from "./pages/ownerpages/statut";
 
 const theme = createMuiTheme(themeSheet);
 
@@ -200,9 +201,10 @@ const App = () => {
                     />
                     <AdminRoute exact path="/bills" component={Bill} />
                     <AdminRoute exact path="/contracts" component={Contract} />
+                    <AdminRoute exact path="/status" component={Status} />
                     <AdminRoute
                       exact
-                      path="/tenant/:tenantid"
+                      path="/tenants/:tenantid"
                       component={UserSkeleton}
                     />
                     <ProtectedRoute

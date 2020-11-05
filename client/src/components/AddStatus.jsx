@@ -8,7 +8,8 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
-  MenuItem,
+  Typography,
+  Fab,
 } from "@material-ui/core";
 
 import Alert from "@material-ui/lab/Alert";
@@ -69,21 +70,23 @@ const AddBills = () => {
 
   useEffect(() => {
     getStatus();
-  }, []);
+  }, [status]);
 
   return (
     <div>
       <Box className={classes.box}>
-        <Button variant="contained" color="primary" onClick={OnOpen}>
-          Ajouter
-        </Button>
+        <Fab variant="contained" color="primary" onClick={OnOpen}>
+          <Typography variant="h5">+</Typography>
+        </Fab>
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
         <DialogTitle>{"Créer un Contrat"}</DialogTitle>
         <DialogContent>
-          {err && <Alert severity="error">{err}</Alert>}
-          {success && <Alert severity="success">{success}</Alert>}
+          <div style={{ marginBottom: "10px" }}>
+            {err && <Alert severity="error">{err}</Alert>}
+            {success && <Alert severity="success">{success}</Alert>}
+          </div>
           <form onSubmit={submit}>
             <TextField
               id="name"

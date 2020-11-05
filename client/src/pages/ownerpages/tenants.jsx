@@ -22,6 +22,7 @@ import {
   Paper,
   Typography,
   Divider,
+  CircularProgress,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -151,12 +152,14 @@ const Tenant = () => {
 
   return (
     <div>
-      <Typography variant="h4" color="primary">
+      <Typography variant="h3" color="primary">
         Les locataires
       </Typography>
       <Divider className={classes.divider} />
-      {err && <Alert severity="error">{err}</Alert>}
-      {success && <Alert severity="success">{success}</Alert>}
+      <div style={{ marginBottom: "10px" }}>
+        {err && <Alert severity="error">{err}</Alert>}
+        {success && <Alert severity="success">{success}</Alert>}
+      </div>
       <Box className={classes.box3}>
         <TextField
           variant="outlined"
@@ -169,7 +172,6 @@ const Tenant = () => {
           }}
           style={{ width: "20%" }}
         />
-        <Fragment>{tenant && dynamicSearch().length}</Fragment>
       </Box>
       <TableContainer className={classes.table} component={Paper} square>
         <Table stickyHeader>
@@ -196,7 +198,7 @@ const Tenant = () => {
           </TableHead>
           <TableBody>
             <Fragment>
-              {tenant.length > 0 &&
+              {tenant.length > 0 ? (
                 dynamicSearch().map((tenant) => (
                   <TableRow key={tenant._id}>
                     <TableCell component="th" scope="row">
@@ -304,7 +306,7 @@ const Tenant = () => {
                         <Fragment>
                           <Button>
                             <Link
-                              to={`/tenant/${tenant._id}`}
+                              to={`/tenants/${tenant._id}`}
                               className={classes.link}
                             >
                               <HistoryIcon />
@@ -337,7 +339,10 @@ const Tenant = () => {
                       )}
                     </TableCell>
                   </TableRow>
-                ))}
+                ))
+              ) : (
+                <CircularProgress />
+              )}
             </Fragment>
           </TableBody>
         </Table>

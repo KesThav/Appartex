@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component, Fragment, useEffect } from "react";
 import {
   Container,
   Paper,
@@ -73,6 +73,13 @@ const useStyles = makeStyles({
 
 const Login = () => {
   const classes = useStyles();
+
+  useEffect(() => {
+    if (window.location == "/") {
+      window.location = window.location + "#loaded";
+      window.location.reload();
+    }
+  }, []);
   return (
     <Fragment>
       <Container className={classes.root}>

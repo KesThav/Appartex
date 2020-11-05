@@ -20,6 +20,7 @@ import {
   Avatar,
   Typography,
   Divider,
+  CircularProgress,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -28,6 +29,7 @@ import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
+import ArchiveIcon from "@material-ui/icons/Archive";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -80,6 +82,7 @@ const Contract = () => {
     authAxios,
   } = useContext(UserContext);
   const [deleteShow, setDeleteShow] = useState(false);
+  const [archiveShow, setArchiveShow] = useState(false);
   const [data, setData] = useState("");
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -98,10 +101,10 @@ const Contract = () => {
     getTenants();
   }, [contract]);
 
-  const DeleteBuilding = (buildingid) => {
+  const DeleteBuilding = async (contractid) => {
     setLoading(true);
     try {
-      authAxios.delete(`contracts/delete/${buildingid}`);
+      authAxios.delete(`contracts/delete/${contractid}`);
       setLoading(false);
       setDeleteShow(!deleteShow);
     } catch (err) {
@@ -128,6 +131,21 @@ const Contract = () => {
       setLoading(false);
       setEditing(false);
       setSuccess("Contrat modifié avec succès");
+    } catch (err) {
+      setLoading(false);
+      setError(err.response.data);
+    }
+  };
+
+  const archive = async (data) => {
+    setError("");
+    setSuccess("");
+    setLoading(true);
+    try {
+      await authAxios.put(`/contracts/archive/${data}`);
+      setLoading(false);
+      setEditing(false);
+      setSuccess("Contrat archivé avec succès");
     } catch (err) {
       setLoading(false);
       setError(err.response.data);
@@ -191,13 +209,15 @@ const Contract = () => {
 
   return (
     <div>
-      <Typography variant="h4" color="primary">
+      <Typography variant="h3" color="primary">
         Les contrats
       </Typography>
 
       <Divider className={classes.divider} />
-      {err && <Alert severity="error">{err}</Alert>}
-      {success && <Alert severity="success">{success}</Alert>}
+      <div style={{ marginBottom: "10px" }}>
+        {err && <Alert severity="error">{err}</Alert>}
+        {success && <Alert severity="success">{success}</Alert>}
+      </div>
 
       <Box className={classes.box3}>
         <TextField
@@ -238,7 +258,7 @@ const Contract = () => {
           </TableHead>
           <TableBody>
             <Fragment>
-              {contract.length > 0 &&
+              {contract.length > 0 ? (
                 dynamicSearch().map((contract) => (
                   <TableRow key={contract._id}>
                     <TableCell component="th" scope="row">
@@ -333,11 +353,22 @@ const Contract = () => {
                               }}
                             />
                           </Button>
+                          <Button>
+                            <ArchiveIcon
+                              onClick={() => {
+                                setData(contract);
+                                setArchiveShow(!archiveShow);
+                              }}
+                            />
+                          </Button>
                         </Fragment>
                       )}
                     </TableCell>
                   </TableRow>
-                ))}
+                ))
+              ) : (
+                <CircularProgress />
+              )}
             </Fragment>
           </TableBody>
         </Table>
@@ -351,11 +382,11 @@ const Contract = () => {
         onClose={() => setDeleteShow(!deleteShow)}
         disableBackdropClick
       >
-        <DialogTitle>Supprimer un Immeuble</DialogTitle>
+        <DialogTitle>Supprimer un contrat</DialogTitle>
         <DialogContent>
           {" "}
           <DialogContent>
-            Êtez-vous sûr de vouloir supprimer le contract <br />
+            Êtez-vous sûr de vouloir supprimer le contrat <br />
             <strong>{data._id}</strong> ? <br />
             Cette action entrainera : <br />
             <List>
@@ -375,6 +406,39 @@ const Contract = () => {
 
           <Button
             onClick={() => DeleteBuilding(data._id)}
+            color="primary"
+            className={classes.button}
+          >
+            Valider
+          </Button>
+        </Box>
+      </Dialog>
+
+      <Dialog
+        open={archiveShow}
+        onClose={() => setArchiveShow(!archiveShow)}
+        disableBackdropClick
+      >
+        <DialogTitle>Archiver un contrat</DialogTitle>
+        <DialogContent>
+          {" "}
+          <DialogContent>
+            Êtez-vous sûr de vouloir archiver le contract <br />
+            <strong>{data._id}</strong> ? <br />
+            Une fois validé, il n'est plus possible de revenir en arrière.
+          </DialogContent>
+        </DialogContent>
+        <Box className={classes.box}>
+          <Button
+            className={classes.button}
+            color="inherit"
+            onClick={() => setArchiveShow(!archiveShow)}
+          >
+            Retour
+          </Button>
+
+          <Button
+            onClick={() => archive(data._id)}
             color="primary"
             className={classes.button}
           >

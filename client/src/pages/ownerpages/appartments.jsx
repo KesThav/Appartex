@@ -20,6 +20,7 @@ import {
   Chip,
   Typography,
   Divider,
+  CircularProgress,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -28,6 +29,7 @@ import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
+import HomeIcon from "@material-ui/icons/Home";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -161,12 +163,14 @@ const Appart = () => {
   };
   return (
     <div>
-      <Typography variant="h4" color="primary">
+      <Typography variant="h3" color="primary">
         Les Appartements
       </Typography>
       <Divider className={classes.divider} />
-      {err && <Alert severity="error">{err}</Alert>}
-      {success && <Alert severity="success">{success}</Alert>}
+      <div style={{ marginBottom: "10px" }}>
+        {err && <Alert severity="error">{err}</Alert>}
+        {success && <Alert severity="success">{success}</Alert>}
+      </div>
 
       <Box className={classes.box3}>
         <TextField
@@ -205,7 +209,7 @@ const Appart = () => {
           </TableHead>
           <TableBody>
             <Fragment>
-              {appart.length > 0 &&
+              {appart.length > 0 ? (
                 dynamicSearch().map((appart) => {
                   return !appart.building ? (
                     <TableRow key={appart._id}>
@@ -405,7 +409,10 @@ const Appart = () => {
                       </TableCell>
                     </TableRow>
                   );
-                })}
+                })
+              ) : (
+                <CircularProgress />
+              )}
             </Fragment>
           </TableBody>
         </Table>

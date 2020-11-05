@@ -31,6 +31,7 @@ import FolderIcon from "@material-ui/icons/Folder";
 import StorageIcon from "@material-ui/icons/Storage";
 import Chip from "@material-ui/core/Chip";
 import Axios from "axios";
+import PersonIcon from "@material-ui/icons/Person";
 
 const drawerWidth = 250;
 
@@ -58,13 +59,13 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   menuButton: {
     marginRight: theme.spacing(2),
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("md")]: {
       display: "none",
     },
   },
   drawerPaper: {
     width: drawerWidth,
-    backgroundColor: [theme.palette.primary.main],
+    backgroundColor: /* [theme.palette.primary.main] */ "#1A1A1D",
     color: "#ffff",
     height: "100vh",
     overflowX: "hidden",
@@ -90,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Layout = (props) => {
-  const { user, setUser, authAxios } = useContext(UserContext);
+  const { user, setUser, setTenant } = useContext(UserContext);
   const { window } = props;
   const classes = useStyles();
   const theme = useTheme();
@@ -141,6 +142,12 @@ const Layout = (props) => {
           icon: <ReceiptIcon />,
           link: "/bills",
         },
+        {
+          id: 6,
+          name: "Les Statuts",
+          icon: <ReceiptIcon />,
+          link: "/status",
+        },
       ].map((data) => (
         <Link
           key={data.id}
@@ -157,25 +164,13 @@ const Layout = (props) => {
     </List>
   );
 
-  const tenantDrawer = (
+  /*   const tenantDrawer = (
     <List>
       {[
         {
           id: 0,
           name: "Mes données personnelles",
           icon: <StorageIcon />,
-          link: "/",
-        },
-        {
-          id: 1,
-          name: "Mes Contrats",
-          icon: <FolderIcon />,
-          link: "/",
-        },
-        {
-          id: 2,
-          name: "Mes Factures",
-          icon: <ReceiptIcon />,
           link: "/",
         },
       ].map((data, index) => (
@@ -192,12 +187,13 @@ const Layout = (props) => {
         </Link>
       ))}
     </List>
-  );
+  ); */
 
   const logout = () => {
     setChecked(!checked);
     localStorage.removeItem("authtoken");
     setUser(null);
+    setTenant(null);
   };
 
   const container =
@@ -205,7 +201,7 @@ const Layout = (props) => {
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
+      <CssBaseline  />
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <IconButton
@@ -270,17 +266,14 @@ const Layout = (props) => {
               }}
             >
               <Avatar className={classes.avatar}>
-                {" "}
-                {user &&
-                  user.name.charAt(0).toUpperCase() +
-                    user.lastname.charAt(0).toUpperCase()}
+                <PersonIcon style={{ fontSize: 45 }} />
               </Avatar>
               <br />
             </div>
-            {user && user.role == "Admin" ? ownerDrawer : tenantDrawer}
+            {user && user.role == "Admin" ? ownerDrawer : null}
           </Drawer>
         </Hidden>
-        <Hidden xsDown implementation="css">
+        <Hidden mdDown implementation="css">
           <Drawer
             classes={{
               paper: classes.drawerPaper,
@@ -299,15 +292,14 @@ const Layout = (props) => {
               }}
             >
               <Avatar className={classes.avatar}>
-                {user &&
-                  user.name.charAt(0).toUpperCase() +
-                    user.lastname.charAt(0).toUpperCase()}
+                <PersonIcon style={{ fontSize: 45 }} />
               </Avatar>
               <br />
             </div>
-            {user && user.role == "Admin" ? ownerDrawer : tenantDrawer}
+            {user && user.role == "Admin" ? ownerDrawer : null}
           </Drawer>
         </Hidden>
+        )
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />

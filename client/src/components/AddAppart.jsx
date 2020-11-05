@@ -9,6 +9,8 @@ import {
   DialogContent,
   TextField,
   MenuItem,
+  Typography,
+  Fab,
 } from "@material-ui/core";
 
 import Alert from "@material-ui/lab/Alert";
@@ -103,16 +105,18 @@ const AddAppart = () => {
   return (
     <div>
       <Box className={classes.box}>
-        <Button variant="contained" color="primary" onClick={OnOpen}>
-          Ajouter
-        </Button>
+        <Fab variant="contained" color="primary" onClick={OnOpen}>
+          <Typography variant="h5">+</Typography>
+        </Fab>
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
         <DialogTitle>{"Créer un Appartment"}</DialogTitle>
         <DialogContent>
-          {err && <Alert severity="error">{err}</Alert>}
-          {success && <Alert severity="success">{success}</Alert>}
+          <div style={{ marginBottom: "10px" }}>
+            {err && <Alert severity="error">{err}</Alert>}
+            {success && <Alert severity="success">{success}</Alert>}
+          </div>
           <form onSubmit={submit}>
             <TextField
               id="adress"

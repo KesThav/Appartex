@@ -8,8 +8,10 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
+  Fab,
+  Typography,
 } from "@material-ui/core";
-
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
@@ -32,14 +34,9 @@ const useStyles = makeStyles((theme) => ({
 const AddBuilding = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const {
-    loading,
-    setLoading,
-    authAxios,
-    building,
-    setBuilding,
-    getBuildings,
-  } = useContext(UserContext);
+  const { setLoading, authAxios, building, getBuildings } = useContext(
+    UserContext
+  );
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [adress, setAdress] = useState("");
@@ -86,16 +83,18 @@ const AddBuilding = () => {
   return (
     <div>
       <Box className={classes.box}>
-        <Button variant="contained" color="primary" onClick={OnOpen}>
-          Ajouter
-        </Button>
+        <Fab variant="contained" color="primary" onClick={OnOpen}>
+          <Typography variant="h5">+</Typography>
+        </Fab>
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
         <DialogTitle>{"Créer un immeuble"}</DialogTitle>
         <DialogContent>
-          {err && <Alert severity="error">{err}</Alert>}
-          {success && <Alert severity="success">{success}</Alert>}
+          <div style={{ marginBottom: "10px" }}>
+            {err && <Alert severity="error">{err}</Alert>}
+            {success && <Alert severity="success">{success}</Alert>}
+          </div>
           <form onSubmit={submit}>
             <TextField
               id="adress"

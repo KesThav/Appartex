@@ -9,9 +9,9 @@ export default {
       contrastText: "#fff",
     },
     secondary: {
-      light: "#ed4b82",
-      main: "#e91e63",
-      dark: "#a31545",
+      light: "#ff4569",
+      main: "#ff1744",
+      dark: "#b2102f",
       contrastText: "#fff",
     },
     success: {
@@ -31,4 +31,34 @@ export default {
   shape: {
     borderRadius: 0,
   },
+  /* overrides: {
+    MuiCssBaseline: {
+      "@global": {
+        body: {
+          backgroundColor: "#fafafa",
+        },
+      },
+    },
+  }, */
+  overrides: {
+    MuiTableCell: {
+      stickyHeader: {
+        backgroundColor: "#ffff",
+      },
+    },
+    MuiTableFooter: {
+      root: {
+        left: 0,
+        bottom: 0, // <-- KEY
+        zIndex: 2,
+        position: "sticky",
+      },
+    },
+    MuiTypography: {
+      h3: {
+        fontFamily : 'Source Sans Pro'
+      },
+    },
+  },
+
 };

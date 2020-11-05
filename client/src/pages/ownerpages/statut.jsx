@@ -24,7 +24,7 @@ import {
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import AddBuilding from "../../components/AddBuilding";
+import AddStatus from "../../components/AddStatus";
 import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
@@ -70,33 +70,25 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
 }));
-const Building = () => {
-  const {
-    building,
-    setBuilding,
-    getBuildings,
-    setLoading,
-    authAxios,
-  } = useContext(UserContext);
+const Statut = () => {
+  const { status, getStatus, setLoading, authAxios } = useContext(UserContext);
   const [deleteShow, setDeleteShow] = useState(false);
   const [data, setData] = useState("");
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [adress, setAdress] = useState("");
-  const [postalcode, setPostalcode] = useState("");
-  const [city, setCity] = useState("");
+  const [name, setName] = useState("");
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
 
   const classes = useStyles();
   useEffect(() => {
-    getBuildings();
+    getStatus();
   }, []);
 
-  const DeleteBuilding = (buildingid) => {
+  const DeleteStatus = (buildingid) => {
     setLoading(true);
     try {
-      authAxios.delete(`buildings/delete/${buildingid}`);
+      authAxios.delete(`status/delete/${buildingid}`);
       setLoading(false);
       setDeleteShow(!deleteShow);
     } catch (err) {
@@ -112,15 +104,13 @@ const Building = () => {
     setSuccess("");
     setLoading(true);
     const updatedata = {
-      city,
-      adress,
-      postalcode,
+      name,
     };
     try {
-      await authAxios.put(`/buildings/update/${data}`, updatedata);
+      await authAxios.put(`/status/update/${data}`, updatedata);
       setLoading(false);
       setEditing(false);
-      setSuccess("Immeuble modifié avec succès");
+      setSuccess("Statut modifié avec succès");
     } catch (err) {
       setLoading(false);
       setError(err.response.data);
@@ -128,23 +118,24 @@ const Building = () => {
   };
 
   const dynamicSearch = () => {
-    if (building)
-      return building.filter(
+    if (status)
+      return status.filter(
         (name) =>
           name._id
             .toString()
             .toLowerCase()
             .includes(search.toString().toLowerCase()) ||
-          name.postalcode.toString().includes(search.toString()) ||
-          name.adress.toLowerCase().includes(search.toLowerCase()) ||
-          name.city.toLowerCase().includes(search.toLowerCase())
+          name.name
+            .toString()
+            .toLowerCase()
+            .includes(search.toString().toLowerCase())
       );
   };
 
   return (
     <div>
       <Typography variant="h3" color="primary">
-        Les immeubles
+        Les statuts
       </Typography>
 
       <Divider className={classes.divider} />
@@ -172,12 +163,8 @@ const Building = () => {
             <TableRow>
               <Fragment>
                 {[
-                  "Immeuble n°",
-                  "Adresse",
-                  "Code postale",
-                  "Ville",
-                  "Nombre d'appartements",
-                  "Nombre d'appartements occupés",
+                  "Statut n°",
+                  "Type",
                   "Créé le",
                   "Dernière modification",
                   "Actions",
@@ -191,61 +178,33 @@ const Building = () => {
           </TableHead>
           <TableBody>
             <Fragment>
-              {building.length > 0 ? (
-                dynamicSearch().map((building) => (
-                  <TableRow key={building._id}>
+              {status.length > 0 ? (
+                dynamicSearch().map((status) => (
+                  <TableRow key={status._id}>
                     <TableCell component="th" scope="row">
-                      {building._id}
+                      {status._id}
                     </TableCell>
                     <TableCell>
-                      {editing && data === building._id ? (
+                      {editing && data === status._id ? (
                         <TextField
-                          id={building.adress}
+                          id={status.name}
                           type="text"
-                          value={adress}
-                          onChange={(e) => setAdress(e.target.value)}
-                          placeholder="Adresse"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          placeholder="Statut"
                         />
                       ) : (
-                        building.adress
+                        status.name
                       )}
                     </TableCell>
                     <TableCell>
-                      {editing && data === building._id ? (
-                        <TextField
-                          id={building.postalcode}
-                          type="number"
-                          value={postalcode}
-                          onChange={(e) => setPostalcode(e.target.value)}
-                          placeholder="Code postale"
-                        />
-                      ) : (
-                        building.postalcode
-                      )}
+                      {moment(status.createdAt).format("YYYY-MM-DD")}
                     </TableCell>
                     <TableCell>
-                      {editing && data === building._id ? (
-                        <TextField
-                          id={building.city}
-                          type="text"
-                          value={city}
-                          onChange={(e) => setCity(e.target.value)}
-                          placeholder="Ville"
-                        />
-                      ) : (
-                        building.city
-                      )}
-                    </TableCell>
-                    <TableCell>{building.numberofAppart}</TableCell>
-                    <TableCell>{building.counter}</TableCell>
-                    <TableCell>
-                      {moment(building.createdAt).format("YYYY-MM-DD")}
+                      {moment(status.updatedAt).format("YYYY-MM-DD")}
                     </TableCell>
                     <TableCell>
-                      {moment(building.updatedAt).format("YYYY-MM-DD")}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === building._id ? (
+                      {editing && data === status._id ? (
                         <Fragment>
                           <Button>
                             <CheckIcon onClick={submit} />
@@ -259,10 +218,8 @@ const Building = () => {
                           <Button>
                             <EditIcon
                               onClick={() => {
-                                setAdress(building.adress);
-                                setPostalcode(building.postalcode);
-                                setCity(building.city);
-                                setData(building._id);
+                                setName(status.name);
+                                setData(status._id);
                                 setError("");
                                 setSuccess("");
                                 setEditing(!editing);
@@ -272,7 +229,7 @@ const Building = () => {
                           <Button>
                             <DeleteIcon
                               onClick={() => {
-                                setData(building);
+                                setData(status);
                                 setDeleteShow(!deleteShow);
                               }}
                             />
@@ -290,7 +247,7 @@ const Building = () => {
         </Table>
       </TableContainer>
       <div style={{ marginTop: "13px" }}>
-        <AddBuilding />
+        <AddStatus />
       </div>
 
       <Dialog
@@ -302,20 +259,8 @@ const Building = () => {
         <DialogContent>
           {" "}
           <DialogContent>
-            Êtez-vous sûr de vouloir supprimer l'immeuble se trouvant à <br />
-            <strong>
-              {data.adress} {data.postalcode} {data.city}
-            </strong>{" "}
-            ? <br />
-            Cette action entrainera : <br />
-            <List>
-              <ListItem>
-                la suppression de tous les appartements liés dans l'immeuble
-              </ListItem>
-              <ListItem>
-                le suppression de tous les contrats liés à l'immeuble
-              </ListItem>
-            </List>
+            Êtez-vous sûr de vouloir supprimer le statut <br />
+            <strong>{data.name}</strong> ? <br />
             Une fois validé, il n'est plus possible de revenir en arrière.
           </DialogContent>
         </DialogContent>
@@ -329,7 +274,7 @@ const Building = () => {
           </Button>
 
           <Button
-            onClick={() => DeleteBuilding(data._id)}
+            onClick={() => DeleteStatus(data._id)}
             color="primary"
             className={classes.button}
           >
@@ -341,4 +286,4 @@ const Building = () => {
   );
 };
 
-export default Building;
+export default Statut;

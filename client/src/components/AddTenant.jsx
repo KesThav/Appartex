@@ -10,6 +10,8 @@ import {
   DialogContentText,
   TextField,
   InputAdornment,
+  Typography,
+  Fab
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import EmailIcon from "@material-ui/icons/Email";
@@ -101,16 +103,18 @@ const AddTenant = () => {
   return (
     <div>
       <Box className={classes.box}>
-        <Button variant="contained" color="primary" onClick={OnOpen}>
-          Ajouter
-        </Button>
+      <Fab variant="contained" color="primary" onClick={OnOpen}>
+          <Typography variant="h5">+</Typography>
+        </Fab>
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
         <DialogTitle>{"Créer un locataire"}</DialogTitle>
         <DialogContent>
-          {err && <Alert severity="error">{err}</Alert>}
-          {success && <Alert severity="success">{success}</Alert>}
+        <div style={{ marginBottom: "10px" }}>
+        {err && <Alert severity="error">{err}</Alert>}
+        {success && <Alert severity="success">{success}</Alert>}
+      </div>
           <form onSubmit={submit}>
             <TextField
               variant="outlined"

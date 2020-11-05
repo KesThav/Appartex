@@ -21,6 +21,7 @@ import {
   Typography,
   Divider,
   MenuItem,
+  CircularProgress,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -55,10 +56,10 @@ const useStyles = makeStyles((theme) => ({
   },
   box3: {
     marginBottom: 13,
-    paddingRight: 120,
     width: "100%",
     display: "flex",
     flexDirection: "row",
+    justifyContent: "space-between",
   },
   avatar: {
     background: [theme.palette.secondary.main],
@@ -143,7 +144,7 @@ const Bills = () => {
       await authAxios.put(`/bills/update/${data}`, updatedata);
       setLoading(false);
       setEditing(false);
-      setSuccess("Immeuble modifié avec succès");
+      setSuccess("Facture modifié avec succès");
     } catch (err) {
       setLoading(false);
       setError(err.response.data);
@@ -175,12 +176,14 @@ const Bills = () => {
   };
   return (
     <div>
-      <Typography variant="h4" color="primary">
+      <Typography variant="h3" color="primary">
         Les Factures
       </Typography>
       <Divider className={classes.divider} />
-      {err && <Alert severity="error">{err}</Alert>}
-      {success && <Alert severity="success">{success}</Alert>}
+      <div style={{ marginBottom: "10px" }}>
+        {err && <Alert severity="error">{err}</Alert>}
+        {success && <Alert severity="success">{success}</Alert>}
+      </div>
 
       <Box className={classes.box3}>
         <TextField
@@ -194,6 +197,22 @@ const Bills = () => {
           }}
           style={{ width: "20%" }}
         />
+        <Paper
+          style={{
+            paddingLeft: "20px",
+            paddingRight: "40px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h6">
+            Total :{" "}
+            {bill.length > 0 &&
+              dynamicSearch().reduce((acc, bill) => acc + bill.amount, 0)}
+            CHF
+          </Typography>
+        </Paper>
       </Box>
       <TableContainer className={classes.table} component={Paper} square>
         <Table stickyHeader>
@@ -204,7 +223,7 @@ const Bills = () => {
                 "Locataire",
                 "Référence",
                 "Raison",
-                "Montant",
+                "Montant (CHF)",
                 "Statut",
                 "Echéance",
                 "Créé le",
@@ -219,7 +238,7 @@ const Bills = () => {
           </TableHead>
           <TableBody>
             <Fragment>
-              {bill.length > 0 &&
+              {bill.length > 0 ? (
                 dynamicSearch().map((bill) => (
                   <TableRow key={bill._id}>
                     <TableCell>{bill._id}</TableCell>
@@ -276,6 +295,7 @@ const Bills = () => {
                             <HistoryIcon
                               onClick={() => {
                                 getBillHistories(bill._id);
+                                setData(bill._id);
                                 setHistoryShow(!historyShow);
                               }}
                             />
@@ -308,11 +328,15 @@ const Bills = () => {
                       )}
                     </TableCell>
                   </TableRow>
-                ))}
+                ))
+              ) : (
+                <CircularProgress />
+              )}
             </Fragment>
           </TableBody>
         </Table>
       </TableContainer>
+
       <div style={{ marginTop: "13px" }}>
         <AddBills />
       </div>
@@ -321,7 +345,7 @@ const Bills = () => {
         onClose={() => setDeleteShow(!deleteShow)}
         disableBackdropClick
       >
-        <DialogTitle>Supprimer un Immeuble</DialogTitle>
+        <DialogTitle>Supprimer une facture</DialogTitle>
         <DialogContent>
           {" "}
           <DialogContent>
@@ -356,7 +380,7 @@ const Bills = () => {
           onClose={() => setDeleteShow(!deleteShow)}
           disableBackdropClick
         >
-          <DialogTitle>Historique</DialogTitle>
+          <DialogTitle>Historique de la facture {data}</DialogTitle>
           <DialogContent>
             <Table>
               <TableRow>

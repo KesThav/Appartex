@@ -9,8 +9,10 @@ import {
   DialogContent,
   TextField,
   MenuItem,
+  Typography,
+  Fab,
 } from "@material-ui/core";
-
+import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
@@ -57,7 +59,9 @@ const AddBills = () => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (!statusid || !endDate || !tenantid || !reason || !amount) {
+    if (!endDate) {
+      setEndDate(moment().format("YYYY-MM-DD"));
+    } else if (!statusid || !endDate || !tenantid || !reason || !amount) {
       setError("Complétez les champs obligatoires");
     } else {
       setLoading(true);
@@ -101,16 +105,18 @@ const AddBills = () => {
   return (
     <div>
       <Box className={classes.box}>
-        <Button variant="contained" color="primary" onClick={OnOpen}>
-          Ajouter
-        </Button>
+        <Fab variant="contained" color="primary" onClick={OnOpen}>
+          <Typography variant="h5">+</Typography>
+        </Fab>
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
         <DialogTitle>{"Créer une facture"}</DialogTitle>
         <DialogContent>
-          {err && <Alert severity="error">{err}</Alert>}
-          {success && <Alert severity="success">{success}</Alert>}
+          <div style={{ marginBottom: "10px" }}>
+            {err && <Alert severity="error">{err}</Alert>}
+            {success && <Alert severity="success">{success}</Alert>}
+          </div>
           <form onSubmit={submit}>
             <TextField
               variant="outlined"
@@ -179,7 +185,10 @@ const AddBills = () => {
               id="reason"
               type="date"
               variant="outlined"
-              onChange={(e) => setEndDate(e.target.value)}
+              defaultValue={moment().format("YYYY-MM-DD")}
+              onChange={(e) =>
+                setEndDate(moment(e.target.value).format("YYYY-MM-DD"))
+              }
               fullWidth
               placeholder="Raison"
               className={classes.form}

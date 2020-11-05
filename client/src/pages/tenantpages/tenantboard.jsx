@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useContext, useEffect, Fragment } from "react";
+
 import {
   makeStyles,
   Paper,
@@ -25,19 +25,26 @@ import { UserContext } from "../../middlewares/ContextAPI";
 import moment from "moment";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Alert from "@material-ui/lab/Alert";
+import PersonIcon from "@material-ui/icons/Person";
 
 const useStyles = makeStyles((theme) => ({
+  flex: {
+    display: "flex",
+    [theme.breakpoints.up("md")]: {
+      flexDirection: "row",
+    },
+    flexDirection: "column",
+  },
   paper: {
-    width: "30vh",
+    width: "40%",
     display: "flex",
     height: "30vh",
     marginRight: 20,
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-  },
-  paper2: {
-    width: "40vw",
+    marginBottom: 20,
+    marginRight: 20,
   },
   avatar: {
     height: 100,
@@ -153,35 +160,28 @@ const Tenantboard = (props) => {
   }, []);
 
   return (
-    <div>
-      <Container>
+    <Fragment>
+      {bills && console.log(bills)}
+      <Container maxWidthLg>
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}
-        <Grid container>
-          <Grid item md={3}>
-            <Paper className={classes.paper}>
-              <Avatar className={classes.avatar}>
-                <Typography variant="h3">
-                  {user &&
-                    user.name.charAt(0).toUpperCase() +
-                      user.lastname.charAt(0).toUpperCase()}
-                </Typography>
-              </Avatar>
-              <Typography variant="h3">
-                {user && user.name + " " + user.lastname}
-              </Typography>
-              <Typography variant="overline">
-                Créé le{" "}
-                {user && moment(user.createdAt).format("YYYY-MM-DD")}
-              </Typography>
-              <Typography variant="caption">
-                {user && user.email}
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item md={8}>
+        <Box className={classes.flex}>
+          <Paper className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <PersonIcon style={{ fontSize: 85 }} />
+            </Avatar>
+            <Typography variant="h3">
+              {user && user.name + " " + user.lastname}
+            </Typography>
+            <Typography variant="overline">
+              Créé le {user && moment(user.createdAt).format("YYYY-MM-DD")}
+            </Typography>
+            <Typography variant="caption">{user && user.email}</Typography>
+          </Paper>
+
+          <Box className={classes.flex3}>
             <Paper className={classes.details}>
-              <Typography variant="h6">Profil</Typography>
+              <Typography variant="h6"><strong>Profil</strong></Typography>
               <Divider />
               <form className={classes.form} onSubmit={submit}>
                 <TextField
@@ -219,6 +219,7 @@ const Tenantboard = (props) => {
                 <TextField
                   variant="outlined"
                   label="Mot de passe"
+                  type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className={classes.field}
@@ -226,6 +227,7 @@ const Tenantboard = (props) => {
                 <TextField
                   variant="outlined"
                   label="Confirmer le mot de passe"
+                  type="password"
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
                   className={classes.field}
@@ -261,7 +263,7 @@ const Tenantboard = (props) => {
                             "Statut",
                             "Date",
                           ].map((data, index) => (
-                            <TableCell key={index}>{data}</TableCell>
+                            <TableCell key={index}><strong>{data}</strong></TableCell>
                           ))}
                         </TableRow>
                       </TableHead>
@@ -315,7 +317,7 @@ const Tenantboard = (props) => {
                             "Statut",
                             "Echéance",
                           ].map((data, index) => (
-                            <TableCell key={index}>{data}</TableCell>
+                            <TableCell key={index}><strong>{data}</strong></TableCell>
                           ))}
                         </TableRow>
                       </TableHead>
@@ -339,10 +341,10 @@ const Tenantboard = (props) => {
                 </AccordionDetails>
               </Accordion>
             </div>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Container>
-    </div>
+    </Fragment>
   );
 };
 

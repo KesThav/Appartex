@@ -85,7 +85,7 @@ const Login = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { loading, setLoading } = useContext(UserContext);
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, setAuthAxios } = useContext(UserContext);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -102,7 +102,6 @@ const Login = (props) => {
 
       try {
         const res = await axios.post("/auth/login", data);
-        console.log(res);
         localStorage.setItem("authtoken", `Bearer ${res.data}`);
         const decodedToken = jwtDecode(localStorage.authtoken);
         setUser(decodedToken);

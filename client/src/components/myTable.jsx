@@ -56,9 +56,13 @@ const MyTable = ({ data, title, link, header }) => {
                     {data._id}
                   </TableCell>
                   <TableCell>
-                    {moment(data.createdAt).format("YYYY-MM-DD")}
+                    {moment(data.updatedAt).format("YYYY-MM-DD")}
                   </TableCell>
-                  <TableCell>{data.status}</TableCell>
+                  <TableCell>
+                    {typeof data.status == "string"
+                      ? data.status
+                      : data.status.name}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
