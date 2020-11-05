@@ -61,7 +61,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
   try {
     let allbuildings = await Building.find({
       createdBy: ctx.request.jwt._id,
-    }).sort({ createdAt: -1 });
+    }).sort({ updatedAt: -1 });
     ctx.body = allbuildings;
   } catch (err) {
     ctx.throw(500, error);

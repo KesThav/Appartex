@@ -61,7 +61,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
       createdBy: ctx.request.jwt._id,
     })
       .populate("building")
-      .sort({ createdAt: -1 });
+      .sort({ updatedAt: -1 });
     ctx.body = allapparts;
   } catch (err) {
     ctx.throw(400, error);

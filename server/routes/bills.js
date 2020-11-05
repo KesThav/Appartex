@@ -67,7 +67,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
     let allbills = await Bill.find({ createdBy: ctx.request.jwt._id })
       .populate("status", "name")
       .populate("tenant", "name lastname")
-      .sort({ createdAt: -1 });
+      .sort({ updatedAt: -1 });
     ctx.body = allbills;
   } catch (err) {
     ctx.throw(400, error);
@@ -110,7 +110,8 @@ router.get("/:billid", jwt, adminAccess, async (ctx) => {
   try {
     const bill = await Bill.findById(billid)
       .populate("status", "name")
-      .populate("tenant", "name lastname");
+      .populate("tenant", "name lastname")
+      .sort({ updatedAt: -1 });
     if (!bill) {
       ctx.throw(400, "Bill not found");
     } else {

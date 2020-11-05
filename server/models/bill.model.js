@@ -13,7 +13,6 @@ const billSchema = new Mongoose.Schema(
     },
     reference: {
       type: String,
-      required: true,
     },
     amount: {
       type: Number,

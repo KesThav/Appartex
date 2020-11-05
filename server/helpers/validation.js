@@ -41,7 +41,7 @@ const contractSchema = Joi.object({
 
 const billSchema = Joi.object({
   tenant: Joi.objectId().required(),
-  reference: Joi.string().required(),
+  reference: Joi.string().allow(null, ""),
   endDate: Joi.date().required(),
   amount: Joi.number().required(),
   reason: Joi.string().required(),

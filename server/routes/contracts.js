@@ -71,7 +71,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
       .populate("tenant")
       .populate({ path: "appartmentid", populate: { path: "building" } })
       /*       .populate("buildingid") */
-      .sort({ createdAt: -1 });
+      .sort({ updatedAt: -1 });
     ctx.body = allcontracts;
   } catch (err) {
     ctx.throw(err);
@@ -292,7 +292,6 @@ router.put("/archive/:contractid", jwt, adminAccess, async (ctx) => {
   const contract = await Contract.findById(contractid);
   if (!contract) return ctx.throw(404, "contract not found");
 
-  console.log(contract);
   try {
     await Appart.findByIdAndUpdate(contract.appartmentid, { status: "Libre" });
 

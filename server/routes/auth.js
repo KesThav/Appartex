@@ -205,7 +205,7 @@ router.post("/login", async (ctx) => {
  *        description: 'Success'
  *      '400':
  *         description: Field missing
- *      '404': 
+ *      '404':
  *         description: Wrong credentials
  *      '500':
  *         description: Server error
@@ -241,6 +241,7 @@ router.post("/tenant/login", async (ctx) => {
         name: user.name,
         lastname: user.lastname,
         email: user.email,
+        dateofbirth: user.dateofbirth,
         role: user.role,
       },
       process.env.TOKEN_SECRET

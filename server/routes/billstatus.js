@@ -51,7 +51,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
       createdBy: ctx.request.jwt._id,
     })
       .sort({
-        createdAt: -1,
+        updatedAt: -1,
       })
       .populate({
         path: "billid",
@@ -107,7 +107,8 @@ router.get("/:billid", jwt, adminAccess, async (ctx) => {
         select: "tenant",
         populate: { path: "tenant", select: "name lastname" },
       })
-      .populate("status", "name");
+      .populate("status", "name")
+      .sort({ updatedAt: -1 });
     if (!bill) {
       ctx.throw(400, "bill not found");
     } else {

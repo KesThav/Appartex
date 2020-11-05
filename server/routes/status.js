@@ -46,7 +46,7 @@ const { statusSchema } = require("../helpers/validation");
 router.get("/", jwt, adminAccess, async (ctx) => {
   try {
     let allstatus = await Status.find({ createdBy: ctx.request.jwt._id }).sort({
-      createdAt: -1,
+      updatedAt: -1,
     });
     ctx.body = allstatus;
   } catch (err) {

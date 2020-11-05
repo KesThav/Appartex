@@ -72,7 +72,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
   try {
     let alltenants = await Tenant.find({
       createdBy: ctx.request.jwt._id,
-    }).sort({ createdAt: -1 });
+    }).sort({ updatedAt: -1 });
     ctx.body = alltenants;
   } catch (err) {
     ctx.throw(500, error);
@@ -242,6 +242,34 @@ router.put("/update/:tenantid", jwt, filterAccess, async (ctx) => {
     const updatedtenant = await Tenant.findByIdAndUpdate(
       tenantid,
       ctx.request.body,
+      {
+        new: true,
+      }
+    );
+    ctx.body = updatedtenant;
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+router.put("/update/password/:tenantid", jwt, filterAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.tenantid);
+  if (!validate) return ctx.throw(404, "No tenant found");
+  let tenantid = new ObjectId(ctx.params.tenantid);
+
+  const tenant = await Tenant.findOne({ _id: tenantid });
+  if (!tenant) {
+    ctx.throw(404, "No tenant found");
+  }
+
+  const { password } = ctx.request.body;
+
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hashPassword = await bcrypt.hash(password, salt);
+    const updatedtenant = await Tenant.findByIdAndUpdate(
+      tenantid,
+      { password: hashPassword },
       {
         new: true,
       }
@@ -485,8 +513,11 @@ router.get("/contracts/:tenantid", jwt, filterAccess, async (ctx) => {
   try {
     let tenantid = new ObjectId(ctx.params.tenantid);
     const contracts = await Contract.find({ tenant: tenantid })
-      .populate("appartmentid", "adress")
-      .populate("buildingid", "adress postalcode city");
+      .populate({
+        path: "appartmentid",
+        populate: { path: "building" },
+      })
+      .sort({ updatedAt: -1 });
 
     if (!contracts) {
       ctx.throw(404, "no contract found");
@@ -534,7 +565,9 @@ router.get("/bills/:tenantid", jwt, filterAccess, async (ctx) => {
   if (!validate) return ctx.throw(404, "no bill found");
   try {
     let tenantid = new ObjectId(ctx.params.tenantid);
-    const bills = await Bill.find({ tenant: tenantid }).populate("status");
+    const bills = await Bill.find({ tenant: tenantid })
+      .populate("status")
+      .sort({ updatedAt: -1 });
 
     if (!bills) {
       ctx.throw(404, "no contract found");
