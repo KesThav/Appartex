@@ -25,6 +25,7 @@ import Bill from "./pages/ownerpages/bills";
 import Contract from "./pages/ownerpages/contracts";
 import UserSkeleton from "./components/userSkeleton";
 import Status from "./pages/ownerpages/statut";
+import Message from "./pages/ownerpages/messages";
 
 const theme = createMuiTheme(themeSheet);
 
@@ -206,6 +207,11 @@ const App = () => {
                       exact
                       path="/tenants/:tenantid"
                       component={UserSkeleton}
+                    />
+                    <ProtectedRoute
+                      exact
+                      path="/messages"
+                      component={Message}
                     />
                     <ProtectedRoute
                       exact

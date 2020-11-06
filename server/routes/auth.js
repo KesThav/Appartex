@@ -243,6 +243,7 @@ router.post("/tenant/login", async (ctx) => {
         email: user.email,
         dateofbirth: user.dateofbirth,
         role: user.role,
+        createdBy: user.createdBy,
       },
       process.env.TOKEN_SECRET
     );

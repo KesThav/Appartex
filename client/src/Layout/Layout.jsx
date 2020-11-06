@@ -148,6 +148,12 @@ const Layout = (props) => {
           icon: <ReceiptIcon />,
           link: "/status",
         },
+        {
+          id: 7,
+          name: "Les Messages",
+          icon: <ReceiptIcon />,
+          link: "/messages",
+        },
       ].map((data) => (
         <Link
           key={data.id}
@@ -164,14 +170,14 @@ const Layout = (props) => {
     </List>
   );
 
-  /*   const tenantDrawer = (
+  const tenantDrawer = (
     <List>
       {[
         {
           id: 0,
-          name: "Mes données personnelles",
+          name: "Mes messages",
           icon: <StorageIcon />,
-          link: "/",
+          link: "/messages",
         },
       ].map((data, index) => (
         <Link
@@ -187,7 +193,7 @@ const Layout = (props) => {
         </Link>
       ))}
     </List>
-  ); */
+  );
 
   const logout = () => {
     setChecked(!checked);
@@ -201,7 +207,7 @@ const Layout = (props) => {
 
   return (
     <div className={classes.root}>
-      <CssBaseline  />
+      <CssBaseline />
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <IconButton
@@ -270,7 +276,7 @@ const Layout = (props) => {
               </Avatar>
               <br />
             </div>
-            {user && user.role == "Admin" ? ownerDrawer : null}
+            {user && user.role == "Admin" ? ownerDrawer : tenantDrawer}
           </Drawer>
         </Hidden>
         <Hidden mdDown implementation="css">
@@ -296,7 +302,7 @@ const Layout = (props) => {
               </Avatar>
               <br />
             </div>
-            {user && user.role == "Admin" ? ownerDrawer : null}
+            {user && user.role == "Admin" ? ownerDrawer : tenantDrawer}
           </Drawer>
         </Hidden>
         )

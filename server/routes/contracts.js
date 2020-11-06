@@ -70,7 +70,6 @@ router.get("/", jwt, adminAccess, async (ctx) => {
     let allcontracts = await Contract.find({ createdBy: ctx.request.jwt._id })
       .populate("tenant")
       .populate({ path: "appartmentid", populate: { path: "building" } })
-      /*       .populate("buildingid") */
       .sort({ updatedAt: -1 });
     ctx.body = allcontracts;
   } catch (err) {

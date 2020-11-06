@@ -52,6 +52,15 @@ const statusSchema = Joi.object({
   name: Joi.string().required(),
 });
 
+const messageSchema = Joi.object({
+  sendedTo: Joi.objectId().required(),
+  content: Joi.string().required(),
+  status: Joi.string(),
+  title: Joi.string().required(),
+  sendedToType: Joi.string().required(),
+  createdByType: Joi.string().required(),
+});
+
 module.exports = {
   userSchema,
   loginSchema,
@@ -60,4 +69,5 @@ module.exports = {
   contractSchema,
   billSchema,
   statusSchema,
+  messageSchema,
 };

@@ -157,6 +157,10 @@ const Tenantboard = (props) => {
   useEffect(() => {
     getBills();
     getContracts();
+    if (!window.location.hash) {
+      window.location = window.location + "#loaded";
+      window.location.reload();
+    }
   }, []);
 
   return (

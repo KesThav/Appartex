@@ -5,10 +5,12 @@ const messageSchema = new Mongoose.Schema(
     sendedTo: {
       type: Mongoose.Schema.Types.ObjectId,
       required: true,
+      refPath: "sendedToType",
     },
-    date: {
-      type: Date,
-      default: Date.now,
+    sendedToType: {
+      type: String,
+      required: true,
+      enum: ["Owner", "Tenant"],
     },
     content: {
       type: String,
@@ -25,9 +27,15 @@ const messageSchema = new Mongoose.Schema(
     createdBy: {
       type: Mongoose.Schema.Types.ObjectId,
       required: true,
+      refPath: "createdByType",
     },
+    createdByType: {
+      type: String,
+      required: true,
+      enum: ["Owner", "Tenant"],
+    },
+    comments: [{ type: Mongoose.Schema.ObjectId, ref: "Comment" }],
   },
   { timestamps: true }
 );
-
 module.exports = Mongoose.model("Message", messageSchema);
