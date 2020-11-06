@@ -9,7 +9,7 @@ import {
   MenuItem,
   Box,
 } from "@material-ui/core";
-import { UserContext } from "../middlewares/ContextAPI";
+import { UserContext } from "../../middlewares/ContextAPI";
 import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles({
@@ -28,7 +28,7 @@ const useStyles = makeStyles({
   },
 });
 
-const SendMessage = () => {
+const AddMessage = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -171,4 +171,4 @@ const SendMessage = () => {
   );
 };
 
-export default SendMessage;
+export default AddMessage;

@@ -1,14 +1,12 @@
-import React, { useState, Fragment, useContext } from "react";
-import PropTypes from "prop-types";
+import React, { useState, Fragment, useContext, useEffect } from "react";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import Sendmessages from "../../components/sendmessages";
-import Receivemessages from "../../components/receivemessages";
-import Archivedmessages from "../../components/archivedmessage";
-import AddMessage from "../../components/AddMessage";
+import ShowMessages from "../../components/MessagesComponents/ShowMessages";
+import AddMessage from "../../components/MessagesComponents/AddMessage";
 import { UserContext } from "../../middlewares/ContextAPI";
 
 function TabPanel(props) {
@@ -52,7 +50,23 @@ const useStyles = makeStyles((theme) => ({
 export default function VerticalTabs() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const { user } = useContext(UserContext);
+  const { user, authAxios } = useContext(UserContext);
+  const [receivedmessage, setReceivedMessage] = useState("");
+  const [sendedmessage, setSendedMessage] = useState("");
+  const [archivedmessage, setArchivedMessage] = useState("");
+
+  const getMessages = async () => {
+    const received = await authAxios.get("/messages/received");
+    setReceivedMessage(received.data);
+    const send = await authAxios.get("/messages/sended");
+    setSendedMessage(send.data);
+    const archived = await authAxios.get("/messages/archived");
+    setArchivedMessage(archived.data);
+  };
+
+  useEffect(() => {
+    getMessages();
+  }, [receivedmessage, sendedmessage, archivedmessage]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -79,14 +93,20 @@ export default function VerticalTabs() {
         </Tabs>
         <TabPanel value={value} index={0}>
           <Fragment>
-            <Sendmessages />
+            {sendedmessage.length > 0 && (
+              <ShowMessages message={sendedmessage} />
+            )}
           </Fragment>
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <Receivemessages />
+          {receivedmessage.length > 0 && (
+            <ShowMessages message={receivedmessage} />
+          )}
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <Archivedmessages />
+          {archivedmessage.length > 0 && (
+            <ShowMessages message={archivedmessage} />
+          )}
         </TabPanel>
       </div>
     </Fragment>

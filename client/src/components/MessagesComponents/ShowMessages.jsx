@@ -5,7 +5,7 @@ import AccordionDetails from "@material-ui/core/AccordionDetails";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { UserContext } from "../middlewares/ContextAPI";
+import { UserContext } from "../../middlewares/ContextAPI";
 import Avatar from "@material-ui/core/Avatar";
 
 import moment from "moment";
@@ -18,6 +18,10 @@ import CardContent from "@material-ui/core/CardContent";
 import IconButton from "@material-ui/core/IconButton";
 import CardActions from "@material-ui/core/CardActions";
 import ChatBubbleIcon from "@material-ui/icons/ChatBubble";
+
+import AddComments from "./AddComments";
+import DeleteMessage from "./DeleteMessage";
+import ArchiveMessage from "./ArchiveMessage";
 import UnArchiveMessage from "./UnArchiveMessage";
 
 const useStyles = makeStyles((theme) => ({
@@ -33,20 +37,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Messages = (props) => {
+const ShowMessages = ({ message }) => {
   const classes = useStyles();
   const { authAxios, user } = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
-  const [message, setMessage] = useState("");
-
-  const getMessages = async () => {
-    const send = await authAxios.get("/messages/archived");
-    setMessage(send.data);
-  };
-
-  useEffect(() => {
-    getMessages();
-  }, [message]);
 
   return (
     <div className={classes.root}>
@@ -54,9 +48,9 @@ const Messages = (props) => {
         message.map((data) => (
           <Accordion key={data._id} expanded={expanded === data._id}>
             <AccordionSummary
+              component={"span"}
               expandIcon={
                 <ExpandMoreIcon
-                  component={"span"}
                   onClick={() =>
                     setExpanded(expanded == data._id ? false : data._id)
                   }
@@ -74,7 +68,15 @@ const Messages = (props) => {
                       className={classes.avatar}
                     ></Avatar>
                   }
-                  title={data.createdBy.name + " " + data.createdBy.lastname}
+                  title={
+                    data.createdBy.name +
+                    " " +
+                    data.createdBy.lastname +
+                    " -> " +
+                    data.sendedTo.name +
+                    " " +
+                    data.sendedTo.lastname
+                  }
                   subheader={moment(data.createdAt).format("YYYY-MM-DD")}
                 />
                 <CardContent>
@@ -94,9 +96,25 @@ const Messages = (props) => {
                     {data.comments.length}
                     <ChatBubbleIcon />
                   </IconButton>
-                  <Fragment>
-                    <UnArchiveMessage id={data._id} />
-                  </Fragment>
+
+                  {user && user.role !== "Admin" && (
+                    <AddComments id={data._id} />
+                  )}
+
+                  {user &&
+                    user.role == "Admin" &&
+                    (data.status !== "Archivé" ? (
+                      <Fragment>
+                        <AddComments id={data._id} />
+                        <ArchiveMessage id={data._id} />
+                        <DeleteMessage id={data._id} />
+                      </Fragment>
+                    ) : (
+                      <Fragment>
+                        <UnArchiveMessage id={data._id} />
+                        <DeleteMessage id={data._id} />
+                      </Fragment>
+                    ))}
                 </CardActions>
               </Card>
             </AccordionSummary>
@@ -137,4 +155,4 @@ const Messages = (props) => {
     </div>
   );
 };
-export default Messages;
+export default ShowMessages;
