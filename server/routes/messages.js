@@ -403,6 +403,7 @@ router.put("/archive/:messageid", jwt, adminAccess, async (ctx) => {
     await Message.findByIdAndUpdate(ctx.params.messageid, {
       status: "Archivé",
     });
+    ctx.body = "ok";
   } catch (err) {
     ctx.throw(500, err);
   }
@@ -446,6 +447,7 @@ router.put("/unarchive/:messageid", jwt, adminAccess, async (ctx) => {
     await Message.findByIdAndUpdate(ctx.params.messageid, {
       status: "Terminé",
     });
+    ctx.body = "ok";
   } catch (err) {
     ctx.throw(500, err);
   }

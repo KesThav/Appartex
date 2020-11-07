@@ -30,6 +30,7 @@ import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
 import ArchiveIcon from "@material-ui/icons/Archive";
+import LoadingScreen from "../../components/LoadingScreen";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -80,6 +81,7 @@ const Contract = () => {
     getContracts,
     setLoading,
     authAxios,
+    loading,
   } = useContext(UserContext);
   const [deleteShow, setDeleteShow] = useState(false);
   const [archiveShow, setArchiveShow] = useState(false);
@@ -93,22 +95,24 @@ const Contract = () => {
   const [other, setOther] = useState(null);
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
+  const [count, setCount] = useState(0);
 
   const classes = useStyles();
   useEffect(() => {
     getApparts();
     getContracts();
     getTenants();
-  }, [contract]);
+  }, [count]);
 
-  const DeleteBuilding = async (contractid) => {
+  const DeleteContract = async (contractid) => {
+    setDeleteShow(!deleteShow);
     setLoading(true);
     try {
-      authAxios.delete(`contracts/delete/${contractid}`);
+      await authAxios.delete(`contracts/delete/${contractid}`);
       setLoading(false);
-      setDeleteShow(!deleteShow);
+      setCount((count) => count + 1);
+      setSuccess("Contrat supprimé avec succès");
     } catch (err) {
-      setDeleteShow(!deleteShow);
       console.log(err);
       setLoading(false);
     }
@@ -130,6 +134,7 @@ const Contract = () => {
       await authAxios.put(`/contracts/update/${data}`, updatedata);
       setLoading(false);
       setEditing(false);
+      setCount((count) => count + 1);
       setSuccess("Contrat modifié avec succès");
     } catch (err) {
       setLoading(false);
@@ -138,13 +143,14 @@ const Contract = () => {
   };
 
   const archive = async (data) => {
+    setArchiveShow(!archiveShow);
     setError("");
     setSuccess("");
     setLoading(true);
     try {
       await authAxios.put(`/contracts/archive/${data}`);
       setLoading(false);
-      setEditing(false);
+      setCount((count) => count + 1);
       setSuccess("Contrat archivé avec succès");
     } catch (err) {
       setLoading(false);
@@ -258,7 +264,8 @@ const Contract = () => {
           </TableHead>
           <TableBody>
             <Fragment>
-              {contract.length > 0 ? (
+              {!loading ? (
+                contract.length > 0 &&
                 dynamicSearch().map((contract) => (
                   <TableRow key={contract._id}>
                     <TableCell component="th" scope="row">
@@ -330,34 +337,38 @@ const Contract = () => {
                         </Fragment>
                       ) : (
                         <Fragment>
-                          <Button>
-                            <EditIcon
-                              onClick={() => {
-                                setCharge(contract.charge);
-                                setRent(contract.rent);
-                                setTenantid(contract.tenant._id);
-                                setAppartid(contract.appartmentid._id);
-                                setOther(contract.other);
-                                setData(contract._id);
-                                setError("");
-                                setSuccess("");
-                                setEditing(!editing);
-                              }}
-                            />
-                          </Button>
+                          {contract.status !== "Archivé" && (
+                            <Fragment>
+                              <Button>
+                                <EditIcon
+                                  onClick={() => {
+                                    setCharge(contract.charge);
+                                    setRent(contract.rent);
+                                    setTenantid(contract.tenant._id);
+                                    setAppartid(contract.appartmentid._id);
+                                    setOther(contract.other);
+                                    setData(contract._id);
+                                    setError("");
+                                    setSuccess("");
+                                    setEditing(!editing);
+                                  }}
+                                />
+                              </Button>
+                              <Button>
+                                <ArchiveIcon
+                                  onClick={() => {
+                                    setData(contract);
+                                    setArchiveShow(!archiveShow);
+                                  }}
+                                />
+                              </Button>
+                            </Fragment>
+                          )}
                           <Button>
                             <DeleteIcon
                               onClick={() => {
                                 setData(contract);
                                 setDeleteShow(!deleteShow);
-                              }}
-                            />
-                          </Button>
-                          <Button>
-                            <ArchiveIcon
-                              onClick={() => {
-                                setData(contract);
-                                setArchiveShow(!archiveShow);
                               }}
                             />
                           </Button>
@@ -367,7 +378,7 @@ const Contract = () => {
                   </TableRow>
                 ))
               ) : (
-                <CircularProgress />
+                <LoadingScreen />
               )}
             </Fragment>
           </TableBody>
@@ -405,7 +416,7 @@ const Contract = () => {
           </Button>
 
           <Button
-            onClick={() => DeleteBuilding(data._id)}
+            onClick={() => DeleteContract(data._id)}
             color="primary"
             className={classes.button}
           >

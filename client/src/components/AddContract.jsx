@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddAppart = () => {
+const AddContract = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const {
@@ -52,6 +52,7 @@ const AddAppart = () => {
   const [appartid, setAppartid] = useState(null);
   const [rent, setRent] = useState("");
   const [other, setOther] = useState(null);
+  const [count, setCount] = useState(0);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -72,6 +73,7 @@ const AddAppart = () => {
         await authAxios.post("/contracts/add", data);
         setLoading(false);
         setSuccess("Contrat créé avec succès");
+        setCount((count) => count + 1);
       } catch (err) {
         setLoading(false);
         setError(err.response.data);
@@ -94,12 +96,12 @@ const AddAppart = () => {
     getTenants();
     getApparts();
     getContracts();
-  }, []);
+  }, [count]);
 
   return (
     <div>
       <Box className={classes.box}>
-        <Fab variant="contained" color="primary" onClick={OnOpen}>
+        <Fab color="primary" onClick={OnOpen}>
           <Typography variant="h5">+</Typography>
         </Fab>
       </Box>
@@ -209,4 +211,4 @@ const AddAppart = () => {
   );
 };
 
-export default AddAppart;
+export default AddContract;

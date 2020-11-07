@@ -32,6 +32,7 @@ import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
 import HistoryIcon from "@material-ui/icons/History";
+import LoadingScreen from "../../components/LoadingScreen";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -88,18 +89,21 @@ const Tenant = () => {
   const [editing, setEditing] = useState(false);
   const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
+  const [count, setCount] = useState(0);
 
   const classes = useStyles();
   useEffect(() => {
     getTenants();
-  }, []);
+  }, [count]);
 
-  const DeleteTenant = (tenantid) => {
+  const DeleteTenant = async (tenantid) => {
+    setDeleteShow(!deleteShow);
     setLoading(true);
     try {
-      authAxios.delete(`tenants/delete/${tenantid}`);
+      await authAxios.delete(`tenants/delete/${tenantid}`);
       setLoading(false);
-      setDeleteShow(!deleteShow);
+      setSuccess("Locataire supprimé avec succès");
+      setCount((count) => count + 1);
     } catch (err) {
       setDeleteShow(!deleteShow);
       console.log(err);
@@ -123,6 +127,7 @@ const Tenant = () => {
       await authAxios.put(`/tenants/update/${data}`, updatedata);
       setLoading(false);
       setEditing(false);
+      setCount((count) => count + 1);
       setSuccess("Locataire modifié avec succès");
     } catch (err) {
       setLoading(false);

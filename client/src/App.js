@@ -63,85 +63,64 @@ const App = () => {
 
   //get data here and give it to children via Context API
   const getTenants = async () => {
-    setLoading(true);
     try {
       const res = await authAxios.get("/tenants");
       setTenant(res.data);
-      setLoading(false);
     } catch (err) {
-      setLoading(false);
       console.log(err);
     }
   };
 
   const getBuildings = async () => {
-    setLoading(true);
     try {
       const res = await authAxios.get("/buildings");
       setBuilding(res.data);
-      setLoading(false);
     } catch (err) {
-      setLoading(false);
       console.log(err);
     }
   };
 
   const getApparts = async () => {
-    setLoading(true);
     try {
       const res = await authAxios.get("/appartments");
       setAppart(res.data);
-      setLoading(false);
     } catch (err) {
-      setLoading(false);
       console.log(err);
     }
   };
 
   const getContracts = async () => {
-    setLoading(true);
     try {
       const res = await authAxios.get("/contracts");
       setContract(res.data);
-      setLoading(false);
     } catch (err) {
-      setLoading(false);
       console.log(err);
     }
   };
 
   const getBills = async () => {
-    setLoading(true);
     try {
       const res = await authAxios.get("/bills");
       setBill(res.data);
-      setLoading(false);
     } catch (err) {
-      setLoading(false);
       console.log(err);
     }
   };
 
   const getBillHistories = async () => {
-    setLoading(true);
     try {
       const res = await authAxios.get("/history/bills");
       setBillhistory(res.data);
-      setLoading(false);
     } catch (err) {
-      setLoading(false);
       console.log(err);
     }
   };
 
   const getStatus = async () => {
-    setLoading(true);
     try {
       const res = await authAxios.get("/status");
       setStatus(res.data);
-      setLoading(false);
     } catch (err) {
-      setLoading(false);
       console.log(err);
     }
   };

@@ -29,6 +29,7 @@ import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
+import LoadingScreen from "../../components/LoadingScreen";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -71,7 +72,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const Statut = () => {
-  const { status, getStatus, setLoading, authAxios } = useContext(UserContext);
+  const { status, getStatus, setLoading, authAxios, loading } = useContext(
+    UserContext
+  );
   const [deleteShow, setDeleteShow] = useState(false);
   const [data, setData] = useState("");
   const [err, setError] = useState("");
@@ -79,20 +82,22 @@ const Statut = () => {
   const [name, setName] = useState("");
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
+  const [count, setCount] = useState(0);
 
   const classes = useStyles();
   useEffect(() => {
     getStatus();
-  }, []);
+  }, [count]);
 
-  const DeleteStatus = (buildingid) => {
+  const DeleteStatus = async (buildingid) => {
+    setDeleteShow(!deleteShow);
     setLoading(true);
     try {
-      authAxios.delete(`status/delete/${buildingid}`);
+      await authAxios.delete(`status/delete/${buildingid}`);
       setLoading(false);
-      setDeleteShow(!deleteShow);
+      setSuccess("Statut supprimé avec succès");
+      setCount((count) => count + 1);
     } catch (err) {
-      setDeleteShow(!deleteShow);
       console.log(err);
       setLoading(false);
     }
@@ -110,6 +115,7 @@ const Statut = () => {
       await authAxios.put(`/status/update/${data}`, updatedata);
       setLoading(false);
       setEditing(false);
+      setCount((count) => count + 1);
       setSuccess("Statut modifié avec succès");
     } catch (err) {
       setLoading(false);
@@ -178,7 +184,8 @@ const Statut = () => {
           </TableHead>
           <TableBody>
             <Fragment>
-              {status.length > 0 ? (
+              {!loading ? (
+                status.length > 0 &&
                 dynamicSearch().map((status) => (
                   <TableRow key={status._id}>
                     <TableCell component="th" scope="row">
@@ -240,7 +247,7 @@ const Statut = () => {
                   </TableRow>
                 ))
               ) : (
-                <CircularProgress />
+                <LoadingScreen />
               )}
             </Fragment>
           </TableBody>

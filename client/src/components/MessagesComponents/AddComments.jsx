@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Button,
   makeStyles,
@@ -28,13 +28,18 @@ const useStyles = makeStyles({
   },
 });
 
-const AddComments = (props) => {
+const AddComments = ({ id, getMessages }) => {
   const classes = useStyles();
   const [content, setContent] = useState();
   const [open, setOpen] = useState(false);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { authAxios, user, setLoading } = useContext(UserContext);
+  const { authAxios } = useContext(UserContext);
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    getMessages();
+  }, [count]);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -44,14 +49,13 @@ const AddComments = (props) => {
       setError("Le contenu ne peut pas être vide");
     } else {
       const data = {
-        content
-      }
+        content,
+      };
       try {
-        const res = await authAxios.post(`/messages/comment/add/${props.id}`,data);
-        setLoading(false);
+        const res = await authAxios.post(`/messages/comment/add/${id}`, data);
         setSuccess("Message envoyé");
+        setCount((count) => count + 1);
       } catch (err) {
-        setLoading(false);
         setError(err.response.data);
       }
     }
@@ -61,7 +65,6 @@ const AddComments = (props) => {
       <Button
         aria-label="add to favorites"
         onClick={() => {
-          console.log(props.id);
           setOpen(!open);
         }}
       >

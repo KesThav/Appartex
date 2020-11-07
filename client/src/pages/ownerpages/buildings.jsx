@@ -17,10 +17,8 @@ import {
   List,
   ListItem,
   Paper,
-  Avatar,
   Typography,
   Divider,
-  CircularProgress,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -29,6 +27,7 @@ import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
+import LoadingScreen from "../../components/LoadingScreen";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -70,13 +69,14 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
 }));
-const Building = () => {
+const Building = (props) => {
   const {
     building,
     setBuilding,
     getBuildings,
     setLoading,
     authAxios,
+    loading,
   } = useContext(UserContext);
   const [deleteShow, setDeleteShow] = useState(false);
   const [data, setData] = useState("");
@@ -87,18 +87,22 @@ const Building = () => {
   const [city, setCity] = useState("");
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
+  const [count, setCount] = useState(0);
 
   const classes = useStyles();
   useEffect(() => {
     getBuildings();
-  }, []);
+  }, [count]);
 
-  const DeleteBuilding = (buildingid) => {
+  const DeleteBuilding = async (buildingid) => {
+    setDeleteShow(!deleteShow);
     setLoading(true);
+
     try {
-      authAxios.delete(`buildings/delete/${buildingid}`);
+      await authAxios.delete(`buildings/delete/${buildingid}`);
       setLoading(false);
-      setDeleteShow(!deleteShow);
+      setSuccess("Immeuble supprimé avec succès");
+      setCount((count) => count + 1);
     } catch (err) {
       setDeleteShow(!deleteShow);
       console.log(err);
@@ -120,6 +124,7 @@ const Building = () => {
       await authAxios.put(`/buildings/update/${data}`, updatedata);
       setLoading(false);
       setEditing(false);
+      setCount((count) => count + 1);
       setSuccess("Immeuble modifié avec succès");
     } catch (err) {
       setLoading(false);
@@ -140,6 +145,7 @@ const Building = () => {
           name.city.toLowerCase().includes(search.toLowerCase())
       );
   };
+
 
   return (
     <div>
@@ -190,102 +196,103 @@ const Building = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            <Fragment>
-              {building.length > 0 ? (
-                dynamicSearch().map((building) => (
-                  <TableRow key={building._id}>
-                    <TableCell component="th" scope="row">
-                      {building._id}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === building._id ? (
-                        <TextField
-                          id={building.adress}
-                          type="text"
-                          value={adress}
-                          onChange={(e) => setAdress(e.target.value)}
-                          placeholder="Adresse"
-                        />
-                      ) : (
-                        building.adress
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === building._id ? (
-                        <TextField
-                          id={building.postalcode}
-                          type="number"
-                          value={postalcode}
-                          onChange={(e) => setPostalcode(e.target.value)}
-                          placeholder="Code postale"
-                        />
-                      ) : (
-                        building.postalcode
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === building._id ? (
-                        <TextField
-                          id={building.city}
-                          type="text"
-                          value={city}
-                          onChange={(e) => setCity(e.target.value)}
-                          placeholder="Ville"
-                        />
-                      ) : (
-                        building.city
-                      )}
-                    </TableCell>
-                    <TableCell>{building.numberofAppart}</TableCell>
-                    <TableCell>{building.counter}</TableCell>
-                    <TableCell>
-                      {moment(building.createdAt).format("YYYY-MM-DD")}
-                    </TableCell>
-                    <TableCell>
-                      {moment(building.updatedAt).format("YYYY-MM-DD")}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === building._id ? (
-                        <Fragment>
-                          <Button>
-                            <CheckIcon onClick={submit} />
-                          </Button>
-                          <Button>
-                            <CloseIcon onClick={() => setEditing(!editing)} />
-                          </Button>
-                        </Fragment>
-                      ) : (
-                        <Fragment>
-                          <Button>
-                            <EditIcon
-                              onClick={() => {
-                                setAdress(building.adress);
-                                setPostalcode(building.postalcode);
-                                setCity(building.city);
-                                setData(building._id);
-                                setError("");
-                                setSuccess("");
-                                setEditing(!editing);
-                              }}
-                            />
-                          </Button>
-                          <Button>
-                            <DeleteIcon
-                              onClick={() => {
-                                setData(building);
-                                setDeleteShow(!deleteShow);
-                              }}
-                            />
-                          </Button>
-                        </Fragment>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <CircularProgress />
-              )}
-            </Fragment>
+            {!loading ? (
+              building.length > 0 &&
+              dynamicSearch().map((building) => (
+                <TableRow key={building._id}>
+                  <TableCell component="th" scope="row">
+                    {building._id}
+                  </TableCell>
+                  <TableCell>
+                    {editing && data === building._id ? (
+                      <TextField
+                        id={building.adress}
+                        type="text"
+                        value={adress}
+                        onChange={(e) => setAdress(e.target.value)}
+                        placeholder="Adresse"
+                      />
+                    ) : (
+                      building.adress
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {editing && data === building._id ? (
+                      <TextField
+                        id={building.postalcode.toString()}
+                        type="text"
+                        value={postalcode}
+                        onChange={(e) => setPostalcode(e.target.value)}
+                        placeholder="Code postale"
+                      />
+                    ) : (
+                      building.postalcode
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {editing && data === building._id ? (
+                      <TextField
+                        id={building.city}
+                        type="text"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        placeholder="Ville"
+                      />
+                    ) : (
+                      building.city
+                    )}
+                  </TableCell>
+                  <TableCell>{building.numberofAppart}</TableCell>
+                  <TableCell>{building.counter}</TableCell>
+                  <TableCell>
+                    {moment(building.createdAt).format("YYYY-MM-DD")}
+                  </TableCell>
+                  <TableCell>
+                    {moment(building.updatedAt).format("YYYY-MM-DD")}
+                  </TableCell>
+                  <TableCell>
+                    {editing && data === building._id ? (
+                      <Fragment>
+                        <Button>
+                          <CheckIcon onClick={submit} />
+                        </Button>
+                        <Button>
+                          <CloseIcon onClick={() => setEditing(!editing)} />
+                        </Button>
+                      </Fragment>
+                    ) : (
+                      <Fragment>
+                        <Button>
+                          <EditIcon
+                            onClick={() => {
+                              setAdress(building.adress);
+                              setPostalcode(building.postalcode);
+                              setCity(building.city);
+                              setData(building._id);
+                              setError("");
+                              setSuccess("");
+                              setEditing(!editing);
+                            }}
+                          />
+                        </Button>
+                        <Button>
+                          <DeleteIcon
+                            onClick={() => {
+                              setData(building);
+                              setDeleteShow(!deleteShow);
+                            }}
+                          />
+                        </Button>
+                      </Fragment>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <LoadingScreen />
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>

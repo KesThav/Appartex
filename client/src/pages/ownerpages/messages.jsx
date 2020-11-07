@@ -54,6 +54,7 @@ export default function VerticalTabs() {
   const [receivedmessage, setReceivedMessage] = useState("");
   const [sendedmessage, setSendedMessage] = useState("");
   const [archivedmessage, setArchivedMessage] = useState("");
+  const [count, setCount] = useState(0);
 
   const getMessages = async () => {
     const received = await authAxios.get("/messages/received");
@@ -66,7 +67,7 @@ export default function VerticalTabs() {
 
   useEffect(() => {
     getMessages();
-  }, [receivedmessage, sendedmessage, archivedmessage]);
+  }, [count]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -74,7 +75,7 @@ export default function VerticalTabs() {
 
   return (
     <Fragment>
-      <AddMessage />
+      <AddMessage getMessages={getMessages} />
       <div className={classes.root}>
         <Tabs
           orientation="vertical"
@@ -94,18 +95,18 @@ export default function VerticalTabs() {
         <TabPanel value={value} index={0}>
           <Fragment>
             {sendedmessage.length > 0 && (
-              <ShowMessages message={sendedmessage} />
+              <ShowMessages getMessages={getMessages} message={sendedmessage} />
             )}
           </Fragment>
         </TabPanel>
         <TabPanel value={value} index={1}>
           {receivedmessage.length > 0 && (
-            <ShowMessages message={receivedmessage} />
+            <ShowMessages getMessages={getMessages} message={receivedmessage} />
           )}
         </TabPanel>
         <TabPanel value={value} index={2}>
           {archivedmessage.length > 0 && (
-            <ShowMessages message={archivedmessage} />
+            <ShowMessages getMessages={getMessages} message={archivedmessage} />
           )}
         </TabPanel>
       </div>

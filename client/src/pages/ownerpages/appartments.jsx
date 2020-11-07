@@ -29,7 +29,7 @@ import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
-import HomeIcon from "@material-ui/icons/Home";
+import LoadingScreen from "../../components/LoadingScreen";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const Appart = () => {
-  const { appart, getApparts, setAppart, setLoading, authAxios } = useContext(
+  const { appart, getApparts, setLoading, authAxios, loading } = useContext(
     UserContext
   );
   const [deleteShow, setDeleteShow] = useState(false);
@@ -82,20 +82,22 @@ const Appart = () => {
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
   const [build, setBuild] = useState(null);
+  const [count, setCount] = useState(0);
 
   const classes = useStyles();
   useEffect(() => {
     getApparts();
-  }, []);
+  }, [count]);
 
-  const DeleteAppart = (appartid) => {
+  const DeleteAppart = async (appartid) => {
+    setDeleteShow(!deleteShow);
     setLoading(true);
     try {
-      authAxios.delete(`appartments/delete/${appartid}`);
+      await authAxios.delete(`appartments/delete/${appartid}`);
       setLoading(false);
-      setDeleteShow(!deleteShow);
+      setSuccess("Appartement supprimé avec succès");
+      setCount((count) => count + 1);
     } catch (err) {
-      setDeleteShow(!deleteShow);
       console.log(err);
       setLoading(false);
     }
@@ -117,7 +119,8 @@ const Appart = () => {
       await authAxios.put(`/appartments/update/${data}`, updatedata);
       setLoading(false);
       setEditing(false);
-      setSuccess("Immeuble modifié avec succès");
+      setCount((count) => count + 1);
+      setSuccess("Appartement modifié avec succès");
     } catch (err) {
       setLoading(false);
       setError(err.response.data);
@@ -209,7 +212,8 @@ const Appart = () => {
           </TableHead>
           <TableBody>
             <Fragment>
-              {appart.length > 0 ? (
+              {!loading ? (
+                appart.length > 0 &&
                 dynamicSearch().map((appart) => {
                   return !appart.building ? (
                     <TableRow key={appart._id}>
@@ -233,7 +237,7 @@ const Appart = () => {
                       <TableCell>
                         {editing && data === appart._id ? (
                           <TextField
-                            id={appart.postalcode}
+                            id={appart.postalcode.toString()}
                             type="number"
                             value={postalcode}
                             onChange={(e) => setPostalcode(e.target.value)}
@@ -259,7 +263,7 @@ const Appart = () => {
                       <TableCell>
                         {editing && data === appart._id ? (
                           <TextField
-                            id={appart.size}
+                            id={appart.size.toString()}
                             type="number"
                             value={size}
                             onChange={(e) => setSize(e.target.value)}
@@ -310,6 +314,7 @@ const Appart = () => {
                                   setPostalcode(appart.postalcode);
                                   setCity(appart.city);
                                   setData(appart._id);
+                                  setBuild(null);
                                   setError("");
                                   setSuccess("");
                                   setEditing(!editing);
@@ -340,7 +345,7 @@ const Appart = () => {
                       <TableCell>
                         {editing && data === appart._id ? (
                           <TextField
-                            id={appart.size}
+                            id={appart.size.toString()}
                             type="number"
                             value={size}
                             onChange={(e) => setSize(e.target.value)}
@@ -388,8 +393,11 @@ const Appart = () => {
                               <EditIcon
                                 onClick={() => {
                                   setSize(appart.size);
-                                  setBuild(appart.building._id);
+                                  setAdress("");
+                                  setPostalcode("");
+                                  setCity("");
                                   setData(appart._id);
+                                  setBuild(appart.building._id);
                                   setError("");
                                   setSuccess("");
                                   setEditing(!editing);
@@ -411,7 +419,9 @@ const Appart = () => {
                   );
                 })
               ) : (
-                <CircularProgress />
+                <TableRow>
+                  <LoadingScreen />
+                </TableRow>
               )}
             </Fragment>
           </TableBody>

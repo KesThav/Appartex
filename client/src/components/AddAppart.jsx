@@ -51,6 +51,7 @@ const AddAppart = () => {
   const [city, setCity] = useState(null);
   const [size, setSize] = useState("");
   const [build, setBuild] = useState(null);
+  const [count, setCount] = useState(0);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -79,6 +80,7 @@ const AddAppart = () => {
         await authAxios.post("/appartments/add", data);
         setLoading(false);
         setSuccess("Appartement créé avec succès");
+        setCount((count) => count + 1);
       } catch (err) {
         setLoading(false);
         setError(err.response.data);
@@ -100,12 +102,12 @@ const AddAppart = () => {
   useEffect(() => {
     getBuildings();
     getApparts();
-  }, [appart]);
+  }, [count]);
 
   return (
     <div>
       <Box className={classes.box}>
-        <Fab variant="contained" color="primary" onClick={OnOpen}>
+        <Fab color="primary" onClick={OnOpen}>
           <Typography variant="h5">+</Typography>
         </Fab>
       </Box>

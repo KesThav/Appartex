@@ -188,7 +188,7 @@ const UserSkeleton = (props) => {
 
   return (
     <Fragment>
-      <Container maxWidthLg>
+      <Container>
         <Button
           startIcon={<KeyboardBackspaceIcon />}
           className={classes.button}

@@ -1,16 +1,5 @@
-import React, { useState, useContext } from "react";
-import {
-  Button,
-  makeStyles,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  MenuItem,
-  Box,
-  List,
-  ListItem,
-} from "@material-ui/core";
+import React, { useState, useContext, useEffect } from "react";
+import { Button, makeStyles } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
 import Alert from "@material-ui/lab/Alert";
 
@@ -22,13 +11,16 @@ const useStyles = makeStyles({
   },
 });
 
-const DeleteMessage = ({ id }) => {
+const UnArchiveMessage = ({ id, getMessages }) => {
   const classes = useStyles();
-  const [content, setContent] = useState();
-  const [open, setOpen] = useState(false);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { authAxios, user, setLoading } = useContext(UserContext);
+  const { authAxios, setLoading } = useContext(UserContext);
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    getMessages();
+  }, [count]);
 
   const submit = async (id) => {
     setError("");
@@ -37,7 +29,8 @@ const DeleteMessage = ({ id }) => {
     try {
       const res = await authAxios.put(`/messages/unarchive/${id}`);
       setLoading(false);
-      setSuccess("Message supprimé");
+      setSuccess("Message Désarchivé");
+      setCount((count) => count + 1);
     } catch (err) {
       setLoading(false);
       setError(err.response.data);
@@ -45,11 +38,9 @@ const DeleteMessage = ({ id }) => {
   };
   return (
     <div>
-      <Button aria-label="add to favorites" onClick={() => submit(id)}>
-        Désarchiver
-      </Button>
+      <Button onClick={() => submit(id)}>Désarchiver</Button>
     </div>
   );
 };
 
-export default DeleteMessage;
+export default UnArchiveMessage;

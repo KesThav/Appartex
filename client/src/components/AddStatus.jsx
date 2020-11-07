@@ -38,6 +38,7 @@ const AddBills = () => {
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [name, setName] = useState("");
+  const [count, setCount] = useState(0);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -54,6 +55,7 @@ const AddBills = () => {
         await authAxios.post("/status/add", data);
         setLoading(false);
         setSuccess("Status créé avec succès");
+        setCount((count) => count + 1);
       } catch (err) {
         setLoading(false);
         setError(err.response.data);
@@ -70,12 +72,12 @@ const AddBills = () => {
 
   useEffect(() => {
     getStatus();
-  }, [status]);
+  }, [count]);
 
   return (
     <div>
       <Box className={classes.box}>
-        <Fab variant="contained" color="primary" onClick={OnOpen}>
+        <Fab color="primary" onClick={OnOpen}>
           <Typography variant="h5">+</Typography>
         </Fab>
       </Box>

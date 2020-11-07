@@ -31,6 +31,7 @@ import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
 import HistoryIcon from "@material-ui/icons/History";
+import LoadingScreen from "../../components/LoadingScreen";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -71,13 +72,13 @@ const useStyles = makeStyles((theme) => ({
 const Bills = () => {
   const {
     bill,
-    tenant,
     status,
     getBills,
     getTenants,
     getStatus,
     setLoading,
     authAxios,
+    loading,
   } = useContext(UserContext);
   const [deleteShow, setDeleteShow] = useState(false);
   const [historyShow, setHistoryShow] = useState(false);
@@ -93,23 +94,24 @@ const Bills = () => {
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
   const [billhistory, setBillhistory] = useState("");
+  const [count, setCount] = useState(0);
 
   const classes = useStyles();
   useEffect(() => {
     getTenants();
     getStatus();
     getBills();
-  }, [bill]);
+  }, [count]);
 
-  const DeleteBill = (billid) => {
+  const DeleteBill = async (billid) => {
+    setDeleteShow(!deleteShow);
     setLoading(true);
     try {
-      authAxios.delete(`bills/delete/${billid}`);
+      await authAxios.delete(`bills/delete/${billid}`);
       setLoading(false);
-      setDeleteShow(!deleteShow);
       setSuccess("Facture supprimé avec succès");
+      setCount((count) => count + 1);
     } catch (err) {
-      setDeleteShow(!deleteShow);
       console.log(err);
       setLoading(false);
     }
@@ -145,6 +147,7 @@ const Bills = () => {
       setLoading(false);
       setEditing(false);
       setSuccess("Facture modifié avec succès");
+      setCount((count) => count + 1);
     } catch (err) {
       setLoading(false);
       setError(err.response.data);
@@ -238,7 +241,8 @@ const Bills = () => {
           </TableHead>
           <TableBody>
             <Fragment>
-              {bill.length > 0 ? (
+              {!loading ? (
+                bill.length > 0 &&
                 dynamicSearch().map((bill) => (
                   <TableRow key={bill._id}>
                     <TableCell>{bill._id}</TableCell>
@@ -330,7 +334,7 @@ const Bills = () => {
                   </TableRow>
                 ))
               ) : (
-                <CircularProgress />
+                <LoadingScreen />
               )}
             </Fragment>
           </TableBody>
@@ -383,18 +387,22 @@ const Bills = () => {
           <DialogTitle>Historique de la facture {data}</DialogTitle>
           <DialogContent>
             <Table>
-              <TableRow>
-                <TableCell>Date</TableCell>
-                <TableCell>Statut</TableCell>
-              </TableRow>
-              {billhistory.map((bh) => (
+              <TableHead>
                 <TableRow>
-                  <TableCell>
-                    {moment(bh.createdAt).format("YYYY-MM-DD")}
-                  </TableCell>
-                  <TableCell>{bh.status.name}</TableCell>
+                  <TableCell>Date</TableCell>
+                  <TableCell>Statut</TableCell>
                 </TableRow>
-              ))}
+              </TableHead>
+              <TableBody>
+                {billhistory.map((bh) => (
+                  <TableRow key={bh._id}>
+                    <TableCell>
+                      {moment(bh.createdAt).format("YYYY-MM-DD")}
+                    </TableCell>
+                    <TableCell>{bh.status.name}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
             </Table>
           </DialogContent>
           <Box className={classes.box}>

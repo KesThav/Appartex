@@ -54,6 +54,7 @@ const AddBills = () => {
   const [reason, setReason] = useState("");
   const [tenantid, setTenantid] = useState("");
   const [statusid, setStatusid] = useState("");
+  const [count, setCount] = useState(0);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -77,6 +78,7 @@ const AddBills = () => {
         await authAxios.post("/bills/add", data);
         setLoading(false);
         setSuccess("Facture créé avec succès");
+        setCount((count) => count + 1);
       } catch (err) {
         setLoading(false);
         setError(err.response.data);
@@ -100,12 +102,12 @@ const AddBills = () => {
     getTenants();
     getStatus();
     getBills();
-  }, []);
+  }, [count]);
 
   return (
     <div>
       <Box className={classes.box}>
-        <Fab variant="contained" color="primary" onClick={OnOpen}>
+        <Fab color="primary" onClick={OnOpen}>
           <Typography variant="h5">+</Typography>
         </Fab>
       </Box>

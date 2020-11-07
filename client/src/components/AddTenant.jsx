@@ -11,7 +11,7 @@ import {
   TextField,
   InputAdornment,
   Typography,
-  Fab
+  Fab,
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import EmailIcon from "@material-ui/icons/Email";
@@ -50,6 +50,7 @@ const AddTenant = () => {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [dateofbirth, setDate] = useState();
+  const [count, setCount] = useState(0);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -77,6 +78,7 @@ const AddTenant = () => {
         await authAxios.post("/tenants/add", data);
         setLoading(false);
         setSuccess("Locataire créé avec succès");
+        setCount((count) => count + 1);
       } catch (err) {
         setLoading(false);
         setError(err.response.data);
@@ -98,12 +100,12 @@ const AddTenant = () => {
 
   useEffect(() => {
     getTenants();
-  }, [tenant]);
+  }, [count]);
 
   return (
     <div>
       <Box className={classes.box}>
-      <Fab variant="contained" color="primary" onClick={OnOpen}>
+        <Fab color="primary" onClick={OnOpen}>
           <Typography variant="h5">+</Typography>
         </Fab>
       </Box>
@@ -111,10 +113,10 @@ const AddTenant = () => {
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
         <DialogTitle>{"Créer un locataire"}</DialogTitle>
         <DialogContent>
-        <div style={{ marginBottom: "10px" }}>
-        {err && <Alert severity="error">{err}</Alert>}
-        {success && <Alert severity="success">{success}</Alert>}
-      </div>
+          <div style={{ marginBottom: "10px" }}>
+            {err && <Alert severity="error">{err}</Alert>}
+            {success && <Alert severity="success">{success}</Alert>}
+          </div>
           <form onSubmit={submit}>
             <TextField
               variant="outlined"

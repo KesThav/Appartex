@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Button,
   makeStyles,
@@ -22,15 +22,21 @@ const useStyles = makeStyles({
   },
 });
 
-const DeleteMessage = ({id}) => {
+const DeleteMessage = ({ id, getMessages }) => {
   const classes = useStyles();
   const [content, setContent] = useState();
   const [open, setOpen] = useState(false);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const { authAxios, user, setLoading } = useContext(UserContext);
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    getMessages();
+  }, [count]);
 
   const submit = async (id) => {
+    setOpen(!open);
     setError("");
     setSuccess("");
     setLoading(true);
@@ -38,6 +44,7 @@ const DeleteMessage = ({id}) => {
       const res = await authAxios.delete(`/messages/delete/${id}`);
       setLoading(false);
       setSuccess("Message supprimé");
+      setCount((count) => count + 1);
     } catch (err) {
       setLoading(false);
       setError(err.response.data);

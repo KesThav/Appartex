@@ -7,22 +7,20 @@ import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { UserContext } from "../../middlewares/ContextAPI";
 import Avatar from "@material-ui/core/Avatar";
-
 import moment from "moment";
 import Divider from "@material-ui/core/Divider";
-
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
-
 import IconButton from "@material-ui/core/IconButton";
 import CardActions from "@material-ui/core/CardActions";
 import ChatBubbleIcon from "@material-ui/icons/ChatBubble";
-
+import Badge from "@material-ui/core/Badge";
 import AddComments from "./AddComments";
 import DeleteMessage from "./DeleteMessage";
 import ArchiveMessage from "./ArchiveMessage";
 import UnArchiveMessage from "./UnArchiveMessage";
+import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,14 +35,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ShowMessages = ({ message }) => {
+const ShowMessages = ({ message, getMessages }) => {
   const classes = useStyles();
-  const { authAxios, user } = useContext(UserContext);
+  const { authAxios, user, loading } = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
 
   return (
     <div className={classes.root}>
-      {message.length > 0 &&
+      {!loading ? (
+        message.length > 0 &&
         message.map((data) => (
           <Accordion key={data._id} expanded={expanded === data._id}>
             <AccordionSummary
@@ -62,12 +61,7 @@ const ShowMessages = ({ message }) => {
             >
               <Card className={classes.root}>
                 <CardHeader
-                  avatar={
-                    <Avatar
-                      aria-label="recipe"
-                      className={classes.avatar}
-                    ></Avatar>
-                  }
+                  avatar={<Avatar className={classes.avatar} />}
                   title={
                     data.createdBy.name +
                     " " +
@@ -78,6 +72,7 @@ const ShowMessages = ({ message }) => {
                     data.sendedTo.lastname
                   }
                   subheader={moment(data.createdAt).format("YYYY-MM-DD")}
+                  action={<Badge>{data.status}</Badge>}
                 />
                 <CardContent>
                   <Typography variant="h6" color="textPrimary" component="p">
@@ -98,21 +93,33 @@ const ShowMessages = ({ message }) => {
                   </IconButton>
 
                   {user && user.role !== "Admin" && (
-                    <AddComments id={data._id} />
+                    <AddComments getMessages={getMessages} id={data._id} />
                   )}
 
                   {user &&
                     user.role == "Admin" &&
                     (data.status !== "Archivé" ? (
                       <Fragment>
-                        <AddComments id={data._id} />
-                        <ArchiveMessage id={data._id} />
-                        <DeleteMessage id={data._id} />
+                        <AddComments getMessages={getMessages} id={data._id} />
+                        <ArchiveMessage
+                          getMessages={getMessages}
+                          id={data._id}
+                        />
+                        <DeleteMessage
+                          getMessages={getMessages}
+                          id={data._id}
+                        />
                       </Fragment>
                     ) : (
                       <Fragment>
-                        <UnArchiveMessage id={data._id} />
-                        <DeleteMessage id={data._id} />
+                        <UnArchiveMessage
+                          getMessages={getMessages}
+                          id={data._id}
+                        />
+                        <DeleteMessage
+                          getMessages={getMessages}
+                          id={data._id}
+                        />
                       </Fragment>
                     ))}
                 </CardActions>
@@ -151,7 +158,10 @@ const ShowMessages = ({ message }) => {
               </div>
             </AccordionDetails>
           </Accordion>
-        ))}
+        ))
+      ) : (
+        <CircularProgress />
+      )}
     </div>
   );
 };

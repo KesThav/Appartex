@@ -28,7 +28,7 @@ const useStyles = makeStyles({
   },
 });
 
-const AddMessage = () => {
+const AddMessage = ({ getMessages }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -39,6 +39,7 @@ const AddMessage = () => {
   const [success, setSuccess] = useState("");
   const [tenantid, setTenantid] = useState("");
   const [content, setContent] = useState("");
+  const [count, setCount] = useState(0);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -60,6 +61,7 @@ const AddMessage = () => {
           const res = await authAxios.post("/messages/add", data);
           setLoading(false);
           setSuccess("Message envoyé");
+          setCount((count) => count + 1);
         } catch (err) {
           setLoading(false);
           setError(err.response.data);
@@ -81,6 +83,7 @@ const AddMessage = () => {
           const res = await authAxios.post("/messages/add", data);
           setLoading(false);
           setSuccess("Message envoyé");
+          setCount((count) => count + 1);
         } catch (err) {
           setLoading(false);
           setError(err.response.data);
@@ -91,7 +94,8 @@ const AddMessage = () => {
 
   useEffect(() => {
     getTenants();
-  }, []);
+    getMessages();
+  }, [count]);
 
   return (
     <div>

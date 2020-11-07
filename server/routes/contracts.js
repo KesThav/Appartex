@@ -345,20 +345,27 @@ router.delete("/delete/:contractid", jwt, adminAccess, async (ctx) => {
   const contract = await Contract.findById(contractid);
   if (!contract) return ctx.throw(404, "contract not found");
 
-  console.log(contract);
   try {
-    await Appart.findByIdAndUpdate(contract.appartmentid, { status: "Libre" });
+    const status = await Contract.findById(contractid).select({ status: 1 });
+    if (status.status !== "Archivé") {
+      await Appart.findByIdAndUpdate(contract.appartmentid, {
+        status: "Libre",
+      });
 
-    const buildingid = await Appart.findById(contract.appartmentid).select({
-      building: 1,
-      _id: 0,
-    });
+      const buildingid = await Appart.findById(contract.appartmentid).select({
+        building: 1,
+        _id: 0,
+      });
 
-    await Building.findByIdAndUpdate(buildingid.building, {
-      $inc: { counter: -1 },
-    });
+      await Building.findByIdAndUpdate(buildingid.building, {
+        $inc: { counter: -1 },
+      });
 
-    await Contract.findByIdAndDelete(contractid);
+      await Contract.findByIdAndDelete(contractid);
+    } else {
+      await Contract.findByIdAndDelete(contractid);
+    }
+
     ctx.body = "ok";
   } catch (err) {
     ctx.throw(err);

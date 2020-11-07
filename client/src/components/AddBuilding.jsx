@@ -10,8 +10,8 @@ import {
   TextField,
   Fab,
   Typography,
+  CircularProgress,
 } from "@material-ui/core";
-import AddCircleIcon from "@material-ui/icons/AddCircle";
 import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
@@ -34,14 +34,20 @@ const useStyles = makeStyles((theme) => ({
 const AddBuilding = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const { setLoading, authAxios, building, getBuildings } = useContext(
-    UserContext
-  );
+  const {
+    setLoading,
+    authAxios,
+    building,
+    getBuildings,
+    loading,
+    setBuilding,
+  } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [adress, setAdress] = useState("");
   const [postalcode, setPostalcode] = useState("");
   const [city, setCity] = useState("");
+  const [count, setCount] = useState(0);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -60,6 +66,7 @@ const AddBuilding = () => {
         await authAxios.post("/buildings/add", data);
         setLoading(false);
         setSuccess("Immeuble créé avec succès");
+        setCount((count) => count + 1);
       } catch (err) {
         setLoading(false);
         setError(err.response.data);
@@ -78,12 +85,12 @@ const AddBuilding = () => {
 
   useEffect(() => {
     getBuildings();
-  }, [building]);
+  }, [count]);
 
   return (
     <div>
       <Box className={classes.box}>
-        <Fab variant="contained" color="primary" onClick={OnOpen}>
+        <Fab color="primary" onClick={OnOpen}>
           <Typography variant="h5">+</Typography>
         </Fab>
       </Box>
@@ -94,6 +101,7 @@ const AddBuilding = () => {
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}
             {success && <Alert severity="success">{success}</Alert>}
+            {loading && <CircularProgress />}
           </div>
           <form onSubmit={submit}>
             <TextField

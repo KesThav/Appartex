@@ -1,15 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Button,
   makeStyles,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  MenuItem,
-  Box,
-  List,
-  ListItem,
 } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
 import Alert from "@material-ui/lab/Alert";
@@ -22,13 +14,16 @@ const useStyles = makeStyles({
   },
 });
 
-const DeleteMessage = ({ id }) => {
+const ArchiveMessage = ({ id, getMessages }) => {
   const classes = useStyles();
-  const [content, setContent] = useState();
-  const [open, setOpen] = useState(false);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { authAxios, user, setLoading } = useContext(UserContext);
+  const { authAxios, setLoading } = useContext(UserContext);
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    getMessages();
+  }, [count]);
 
   const submit = async (id) => {
     setError("");
@@ -37,7 +32,8 @@ const DeleteMessage = ({ id }) => {
     try {
       const res = await authAxios.put(`/messages/archive/${id}`);
       setLoading(false);
-      setSuccess("Message supprimé");
+      setSuccess("Message Archivé");
+      setCount((count) => count + 1);
     } catch (err) {
       setLoading(false);
       setError(err.response.data);
@@ -45,11 +41,9 @@ const DeleteMessage = ({ id }) => {
   };
   return (
     <div>
-      <Button aria-label="add to favorites" onClick={() => submit(id)}>
-        Archiver
-      </Button>
+      <Button onClick={() => submit(id)}>Archiver</Button>
     </div>
   );
 };
 
-export default DeleteMessage;
+export default ArchiveMessage;
