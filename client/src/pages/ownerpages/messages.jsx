@@ -50,11 +50,10 @@ const useStyles = makeStyles((theme) => ({
 const Drawer = (props) => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const { user, authAxios } = useContext(UserContext);
+  const { user, authAxios, count } = useContext(UserContext);
   const [receivedmessage, setReceivedMessage] = useState("");
   const [sendedmessage, setSendedMessage] = useState("");
   const [archivedmessage, setArchivedMessage] = useState("");
-  const [count, setCount] = useState(0);
 
   const getMessages = async () => {
     const received = await authAxios.get("/messages/received");
@@ -95,30 +94,18 @@ const Drawer = (props) => {
         <TabPanel value={value} index={0}>
           <Fragment>
             {sendedmessage.length > 0 && (
-              <ShowMessages
-                getMessages={getMessages}
-                message={sendedmessage}
-                push={props.history.push}
-              />
+              <ShowMessages getMessages={getMessages} message={sendedmessage} />
             )}
           </Fragment>
         </TabPanel>
         <TabPanel value={value} index={1}>
           {receivedmessage.length > 0 && (
-            <ShowMessages
-              getMessages={getMessages}
-              message={receivedmessage}
-              push={props.history.push}
-            />
+            <ShowMessages getMessages={getMessages} message={receivedmessage} />
           )}
         </TabPanel>
         <TabPanel value={value} index={2}>
           {archivedmessage.length > 0 && (
-            <ShowMessages
-              getMessages={getMessages}
-              message={archivedmessage}
-              push={props.history.push}
-            />
+            <ShowMessages getMessages={getMessages} message={archivedmessage} />
           )}
         </TabPanel>
       </div>

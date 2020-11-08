@@ -11,8 +11,7 @@ const ProtectedRoute = ({ component: Component, ...props }) => {
       <Route
         {...props}
         render={(props) =>
-          user /* &&
-          (user.role == "Admin" || user._id == props.match.params.tenantid) */ ? (
+          user ? (
             <Component {...props} />
           ) : (
             <Redirect to="/forbidden" />

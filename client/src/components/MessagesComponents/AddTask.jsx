@@ -34,9 +34,14 @@ const useStyles = makeStyles((theme) => ({
 const AddTask = ({ id }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const { setLoading, authAxios, status, getStatus, loading } = useContext(
-    UserContext
-  );
+  const {
+    setLoading,
+    authAxios,
+    status,
+    getStatus,
+    loading,
+    count,
+  } = useContext(UserContext);
   const [err, setError] = useState("");
   const [statusid, setStatusid] = useState("");
   const [success, setSuccess] = useState("");
@@ -45,7 +50,6 @@ const AddTask = ({ id }) => {
   const [endDate, setEndDate] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [count, setCount] = useState(0);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -54,7 +58,9 @@ const AddTask = ({ id }) => {
     if (!startDate || !endDate || !messageid || !title || !content) {
       setError("Complétez tous les champs");
     } else if (startDate > endDate) {
-      setError("jfggh");
+      setError(
+        "La date de fin ne peut pas être plus petit que la date de début"
+      );
     } else {
       const data = {
         startDate,
@@ -66,7 +72,7 @@ const AddTask = ({ id }) => {
       };
       try {
         const res = await authAxios.post("/tasks/add", data);
-        setSuccess("Task créé avec succès");
+        setSuccess("Tâche créé avec succès");
       } catch (err) {
         setLoading(false);
         setError(err.response.data);
@@ -155,6 +161,7 @@ const AddTask = ({ id }) => {
               id="date du début"
               type="datetime-local"
               variant="outlined"
+              label="Date de début"
               defaultValue={moment().format("YYYY-MM-DDTHH:MM")}
               onChange={(e) => setStartDate(e.target.value)}
               fullWidth
@@ -165,6 +172,7 @@ const AddTask = ({ id }) => {
               id="date de fin"
               type="datetime-local"
               variant="outlined"
+              label="Date de fin"
               defaultValue={moment().format("YYYY-MM-DDTHH:MM")}
               onChange={(e) => {
                 setEndDate(e.target.value);

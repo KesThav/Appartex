@@ -28,12 +28,7 @@ const DeleteMessage = ({ id, getMessages }) => {
   const [open, setOpen] = useState(false);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { authAxios, user, setLoading } = useContext(UserContext);
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    getMessages();
-  }, [count]);
+  const { authAxios, user, setLoading, setCount } = useContext(UserContext);
 
   const submit = async (id) => {
     setOpen(!open);

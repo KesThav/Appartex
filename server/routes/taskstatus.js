@@ -32,7 +32,7 @@ let ObjectId = require("mongodb").ObjectId;
  *    summary : Return all tasks histories
  *    operationId : gettasksshistories
  *    tags :
- *        - task history
+ *        - history
  *    security:
  *        - bearerAuth: []
  *    responses:
@@ -70,7 +70,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *    summary : Return all histories of one task
  *    operationId : gettaskhistories
  *    tags :
- *        - task history
+ *        - history
  *    security:
  *        - bearerAuth: []
  *    parameters:

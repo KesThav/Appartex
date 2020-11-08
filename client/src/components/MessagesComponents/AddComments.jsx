@@ -12,7 +12,6 @@ import {
 import { UserContext } from "../../middlewares/ContextAPI";
 import Alert from "@material-ui/lab/Alert";
 
-
 const useStyles = makeStyles({
   button: {
     marginBottom: 30,
@@ -35,12 +34,7 @@ const AddComments = ({ id, getMessages }) => {
   const [open, setOpen] = useState(false);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { authAxios } = useContext(UserContext);
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    getMessages();
-  }, [count]);
+  const { authAxios, setCount } = useContext(UserContext);
 
   const submit = async (e) => {
     e.preventDefault();

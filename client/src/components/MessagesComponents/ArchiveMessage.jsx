@@ -1,8 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import {
-  Button,
-  makeStyles,
-} from "@material-ui/core";
+import { Button, makeStyles } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
 import Alert from "@material-ui/lab/Alert";
 
@@ -18,12 +15,7 @@ const ArchiveMessage = ({ id, getMessages }) => {
   const classes = useStyles();
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { authAxios, setLoading } = useContext(UserContext);
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    getMessages();
-  }, [count]);
+  const { authAxios, setLoading, setCount } = useContext(UserContext);
 
   const submit = async (id) => {
     setError("");

@@ -29,12 +29,11 @@ const EditMessageStatus = ({ id, statustype, getMessages }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
-  const { authAxios, user, setLoading } = useContext(UserContext);
+  const { authAxios, user, setLoading, setCount } = useContext(UserContext);
   const [content, setContent] = useState("");
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [status, setStatus] = useState(statustype);
-  const [count, setCount] = useState(0);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -59,10 +58,6 @@ const EditMessageStatus = ({ id, statustype, getMessages }) => {
     { value: "Tâche créé", label: "Tâche créé" },
     { value: "Terminé", label: "Terminé" },
   ];
-
-  useEffect(() => {
-    getMessages();
-  }, [count]);
 
   return (
     <div>

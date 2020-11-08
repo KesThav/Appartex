@@ -31,6 +31,8 @@ import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
 import ArchiveIcon from "@material-ui/icons/Archive";
 import LoadingScreen from "../../components/LoadingScreen";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import SearchIcon from "@material-ui/icons/Search";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -235,7 +237,14 @@ const Contract = () => {
           onChange={(e) => {
             setSearch(e.target.value);
           }}
-          style={{ width: "20%" }}
+          style={{ width: "30%" }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
         />
       </Box>
       <TableContainer className={classes.table} component={Paper} square>

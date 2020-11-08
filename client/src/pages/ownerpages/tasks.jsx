@@ -107,7 +107,9 @@ const Tasks = () => {
     if (!startDate || !endDate || !messageid || !title || !content) {
       setError("Complétez tous les champs");
     } else if (startDate > endDate) {
-      setError("jfggh");
+      setError(
+        "La date de fin ne peut pas être plus petit que la date de début"
+      );
     } else {
       setLoading(true);
       const data = {
@@ -120,7 +122,7 @@ const Tasks = () => {
       };
       try {
         const res = await authAxios.put(`/tasks/update/${taskid}`, data);
-        setSuccess("Task modifié avec succès");
+        setSuccess("Tâche modifié avec succès");
         setCount((count) => count + 1);
         setLoading(false);
       } catch (err) {
@@ -136,7 +138,7 @@ const Tasks = () => {
     try {
       await authAxios.delete(`/tasks/delete/${taskid}`);
       setLoading(false);
-      setSuccess("Task supprimé avec succès");
+      setSuccess("Tâche supprimé avec succès");
       setCount((count) => count + 1);
     } catch (err) {
       console.log(err);
@@ -288,6 +290,7 @@ const Tasks = () => {
               id="date du début"
               type="datetime-local"
               variant="outlined"
+              label="Date de début"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
               fullWidth
@@ -298,6 +301,7 @@ const Tasks = () => {
               id="date de fin"
               type="datetime-local"
               variant="outlined"
+              label="Date de fin"
               value={endDate}
               onChange={(e) => {
                 setEndDate(e.target.value);

@@ -15,12 +15,7 @@ const UnArchiveMessage = ({ id, getMessages }) => {
   const classes = useStyles();
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { authAxios, setLoading } = useContext(UserContext);
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    getMessages();
-  }, [count]);
+  const { authAxios, setLoading, setCount } = useContext(UserContext);
 
   const submit = async (id) => {
     setError("");

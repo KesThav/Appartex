@@ -32,14 +32,19 @@ const AddMessage = ({ getMessages }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
-  const { authAxios, getTenants, tenant, user, setLoading } = useContext(
-    UserContext
-  );
+  const {
+    authAxios,
+    getTenants,
+    tenant,
+    user,
+    setLoading,
+    setCount,
+    count,
+  } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [tenantid, setTenantid] = useState("");
   const [content, setContent] = useState("");
-  const [count, setCount] = useState(0);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -94,7 +99,6 @@ const AddMessage = ({ getMessages }) => {
 
   useEffect(() => {
     getTenants();
-    getMessages();
   }, [count]);
 
   return (

@@ -91,7 +91,13 @@ let ObjectId = require("mongodb").ObjectId;
 
 router.get("/", jwt, async (ctx) => {
   try {
-    let allmessages = await Message.find({})
+    let allmessages = await Message.find({
+      $or: [
+        { createdBy: ctx.request.jwt._id },
+        { sendedTo: ctx.request.jwt._id },
+      ],
+      status: { $ne: "Archivé" },
+    })
       .populate("sendedTo", "name lastname")
       .populate("createdBy", "name lastname")
       .populate({

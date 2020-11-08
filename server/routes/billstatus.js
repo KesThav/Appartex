@@ -32,7 +32,7 @@ let ObjectId = require("mongodb").ObjectId;
  *    summary : Return all bills histories
  *    operationId : getbillshistories
  *    tags :
- *        - bill history
+ *        - history
  *    security:
  *        - bearerAuth: []
  *    responses:
@@ -72,7 +72,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *    summary : Return all histories of one bill
  *    operationId : getbillhistories
  *    tags :
- *        - bill history
+ *        - history
  *    security:
  *        - bearerAuth: []
  *    parameters:

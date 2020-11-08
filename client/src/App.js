@@ -62,6 +62,7 @@ const App = () => {
   const [success, setSuccess] = useState("");
   const [status, setStatus] = useState("");
   const [task, setTask] = useState("");
+  const [count, setCount] = useState(0);
 
   //get data here and give it to children via Context API
   const getTenants = async () => {
@@ -174,6 +175,8 @@ const App = () => {
             task,
             setTask,
             getTasks,
+            count,
+            setCount,
           }}
         >
           <Router>

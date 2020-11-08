@@ -206,9 +206,8 @@ const Layout = (props) => {
 
   const logout = () => {
     setChecked(!checked);
-    localStorage.removeItem("authtoken");
     setUser(null);
-    setTenant(null);
+    localStorage.removeItem("authtoken");
   };
 
   const container =
