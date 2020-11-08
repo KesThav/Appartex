@@ -7,6 +7,7 @@ import {
   Typography,
   makeStyles,
   CircularProgress,
+  Paper,
 } from "@material-ui/core";
 import ReceiptIcon from "@material-ui/icons/Receipt";
 import BusinessIcon from "@material-ui/icons/Business";
@@ -14,6 +15,16 @@ import HomeIcon from "@material-ui/icons/Home";
 import FolderIcon from "@material-ui/icons/Folder";
 import PeopleIcon from "@material-ui/icons/People";
 import HistoryIcon from "@material-ui/icons/History";
+import {
+  Scheduler,
+  WeekView,
+  Appointments,
+  TodayButton,
+  DateNavigator,
+  Toolbar,
+  ViewSwitcher,
+} from "@devexpress/dx-react-scheduler-material-ui";
+import { ViewState } from "@devexpress/dx-react-scheduler";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -70,6 +81,8 @@ const AdminDashboard = (props) => {
     billhistory,
     setBillhistory,
     getBillHistories,
+    getTasks,
+    task,
   } = useContext(UserContext);
 
   useEffect(() => {
@@ -79,6 +92,7 @@ const AdminDashboard = (props) => {
     getContracts();
     getBills();
     getBillHistories();
+    getTasks();
     if (!window.location.hash) {
       window.location = window.location + "#loaded";
       window.location.reload();
@@ -168,32 +182,50 @@ const AdminDashboard = (props) => {
             />
           </Grid>
         )}
+        <Grid item lg={6} md={12}>
+          {!task ? (
+            <CircularProgress/>
+          ) : (
+            <Paper>
+              <Scheduler data={task}>
+                <ViewState />
+                <WeekView startDayHour={9} endDayHour={19} />
+                <Toolbar />
+                <DateNavigator />
+                <TodayButton />
+                <ViewSwitcher />
+                <Appointments />
+              </Scheduler>
+            </Paper>
+          )}
+        </Grid>
+        <Grid item lg={6} md={12}>
+          {!bill ? (
+            <CircularProgress />
+          ) : (
+            <Grid item lg={12} md={12}>
+              <MyTable
+                data={bill}
+                title={"Dernières factures"}
+                link={"/bills"}
+                header={["Facture n°", "Date", "Statut"]}
+              />
+            </Grid>
+          )}
 
-        {!bill ? (
-          <CircularProgress />
-        ) : (
-          <Grid item lg={6} md={12}>
-            <MyTable
-              data={bill}
-              title={"Dernières factures"}
-              link={"/bills"}
-              header={["Facture n°", "Date", "Statut"]}
-            />
-          </Grid>
-        )}
-
-        {!contract ? (
-          <CircularProgress />
-        ) : (
-          <Grid item lg={6} md={12}>
-            <MyTable
-              data={contract}
-              title={"Derniers Contrats"}
-              link={"/contracts"}
-              header={["Contract n°", "Date", "Statut"]}
-            />
-          </Grid>
-        )}
+          {!contract ? (
+            <CircularProgress />
+          ) : (
+            <Grid item lg={12} md={12}>
+              <MyTable
+                data={contract}
+                title={"Derniers Contrats"}
+                link={"/contracts"}
+                header={["Contract n°", "Date", "Statut"]}
+              />
+            </Grid>
+          )}
+        </Grid>
       </Grid>
     </div>
   );

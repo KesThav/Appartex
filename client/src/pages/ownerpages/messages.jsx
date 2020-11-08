@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function VerticalTabs() {
+const Drawer = (props) => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const { user, authAxios } = useContext(UserContext);
@@ -95,21 +95,34 @@ export default function VerticalTabs() {
         <TabPanel value={value} index={0}>
           <Fragment>
             {sendedmessage.length > 0 && (
-              <ShowMessages getMessages={getMessages} message={sendedmessage} />
+              <ShowMessages
+                getMessages={getMessages}
+                message={sendedmessage}
+                push={props.history.push}
+              />
             )}
           </Fragment>
         </TabPanel>
         <TabPanel value={value} index={1}>
           {receivedmessage.length > 0 && (
-            <ShowMessages getMessages={getMessages} message={receivedmessage} />
+            <ShowMessages
+              getMessages={getMessages}
+              message={receivedmessage}
+              push={props.history.push}
+            />
           )}
         </TabPanel>
         <TabPanel value={value} index={2}>
           {archivedmessage.length > 0 && (
-            <ShowMessages getMessages={getMessages} message={archivedmessage} />
+            <ShowMessages
+              getMessages={getMessages}
+              message={archivedmessage}
+              push={props.history.push}
+            />
           )}
         </TabPanel>
       </div>
     </Fragment>
   );
-}
+};
+export default Drawer;

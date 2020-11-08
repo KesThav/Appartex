@@ -10,6 +10,7 @@ const taskRouter = require("./tasks");
 const repairRouter = require("./repairs");
 const statusRouter = require("./status");
 const billstatusRouter = require("./billstatus");
+const taskstatusRouter = require("./taskstatus");
 
 const router = combineRouters(
   authRouter,
@@ -22,7 +23,8 @@ const router = combineRouters(
   taskRouter,
   repairRouter,
   statusRouter,
-  billstatusRouter
+  billstatusRouter,
+  taskstatusRouter
 );
 
 module.exports = router;

@@ -20,6 +20,8 @@ import AddComments from "./AddComments";
 import DeleteMessage from "./DeleteMessage";
 import ArchiveMessage from "./ArchiveMessage";
 import UnArchiveMessage from "./UnArchiveMessage";
+import EditMessageStatus from "./EditMessageStatus";
+import AddTask from "./AddTask";
 import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -72,7 +74,6 @@ const ShowMessages = ({ message, getMessages }) => {
                     data.sendedTo.lastname
                   }
                   subheader={moment(data.createdAt).format("YYYY-MM-DD")}
-                  action={<Badge>{data.status}</Badge>}
                 />
                 <CardContent>
                   <Typography variant="h6" color="textPrimary" component="p">
@@ -87,10 +88,8 @@ const ShowMessages = ({ message, getMessages }) => {
                   </Typography>
                 </CardContent>
                 <CardActions disableSpacing>
-                  <IconButton>
-                    {data.comments.length}
-                    <ChatBubbleIcon />
-                  </IconButton>
+                  {data.comments.length}
+                  <ChatBubbleIcon />
 
                   {user && user.role !== "Admin" && (
                     <AddComments getMessages={getMessages} id={data._id} />
@@ -109,6 +108,12 @@ const ShowMessages = ({ message, getMessages }) => {
                           getMessages={getMessages}
                           id={data._id}
                         />
+                        <EditMessageStatus
+                          getMessages={getMessages}
+                          id={data._id}
+                          statustype={data.status}
+                        />
+                        <AddTask id={data._id} />
                       </Fragment>
                     ) : (
                       <Fragment>

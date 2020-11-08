@@ -455,6 +455,50 @@ router.put("/unarchive/:messageid", jwt, adminAccess, async (ctx) => {
 
 /**
  *  @swagger
+ * /messages/update/status/{message_id}:
+ *  put :
+ *    summary : update message status
+ *    operationId : updatemessagestatus
+ *    tags :
+ *        - message
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: message_id
+ *       in: path
+ *       required: true
+ *       description: the id of the message
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Message not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.put("/update/status/:messageid", jwt, adminAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.messageid);
+  if (!validate) return ctx.throw(404, "message not found");
+  const message = Message.findById(ctx.params.messageid);
+  if (!message) {
+    ctx.throw(404, "message not found");
+  }
+  try {
+    await Message.findByIdAndUpdate(ctx.params.messageid, {
+      status: ctx.request.body.status,
+    });
+    ctx.body = "ok";
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+/**
+ *  @swagger
  * /messages/delete/{message_id}:
  *  delete :
  *    summary : Delete a message

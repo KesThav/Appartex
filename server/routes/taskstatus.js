@@ -1,6 +1,6 @@
 const Router = require("@koa/router");
-const router = new Router({ prefix: "/history/bills" });
-const Billstatus = require("../models/bill_status.model");
+const router = new Router({ prefix: "/history/tasks" });
+const Taskstatus = require("../models/task_status.model");
 const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
 let ObjectId = require("mongodb").ObjectId;
@@ -10,16 +10,16 @@ let ObjectId = require("mongodb").ObjectId;
  *
  * components:
  *   schemas:
- *     Bill history:
+ *     Task history:
  *       properties:
- *         billid:
+ *         taskid:
  *           type: id
  *           example: 5f9820a2d32a1820dc695040
  *         status:
  *           type: id
  *           example : 5f981ffb579d301330c1c38d
  *       required:
- *          - billid
+ *          - taskid
  *          - status
  *
  */
@@ -27,12 +27,12 @@ let ObjectId = require("mongodb").ObjectId;
 /**
  *  @swagger
  *
- *  /history/bills:
+ *  /history/tasks:
  *  get :
- *    summary : Return all bills histories
- *    operationId : getbillshistories
+ *    summary : Return all tasks histories
+ *    operationId : gettasksshistories
  *    tags :
- *        - bill history
+ *        - task history
  *    security:
  *        - bearerAuth: []
  *    responses:
@@ -47,19 +47,17 @@ let ObjectId = require("mongodb").ObjectId;
 
 router.get("/", jwt, adminAccess, async (ctx) => {
   try {
-    const allbillstatus = await Billstatus.find({
+    const alltasksstatus = await Taskstatus.find({
       createdBy: ctx.request.jwt._id,
     })
       .sort({
         updatedAt: -1,
       })
       .populate({
-        path: "billid",
-        select: "tenant",
-        populate: { path: "tenant", select: "name lastname" },
+        path: "taskid",
       })
       .populate("status", "name");
-    ctx.body = allbillstatus;
+    ctx.body = alltasksstatus;
   } catch (err) {
     ctx.throw(400, err);
   }
@@ -67,30 +65,30 @@ router.get("/", jwt, adminAccess, async (ctx) => {
 
 /**
  *  @swagger
- * /history/bills/{bill_id}:
+ * /history/tasks/{task_id}:
  *  get :
- *    summary : Return all histories of one bill
- *    operationId : getbillhistories
+ *    summary : Return all histories of one task
+ *    operationId : gettaskhistories
  *    tags :
- *        - bill history
+ *        - task history
  *    security:
  *        - bearerAuth: []
  *    parameters:
- *     - name: bill_id
+ *     - name: task_id
  *       in: path
  *       required: true
- *       description: the id of the bill
+ *       description: the id of the task
  *    responses:
  *      '200':
  *        description: 'Success'
  *        content :
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Bill history'
+ *              $ref: '#/components/schemas/Task history'
  *      '403':
  *         description: Forbidden
  *      '404':
- *        description: Bill not found
+ *        description: Task not found
  *      '500':
  *         description: Server error
  *

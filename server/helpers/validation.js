@@ -61,6 +61,15 @@ const messageSchema = Joi.object({
   createdByType: Joi.string().required(),
 });
 
+const taskSchema = Joi.object({
+  content: Joi.string().required(),
+  title: Joi.string().required(),
+  startDate: Joi.date().required(),
+  endDate: Joi.date().required(),
+  status: Joi.objectId().required(),
+  messageid: Joi.objectId().required(),
+});
+
 module.exports = {
   userSchema,
   loginSchema,
@@ -70,4 +79,5 @@ module.exports = {
   billSchema,
   statusSchema,
   messageSchema,
+  taskSchema,
 };

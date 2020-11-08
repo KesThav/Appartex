@@ -102,6 +102,7 @@ const AddTenant = () => {
     getTenants();
   }, [count]);
 
+
   return (
     <div>
       <Box className={classes.box}>

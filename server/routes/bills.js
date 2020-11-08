@@ -213,7 +213,7 @@ router.post("/add", jwt, adminAccess, billValidation, async (ctx) => {
  *      '403':
  *        description: Forbidden
  *      '404':
- *        description: Status not found
+ *        description: Bill not found
  *      '500':
  *        description: Server error
  *

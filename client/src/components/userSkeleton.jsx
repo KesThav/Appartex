@@ -94,6 +94,7 @@ const UserSkeleton = (props) => {
   const [dateofbirth, setDate] = useState("");
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [count, setCount] = useState(0);
 
   const getTenants = async () => {
     setLoading(true);
@@ -173,6 +174,7 @@ const UserSkeleton = (props) => {
         );
         setLoading(false);
         setSuccess("Locataire modifié avec succès");
+        setCount((count) => count + 1);
       } catch (err) {
         setLoading(false);
         setError(err.response.data);
@@ -184,7 +186,7 @@ const UserSkeleton = (props) => {
     getBills();
     getContracts();
     getTenants();
-  }, []);
+  }, [count]);
 
   return (
     <Fragment>

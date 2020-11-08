@@ -18,7 +18,7 @@ const messageSchema = new Mongoose.Schema(
     },
     status: {
       type: String,
-      default: "non lu",
+      default: "envoyé",
     },
     title: {
       type: String,

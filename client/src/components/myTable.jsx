@@ -28,13 +28,16 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 10,
     marginBotton: 3,
   },
+  paper: {
+    marginBottom: 20,
+  },
 }));
 
 const MyTable = ({ data, title, link, header }) => {
   const classes = useStyles();
   return (
     <div>
-      <Paper>
+      <Paper className={classes.paper}>
         <Box className={classes.box}>
           <Typography variant="h6" color="primary">
             {title}

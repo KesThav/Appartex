@@ -53,9 +53,7 @@ const DeleteMessage = ({ id, getMessages }) => {
   return (
     <div>
       <Button
-        aria-label="add to favorites"
         onClick={() => {
-          console.log(id);
           setOpen(!open);
         }}
       >

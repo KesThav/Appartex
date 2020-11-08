@@ -32,6 +32,9 @@ import StorageIcon from "@material-ui/icons/Storage";
 import Chip from "@material-ui/core/Chip";
 import Axios from "axios";
 import PersonIcon from "@material-ui/icons/Person";
+import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
+import ForumIcon from "@material-ui/icons/Forum";
+import TrendingUpIcon from "@material-ui/icons/TrendingUp";
 
 const drawerWidth = 250;
 
@@ -145,14 +148,20 @@ const Layout = (props) => {
         {
           id: 6,
           name: "Les Statuts",
-          icon: <ReceiptIcon />,
+          icon: <TrendingUpIcon />,
           link: "/status",
         },
         {
           id: 7,
           name: "Les Messages",
-          icon: <ReceiptIcon />,
+          icon: <ForumIcon />,
           link: "/messages",
+        },
+        {
+          id: 8,
+          name: "Les Tâches",
+          icon: <FormatListBulletedIcon />,
+          link: "/tasks",
         },
       ].map((data) => (
         <Link

@@ -12,11 +12,7 @@ import {
 import { UserContext } from "../../middlewares/ContextAPI";
 import Alert from "@material-ui/lab/Alert";
 
-
 const useStyles = makeStyles({
-  button: {
-    marginBottom: 30,
-  },
   box: {
     marginBottom: 20,
   },
@@ -29,51 +25,56 @@ const useStyles = makeStyles({
   },
 });
 
-const AddComments = ({ id, getMessages }) => {
+const EditMessageStatus = ({ id, statustype, getMessages }) => {
   const classes = useStyles();
-  const [content, setContent] = useState();
   const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const { authAxios, user, setLoading } = useContext(UserContext);
+  const [content, setContent] = useState("");
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { authAxios } = useContext(UserContext);
+  const [status, setStatus] = useState(statustype);
   const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    getMessages();
-  }, [count]);
 
   const submit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (!content) {
-      setError("Le contenu ne peut pas être vide");
-    } else {
-      const data = {
-        content,
-      };
-      try {
-        const res = await authAxios.post(`/messages/comment/add/${id}`, data);
-        setSuccess("Message envoyé");
-        setCount((count) => count + 1);
-      } catch (err) {
-        setError(err.response.data);
-      }
+    const data = {
+      status,
+    };
+    try {
+      const res = await authAxios.put(`/messages/update/status/${id}`, data);
+      setSuccess("Statut modifié");
+      setCount((count) => count + 1);
+    } catch (err) {
+      setLoading(false);
+      console.log(err.response.data);
     }
   };
+
+  const statut = [
+    { value: "envoyé", label: "envoyé" },
+    { value: "En cours", label: "En cours" },
+    { value: "Tâche créé", label: "Tâche créé" },
+    { value: "Terminé", label: "Terminé" },
+  ];
+
+  useEffect(() => {
+    getMessages();
+  }, [count]);
+
   return (
     <div>
       <Button
-        aria-label="add to favorites"
         onClick={() => {
           setOpen(!open);
         }}
       >
-        Répondre
+        Editer le statut
       </Button>
-
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>{"Ajouter un commentaire"}</DialogTitle>
+        <DialogTitle>{"Envoyer un message"}</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}
@@ -81,17 +82,21 @@ const AddComments = ({ id, getMessages }) => {
           </div>
           <form onSubmit={submit}>
             <TextField
-              id="amount"
               variant="outlined"
-              type="text"
-              multiline
-              rows={2}
-              rowsMax={4}
-              onChange={(e) => setContent(e.target.value)}
+              id="Status"
+              select
+              value={status}
+              label="Statut"
+              onChange={(e) => setStatus(e.target.value)}
               fullWidth
-              placeholder="Message"
               className={classes.form}
-            />
+            >
+              {statut.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.value}
+                </MenuItem>
+              ))}
+            </TextField>
             <Box className={classes.box2}>
               <Button
                 className={classes.button}
@@ -112,4 +117,4 @@ const AddComments = ({ id, getMessages }) => {
   );
 };
 
-export default AddComments;
+export default EditMessageStatus;

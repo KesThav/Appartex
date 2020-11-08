@@ -94,6 +94,7 @@ const Tenantboard = (props) => {
   const [dateofbirth, setDate] = useState(user.dateofbirth);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [count, setCount] = useState(0);
 
   const getBills = async () => {
     setLoading(true);
@@ -147,6 +148,7 @@ const Tenantboard = (props) => {
         });
         setLoading(false);
         setSuccess("Locataire modifié avec succès");
+        setCount((count) => count + 1);
       } catch (err) {
         setLoading(false);
         setError(err.response.data);
@@ -161,7 +163,7 @@ const Tenantboard = (props) => {
       window.location = window.location + "#loaded";
       window.location.reload();
     }
-  }, []);
+  }, [count]);
 
   return (
     <Fragment>
@@ -185,7 +187,9 @@ const Tenantboard = (props) => {
 
           <Box className={classes.flex3}>
             <Paper className={classes.details}>
-              <Typography variant="h6"><strong>Profil</strong></Typography>
+              <Typography variant="h6">
+                <strong>Profil</strong>
+              </Typography>
               <Divider />
               <form className={classes.form} onSubmit={submit}>
                 <TextField
@@ -267,7 +271,9 @@ const Tenantboard = (props) => {
                             "Statut",
                             "Date",
                           ].map((data, index) => (
-                            <TableCell key={index}><strong>{data}</strong></TableCell>
+                            <TableCell key={index}>
+                              <strong>{data}</strong>
+                            </TableCell>
                           ))}
                         </TableRow>
                       </TableHead>
@@ -321,7 +327,9 @@ const Tenantboard = (props) => {
                             "Statut",
                             "Echéance",
                           ].map((data, index) => (
-                            <TableCell key={index}><strong>{data}</strong></TableCell>
+                            <TableCell key={index}>
+                              <strong>{data}</strong>
+                            </TableCell>
                           ))}
                         </TableRow>
                       </TableHead>

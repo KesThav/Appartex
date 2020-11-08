@@ -19,8 +19,9 @@ const taskSchema = new Mongoose.Schema(
       required: true,
     },
     status: {
-      type: String,
-      default: "Créé",
+      type: Mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Status",
     },
     messageid: {
       type: Mongoose.Schema.Types.ObjectId,
