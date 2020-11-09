@@ -25,23 +25,24 @@ const useStyles = makeStyles({
   },
 });
 
-const BillHistory = ({ data }) => {
+const TaskHistory = ({ data }) => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const { authAxios } = useContext(UserContext);
-  const [billhistory, setBillhistory] = useState("");
+  const [taskhistory, setTaskHistory] = useState("");
 
-  const getBillHistories = async (data) => {
+  const getTaskHistories = async (data) => {
     try {
-      const res = await authAxios.get(`/history/bills/${data}`);
-      setBillhistory(res.data);
+      const res = await authAxios.get(`/history/tasks/${data}`);
+      setTaskHistory(res.data);
+      console.log(res.data);
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    getBillHistories(data);
+    getTaskHistories(data);
   }, []);
 
   return (
@@ -55,24 +56,36 @@ const BillHistory = ({ data }) => {
       </Button>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>Détail de la facture</DialogTitle>
+        <DialogTitle>Détail de la tâche</DialogTitle>
         <Divider />
         <DialogContent>
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>Date</TableCell>
+                <TableCell>Titre</TableCell>
+                <TableCell>Contenu</TableCell>
+                <TableCell>Date de début</TableCell>
+                <TableCell>Date de fin</TableCell>
                 <TableCell>Statut</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {billhistory &&
-                billhistory.map((bh) => (
-                  <TableRow key={bh._id}>
+              {taskhistory &&
+                taskhistory.map((ts) => (
+                  <TableRow key={ts._id}>
                     <TableCell>
-                      {moment(bh.createdAt).format("YYYY-MM-DD")}
+                      {moment(ts.createdAt).format("YYYY-MM-DD")}
                     </TableCell>
-                    <TableCell>{bh.status.name}</TableCell>
+                    <TableCell>{ts.taskid.title}</TableCell>
+                    <TableCell>{ts.taskid.content}</TableCell>
+                    <TableCell>
+                      {moment(ts.taskid.startDate).format("YYYY-MM-DD")}
+                    </TableCell>
+                    <TableCell>
+                      {moment(ts.taskid.endDate).format("YYYY-MM-DD")}
+                    </TableCell>
+                    <TableCell>{ts.status.name}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>
@@ -93,4 +106,4 @@ const BillHistory = ({ data }) => {
   );
 };
 
-export default BillHistory;
+export default TaskHistory;

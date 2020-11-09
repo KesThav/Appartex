@@ -9,20 +9,13 @@ import {
   TableBody,
   Button,
   makeStyles,
-  Dialog,
-  DialogContent,
   Box,
   TextField,
-  DialogTitle,
-  List,
-  ListItem,
   Paper,
   Chip,
   Typography,
   Divider,
-  CircularProgress,
 } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import AddAppart from "../../components/Appart/AddAppart";
 import moment from "moment";
@@ -80,7 +73,6 @@ const Appart = () => {
     count,
     setCount,
   } = useContext(UserContext);
-  const [deleteShow, setDeleteShow] = useState(false);
   const [data, setData] = useState("");
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -425,7 +417,6 @@ const Appart = () => {
       <div style={{ marginTop: "13px" }}>
         <AddAppart />
       </div>
-
     </div>
   );
 };

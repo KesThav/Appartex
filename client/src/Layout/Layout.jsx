@@ -163,6 +163,12 @@ const Layout = (props) => {
           icon: <FormatListBulletedIcon />,
           link: "/tasks",
         },
+        {
+          id: 9,
+          name: "Les Réparations",
+          icon: <FormatListBulletedIcon />,
+          link: "/repairs",
+        },
       ].map((data) => (
         <Link
           key={data.id}

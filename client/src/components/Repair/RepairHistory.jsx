@@ -25,23 +25,23 @@ const useStyles = makeStyles({
   },
 });
 
-const BillHistory = ({ data }) => {
+const RepairHistory = ({ data }) => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const { authAxios } = useContext(UserContext);
-  const [billhistory, setBillhistory] = useState("");
+  const [repairhistory, setRepairhistory] = useState("");
 
-  const getBillHistories = async (data) => {
+  const getRepairHistories = async (data) => {
     try {
-      const res = await authAxios.get(`/history/bills/${data}`);
-      setBillhistory(res.data);
+      const res = await authAxios.get(`/history/repairs/${data}`);
+      setRepairhistory(res.data);
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    getBillHistories(data);
+    getRepairHistories(data);
   }, []);
 
   return (
@@ -55,7 +55,7 @@ const BillHistory = ({ data }) => {
       </Button>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>Détail de la facture</DialogTitle>
+        <DialogTitle>Détail de la réparation</DialogTitle>
         <Divider />
         <DialogContent>
           <Table>
@@ -66,13 +66,13 @@ const BillHistory = ({ data }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {billhistory &&
-                billhistory.map((bh) => (
-                  <TableRow key={bh._id}>
+              {repairhistory &&
+                repairhistory.map((rp) => (
+                  <TableRow key={rp._id}>
                     <TableCell>
-                      {moment(bh.createdAt).format("YYYY-MM-DD")}
+                      {moment(rp.createdAt).format("YYYY-MM-DD")}
                     </TableCell>
-                    <TableCell>{bh.status.name}</TableCell>
+                    <TableCell>{rp.status.name}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>
@@ -93,4 +93,4 @@ const BillHistory = ({ data }) => {
   );
 };
 
-export default BillHistory;
+export default RepairHistory;

@@ -47,6 +47,8 @@ const swaggerOptions = {
     "./routes/messages.js",
     "./routes/tasks.js",
     "./routes/taskstatus.js",
+    "./routes/repairs.js",
+    "./routes/repairstatus.js",
   ],
 
   path: "/swagger.json",

@@ -3,13 +3,12 @@ const router = new Router({ prefix: "/messages" });
 const Message = require("../models/message.model");
 const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
-const filterAccess = require("../middlewares/filterAccess");
 const { messageSchema } = require("../helpers/validation");
 const Tenant = require("../models/tenant.model");
 const Owner = require("../models/owner.model");
-const { createIndexes } = require("../models/message.model");
 const Comment = require("../models/comment.model");
 let ObjectId = require("mongodb").ObjectId;
+const Task = require("../models/task.model");
 
 /**
  * @swagger
@@ -231,6 +230,28 @@ router.get("/archived", jwt, async (ctx) => {
     ctx.body = allmessages;
   } catch (err) {
     ctx.throw(400, err);
+  }
+});
+
+router.get("/:messageid", jwt, adminAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.messageid);
+  if (!validate) return ctx.throw(404, "message not found");
+  const message = Message.findById(ctx.params.messageid);
+  if (!message) {
+    ctx.throw(404, "message not found");
+  }
+
+  try {
+    const msg = await Message.findById(ctx.params.messageid)
+      .populate("sendedTo", "name lastname")
+      .populate("createdBy", "name lastname")
+      .populate({
+        path: "comments",
+        populate: { path: "createdBy", select: "name lastname" },
+      });
+    ctx.body = msg;
+  } catch (err) {
+    ctx.throw(err);
   }
 });
 
@@ -536,6 +557,13 @@ router.delete("/delete/:messageid", jwt, async (ctx) => {
   const message = Message.findById(ctx.params.messageid);
   if (!message) {
     ctx.throw(404, "message not found");
+  }
+  const task = await Task.findOne({ messageid: ctx.params.messageid });
+  if (task) {
+    ctx.throw(
+      400,
+      "message is linked to a task. Delete Task then delete message"
+    );
   }
 
   try {

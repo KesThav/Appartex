@@ -20,8 +20,8 @@ import ArchiveMessage from "./ArchiveMessage";
 import UnArchiveMessage from "./UnArchiveMessage";
 import EditMessageStatus from "./EditMessageStatus";
 import AddTask from "../Task/AddTask";
-import { CircularProgress } from "@material-ui/core";
 import Chip from "@material-ui/core/Chip";
+import LoadingScreen from "../LoadingScreen";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -173,7 +173,7 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
           </Accordion>
         ))
       ) : (
-        <CircularProgress />
+        <LoadingScreen />
       )}
     </div>
   );

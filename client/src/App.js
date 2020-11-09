@@ -27,6 +27,7 @@ import UserSkeleton from "./components/userSkeleton";
 import Status from "./pages/ownerpages/statut";
 import Message from "./pages/ownerpages/messages";
 import Tasks from "./pages/ownerpages/tasks";
+import Repair from "./pages/ownerpages/repairs";
 
 const theme = createMuiTheme(themeSheet);
 
@@ -62,6 +63,7 @@ const App = () => {
   const [success, setSuccess] = useState("");
   const [status, setStatus] = useState("");
   const [task, setTask] = useState("");
+  const [repair, setRepair] = useState("");
   const [count, setCount] = useState(0);
 
   //get data here and give it to children via Context API
@@ -137,6 +139,15 @@ const App = () => {
     }
   };
 
+  const getRepairs = async () => {
+    try {
+      const res = await authAxios.get("/repairs");
+      setRepair(res.data);
+    } catch (err) {
+      console.log(err.response.data);
+    }
+  };
+
   return (
     <Fragment>
       <MuiThemeProvider theme={theme}>
@@ -177,6 +188,9 @@ const App = () => {
             getTasks,
             count,
             setCount,
+            repair,
+            setRepair,
+            getRepairs,
           }}
         >
           <Router>
@@ -205,6 +219,7 @@ const App = () => {
                       component={UserSkeleton}
                     />
                     <AdminRoute exact path="/tasks" component={Tasks} />
+                    <AdminRoute exact path="/repairs" component={Repair} />
                     <ProtectedRoute
                       exact
                       path="/messages"

@@ -70,6 +70,12 @@ const taskSchema = Joi.object({
   messageid: Joi.objectId().required(),
 });
 
+const repairSchema = Joi.object({
+  amount: Joi.number().min(0).required(),
+  status: Joi.objectId().required(),
+  reason: Joi.string().required(),
+  taskid: Joi.objectId().required(),
+});
 module.exports = {
   userSchema,
   loginSchema,
@@ -80,4 +86,5 @@ module.exports = {
   statusSchema,
   messageSchema,
   taskSchema,
+  repairSchema,
 };

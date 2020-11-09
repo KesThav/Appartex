@@ -85,7 +85,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *    security:
  *        - bearerAuth: []
  *    parameters:
- *     - name: appart_id
+ *     - name: bill_id
  *       in: path
  *       required: true
  *       description: the id of the bill

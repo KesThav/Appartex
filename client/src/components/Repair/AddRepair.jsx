@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, Fragment } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "../../middlewares/ContextAPI";
 import {
   makeStyles,
@@ -9,10 +9,11 @@ import {
   DialogContent,
   TextField,
   MenuItem,
+  Typography,
+  Fab,
 } from "@material-ui/core";
 import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
-import LoadingScreen from "../LoadingScreen";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -31,49 +32,45 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddTask = ({ id }) => {
+const AddRepair = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const {
+    task,
+    getTasks,
     setLoading,
     authAxios,
-    status,
     getStatus,
-    loading,
+    status,
     count,
+    setCount,
   } = useContext(UserContext);
   const [err, setError] = useState("");
-  const [statusid, setStatusid] = useState("");
   const [success, setSuccess] = useState("");
-  const [messageid, setMessageid] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [reason, setReason] = useState(null);
+  const [statusid, setStatusid] = useState(null);
+  const [taskid, setTaskid] = useState("");
+  const [amount, setAmount] = useState(null);
 
   const submit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (!startDate || !endDate || !messageid || !title || !content) {
-      setError("Complétez tous les champs");
-    } else if (startDate > endDate) {
-      setError(
-        "La date de fin ne peut pas être plus petit que la date de début"
-      );
+    if (!statusid || !taskid || !reason || !amount) {
+      setError("Complétez les champs obligatoires");
     } else {
+      setLoading(true);
       const data = {
-        startDate,
-        endDate,
-        messageid,
-        title,
-        content,
+        amount,
+        reason,
+        taskid,
         status: statusid,
       };
       try {
-        const res = await authAxios.post("/tasks/add", data);
+        await authAxios.post("/repairs/add", data);
         setLoading(false);
-        setSuccess("Tâche créé avec succès");
+        setSuccess("Réparation créé avec succès");
+        setCount((count) => count + 1);
       } catch (err) {
         setLoading(false);
         setError(err.response.data);
@@ -85,23 +82,25 @@ const AddTask = ({ id }) => {
     setOpen(!open);
     setError("");
     setSuccess("");
-    setTitle("");
-    setContent("");
-    setStartDate("");
-    setEndDate("");
-    setMessageid(id);
+    setTaskid("");
+    setStatusid("");
+    setReason("");
+    setAmount("");
   };
 
   useEffect(() => {
+    getTasks();
     getStatus();
   }, [count]);
 
   return (
-    <Fragment>
-      <Button onClick={() => OnOpen()}>Créer une tâche</Button>
-      {loading && <LoadingScreen />}
+    <div>
+      <Button color="primary" variant="contained" onClick={OnOpen}>
+        Créer une réparation
+      </Button>
+
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>Créer une tâche</DialogTitle>
+        <DialogTitle>{"Créer une réparation"}</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}
@@ -109,38 +108,22 @@ const AddTask = ({ id }) => {
           </div>
           <form onSubmit={submit}>
             <TextField
-              id="messageid"
-              type="string"
               variant="outlined"
-              value={messageid}
+              id="Task"
+              select
+              value={taskid}
+              label="Tâche"
+              onChange={(e) => setTaskid(e.target.value)}
               fullWidth
-              disabled
-              placeholder="messageid"
               className={classes.form}
-            />
-            <TextField
-              id="title"
-              variant="outlined"
-              type="string"
-              value={title}
-              onChange={(e) => {
-                setTitle(e.target.value);
-              }}
-              fullWidth
-              placeholder="Titre"
-              className={classes.form}
-            />
-
-            <TextField
-              id="content"
-              type="text"
-              variant="outlined"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              fullWidth
-              placeholder="Description"
-              className={classes.form}
-            />
+            >
+              {task &&
+                task.map((option) => (
+                  <MenuItem key={option._id} value={option._id}>
+                    {option._id}
+                  </MenuItem>
+                ))}
+            </TextField>
             <TextField
               variant="outlined"
               id="Status"
@@ -159,27 +142,22 @@ const AddTask = ({ id }) => {
                 ))}
             </TextField>
             <TextField
-              id="date du début"
-              type="datetime-local"
+              id="amount"
               variant="outlined"
-              label="Date de début"
-              defaultValue={moment().format("YYYY-MM-DDTHH:MM")}
-              onChange={(e) => setStartDate(e.target.value)}
+              type="number"
+              onChange={(e) => setAmount(e.target.value)}
               fullWidth
-              placeholder="Description"
+              placeholder="Montant"
               className={classes.form}
             />
+
             <TextField
-              id="date de fin"
-              type="datetime-local"
+              id="reason"
+              type="text"
               variant="outlined"
-              label="Date de fin"
-              defaultValue={moment().format("YYYY-MM-DDTHH:MM")}
-              onChange={(e) => {
-                setEndDate(e.target.value);
-              }}
+              onChange={(e) => setReason(e.target.value)}
               fullWidth
-              placeholder="Description"
+              placeholder="Raison"
               className={classes.form}
             />
 
@@ -187,10 +165,7 @@ const AddTask = ({ id }) => {
               <Button
                 className={classes.button}
                 color="inherit"
-                onClick={() => {
-                  setOpen(!open);
-                  setMessageid("");
-                }}
+                onClick={() => setOpen(!open)}
               >
                 Retour
               </Button>
@@ -202,8 +177,8 @@ const AddTask = ({ id }) => {
           </form>
         </DialogContent>
       </Dialog>
-    </Fragment>
+    </div>
   );
 };
 
-export default AddTask;
+export default AddRepair;

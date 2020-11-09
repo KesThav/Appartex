@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, Fragment } from "react";
 import EditIcon from "@material-ui/icons/Edit";
 import {
   DialogContent,
@@ -55,7 +55,6 @@ const EditTaks = ({
 
   const submit = async (e) => {
     e.preventDefault();
-    /* setVisible(!visible); */
     setError("");
     setSuccess("");
     if (!startDate || !endDate || !messageid || !title || !content) {
@@ -84,7 +83,7 @@ const EditTaks = ({
   };
 
   return (
-    <div>
+    <Fragment>
       <Button>
         <EditIcon
           onClick={() => {
@@ -191,7 +190,7 @@ const EditTaks = ({
           </form>
         </DialogContent>
       </Dialog>
-    </div>
+    </Fragment>
   );
 };
 

@@ -11,15 +11,17 @@ import {
   Box,
   TextField,
   Paper,
+  Button,
 } from "@material-ui/core";
-import AddBuilding from "../../components/Building/AddBuilding";
+
 import moment from "moment";
 import LoadingScreen from "../../components/LoadingScreen";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
-
 import EditTask from "./EditTask";
 import DeleteTask from "./DeleteTask";
+import ExpandMessage from "./ExpandMessage";
+import TaskHistory from "./TaskHistory";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -162,7 +164,9 @@ const Task = ({ setError, setSuccess, task }) => {
                   </TableCell>
                   <TableCell>{task.title}</TableCell>
                   <TableCell>{task.content}</TableCell>
-                  <TableCell>{task.messageid._id}</TableCell>
+                  <TableCell>
+                    <ExpandMessage id={task.messageid._id} />
+                  </TableCell>
                   <TableCell>{task.status.name}</TableCell>
                   <TableCell>
                     {moment(task.createdAt).format("YYYY-MM-DD")}
@@ -172,15 +176,16 @@ const Task = ({ setError, setSuccess, task }) => {
                   </TableCell>
                   <TableCell>
                     <Fragment>
-                      <DeleteTask
-                        id={task._id}
-                        setSuccess={setSuccess}
-                        setError={setError}
-                      />
+                      <TaskHistory data={task._id} />
                       <EditTask
                         setSuccess={setSuccess}
                         setError={setError}
                         appointmentData={task}
+                      />
+                      <DeleteTask
+                        id={task._id}
+                        setSuccess={setSuccess}
+                        setError={setError}
                       />
                     </Fragment>
                   </TableCell>

@@ -1,24 +1,16 @@
 const Mongoose = require("mongoose");
 
-const repairSchema = new Mongoose.Schema(
+const repairstatusSchema = new Mongoose.Schema(
   {
-    amount: {
-      type: Number,
+    repairid: {
+      type: Mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: "Task",
     },
     status: {
       type: Mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "Status",
-    },
-    reason: {
-      type: String,
-      required: true,
-    },
-    taskid: {
-      type: Mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "Task",
     },
     createdBy: {
       type: Mongoose.Schema.Types.ObjectId,
@@ -29,4 +21,4 @@ const repairSchema = new Mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = Mongoose.model("Repair", repairSchema);
+module.exports = Mongoose.model("Repairstatus", repairstatusSchema);

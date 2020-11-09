@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, Fragment } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Button } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
@@ -20,11 +20,11 @@ const DeleteTask = ({ id, setSuccess, setError }) => {
   };
 
   return (
-    <div>
+    <Fragment>
       <Button>
         <DeleteIcon onClick={() => deleteTask(id)} />
       </Button>
-    </div>
+    </Fragment>
   );
 };
 

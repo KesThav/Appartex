@@ -3,6 +3,7 @@ const router = new Router({ prefix: "/status" });
 const Status = require("../models/status.model");
 const Bill = require("../models/bill.model");
 const Task = require("../models/task.model");
+const Repair = require("../models/repair.model");
 const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
 let ObjectId = require("mongodb").ObjectId;
@@ -248,8 +249,13 @@ router.delete("/delete/:statusid", jwt, adminAccess, async (ctx) => {
     }
 
     const task = await Task.findOne({ status: statusid });
-    if (bill) {
+    if (task) {
       ctx.throw(400, "can't delete status. Status is used in tasks");
+    }
+
+    const repair = await Repair.findOne({ status: statusid });
+    if (repair) {
+      ctx.throw(400, "can't delete status. Status is used in repairs");
     }
 
     await Status.findByIdAndDelete(statusid);

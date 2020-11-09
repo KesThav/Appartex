@@ -1,6 +1,6 @@
 const Router = require("@koa/router");
-const router = new Router({ prefix: "/history/tasks" });
-const Taskstatus = require("../models/task_status.model");
+const router = new Router({ prefix: "/history/repairs" });
+const Repairstatus = require("../models/repair_status.model");
 const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
 let ObjectId = require("mongodb").ObjectId;
@@ -10,16 +10,16 @@ let ObjectId = require("mongodb").ObjectId;
  *
  * components:
  *   schemas:
- *     Task history:
+ *     Repair history:
  *       properties:
- *         taskid:
+ *         repairid:
  *           type: id
  *           example: 5f9820a2d32a1820dc695040
  *         status:
  *           type: id
  *           example : 5f981ffb579d301330c1c38d
  *       required:
- *          - taskid
+ *          - repairid
  *          - status
  *
  */
@@ -27,10 +27,10 @@ let ObjectId = require("mongodb").ObjectId;
 /**
  *  @swagger
  *
- *  /history/tasks:
+ *  /history/repairs:
  *  get :
- *    summary : Return all tasks histories
- *    operationId : gettasksshistories
+ *    summary : Return all repairs histories
+ *    operationId : getrepairshistories
  *    tags :
  *        - history
  *    security:
@@ -47,17 +47,15 @@ let ObjectId = require("mongodb").ObjectId;
 
 router.get("/", jwt, adminAccess, async (ctx) => {
   try {
-    const alltasksstatus = await Taskstatus.find({
+    const allrepairstatus = await Repairstatus.find({
       createdBy: ctx.request.jwt._id,
     })
       .sort({
         updatedAt: -1,
       })
-      .populate({
-        path: "taskid",
-      })
+      .populate("repairid")
       .populate("status", "name");
-    ctx.body = alltasksstatus;
+    ctx.body = allrepairstatus;
   } catch (err) {
     ctx.throw(400, err);
   }
@@ -65,48 +63,48 @@ router.get("/", jwt, adminAccess, async (ctx) => {
 
 /**
  *  @swagger
- * /history/tasks/{task_id}:
+ * /history/repairs/{repair_id}:
  *  get :
- *    summary : Return all histories of one task
- *    operationId : gettaskhistories
+ *    summary : Return all histories of one repair
+ *    operationId : getrepairhistories
  *    tags :
  *        - history
  *    security:
  *        - bearerAuth: []
  *    parameters:
- *     - name: task_id
+ *     - name: repair_id
  *       in: path
  *       required: true
- *       description: the id of the task
+ *       description: the id of the repair
  *    responses:
  *      '200':
  *        description: 'Success'
  *        content :
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Task history'
+ *              $ref: '#/components/schemas/Repair history'
  *      '403':
  *         description: Forbidden
  *      '404':
- *        description: Task not found
+ *        description: Repair not found
  *      '500':
  *         description: Server error
  *
  */
 
-router.get("/:taskid", jwt, adminAccess, async (ctx) => {
-  let validate = ObjectId.isValid(ctx.params.taskid);
-  if (!validate) return ctx.throw(404, "task not found");
-  const taskid = new ObjectId(ctx.params.taskid);
+router.get("/:repairid", jwt, adminAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.repairid);
+  if (!validate) return ctx.throw(404, "repair not found");
+  const repairid = new ObjectId(ctx.params.repairid);
   try {
-    const task = await Taskstatus.find({ taskid: taskid })
-      .populate("taskid")
+    const repair = await Repairstatus.find({ repairid: repairid })
+      .populate("repairid")
       .populate("status", "name")
       .sort({ updatedAt: -1 });
-    if (!task) {
-      ctx.throw(400, "bill not found");
+    if (!repair) {
+      ctx.throw(400, "repair not found");
     } else {
-      ctx.body = task;
+      ctx.body = repair;
     }
   } catch (err) {
     ctx.throw(500, err);

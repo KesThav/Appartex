@@ -16,6 +16,7 @@ import TabPanel from "@material-ui/lab/TabPanel";
 import CalendarViewTask from "../../components/Task/CalendarViewTask";
 import TableViewTask from "../../components/Task/TableViewTask";
 import LoadingScreen from "../../components/LoadingScreen";
+import AddRepair from "../../components/Repair/AddRepair";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
     background: "transparent",
     backShadow: "none",
     color: "#000000",
+    width: "50%",
   },
 }));
 
@@ -47,6 +49,7 @@ const Tasks = () => {
   return (
     <Fragment>
       <div style={{ marginBottom: "10px" }}>
+        <AddRepair />
         {loading && <LoadingScreen />}
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}

@@ -3,7 +3,10 @@ const router = new Router({ prefix: "/repairs" });
 const Repair = require("../models/repair.model");
 const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
-const filterAccess = require("../middlewares/filterAccess");
+const { repairSchema } = require("../helpers/validation");
+const Repairstatus = require("../models/repair_status.model");
+const Task = require("../models/task.model");
+let ObjectId = require("mongodb").ObjectId;
 
 /**
  * @swagger
@@ -12,33 +15,279 @@ const filterAccess = require("../middlewares/filterAccess");
  *   schemas:
  *     Repair:
  *       properties:
- *         amount:
- *           type: Number
- *           example: 1996
+ *         status:
+ *           type: id
+ *           example: 507f1f77bcf86cd799439011
  *         reason:
  *           type: String
- *           example: Repair
+ *           example: DC-134
+ *         amount:
+ *           type: Number
+ *           example: 1994
  *         taskid:
  *            type: id
  *            example: 507f1f77bcf86cd799439011
- *         status:
- *            type: String
- *            default: "En cours"
- *            example: En cours
  *       required:
+ *          - status
+ *          - taskid
  *          - amount
  *          - reason
- *          - taskid
+ *
+ */
+
+/**
+ *  @swagger
+ *
+ *  /repairs:
+ *  get :
+ *    summary : Return all repairs
+ *    operationId : getrepairs
+ *    tags :
+ *        - repair
+ *    security:
+ *        - bearerAuth: []
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *         description: Forbidden
+ *      '500':
+ *         description: Server error
  *
  */
 
 router.get("/", jwt, adminAccess, async (ctx) => {
   try {
-    let alltrepairs = await Repair.find({});
-    ctx.status = 200;
-    ctx.body = alltrepairs;
+    let allrepairs = await Repair.find({ createdBy: ctx.request.jwt._id })
+      .populate("status", "name")
+      .populate("taskid")
+      .sort({ updatedAt: -1 });
+    ctx.body = allrepairs;
   } catch (err) {
     ctx.throw(400, error);
+  }
+});
+
+/**
+ *  @swagger
+ * /repairs/{repair_id}:
+ *  get :
+ *    summary : Return one repair
+ *    operationId : getonerepair
+ *    tags :
+ *        - repair
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: repair_id
+ *       in: path
+ *       required: true
+ *       description: the id of the repair
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Repair'
+ *      '403':
+ *         description: Forbidden
+ *      '500':
+ *         description: Server error
+ *
+ */
+
+router.get("/:repairid", jwt, adminAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.repairid);
+  if (!validate) return ctx.throw(404, "repair not found");
+  const repairid = new ObjectId(ctx.params.repairid);
+  try {
+    const repair = await Repair.findById(repairid)
+      .populate("status", "name")
+      .populate("taskid")
+      .sort({ updatedAt: -1 });
+    if (!repair) {
+      ctx.throw(400, "Repair not found");
+    } else {
+      ctx.body = repair;
+    }
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+/**
+ *  @swagger
+ * /repairs/add:
+ *  post :
+ *    summary : Create a repair
+ *    operationId : createrepair
+ *    tags :
+ *        - repair
+ *    security:
+ *        - bearerAuth: []
+ *    requestBody :
+ *     required: true
+ *     content :
+ *       application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/Repair'
+ *    responses:
+ *      '200':
+ *        description: Success
+ *      '400':
+ *        description: Field missing
+ *      '403':
+ *         description: Forbidden
+ *      '500':
+ *         description: Server error
+ *
+ */
+
+router.post("/add", jwt, adminAccess, async (ctx) => {
+  const { amount, status, reason, taskid } = ctx.request.body;
+
+  const { error } = repairSchema.validate(ctx.request.body);
+  if (error) {
+    ctx.throw(400, error);
+  }
+
+  const task = await Task.findById(taskid);
+  if (!task) {
+    ctx.throw(400, "Task not found");
+  }
+
+  try {
+    const newrepair = new Repair({
+      amount,
+      status,
+      reason,
+      taskid,
+      createdBy: new ObjectId(ctx.request.jwt._id),
+    });
+
+    await newrepair.save();
+
+    const newrepairstatus = new Repairstatus({
+      repairid: newrepair._id,
+      status: newrepair.status,
+      createdBy: new ObjectId(ctx.request.jwt._id),
+    });
+
+    await newrepairstatus.save();
+
+    ctx.body = newrepair;
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+/**
+ *  @swagger
+ * /repairs/update/{repair_id}:
+ *  put :
+ *    summary : Update a repair
+ *    operationId : updaterepair
+ *    tags :
+ *        - repair
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: repair_id
+ *       in: path
+ *       required: true
+ *       description: the id of the repair
+ *    requestBody :
+ *     required: true
+ *     content :
+ *       application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/Repair'
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Repair not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.put("/update/:repairid", jwt, adminAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.repairid);
+  if (!validate) return ctx.throw(404, "repair not found");
+  const repairid = new ObjectId(ctx.params.repairid);
+
+  const repair = await Repair.findById(repairid);
+  if (!repair) {
+    ctx.throw(400, "repair not found");
+  }
+
+  const { amount, status, reason, taskid } = ctx.request.body;
+
+  const update = { amount, status, reason, taskid };
+  try {
+    const updatedrepair = await Repair.findByIdAndUpdate(repairid, update, {
+      new: true,
+    });
+
+    const repairstatus = new Repairstatus({
+      repairid: repairid,
+      status: update.status,
+      createdBy: new ObjectId(ctx.request.jwt._id),
+    });
+
+    await repairstatus.save();
+    ctx.body = updatedrepair;
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+/**
+ *  @swagger
+ * /repairs/delete/{repair_id}:
+ *  delete :
+ *    summary : Delete a repair
+ *    operationId : deleterepair
+ *    tags :
+ *        - repair
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: repair_id
+ *       in: path
+ *       required: true
+ *       description: the id of the repair
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Repair not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.delete("/delete/:repairid", jwt, adminAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.repairid);
+  if (!validate) return ctx.throw(404, "Repair not found");
+  const repairid = new ObjectId(ctx.params.repairid);
+
+  const repair = await Repair.findById(repairid);
+  if (!repair) {
+    ctx.throw(400, "repair not found");
+  }
+  try {
+    await Repairstatus.deleteMany({ repairid: repairid });
+    await Repair.findByIdAndDelete(repairid);
+    ctx.body = "ok";
+  } catch (err) {
+    ctx.throw(500, err);
   }
 });
 module.exports = router;

@@ -12,13 +12,12 @@ import {
   Box,
   TextField,
   Paper,
+  MenuItem,
   Typography,
   Divider,
-  MenuItem,
 } from "@material-ui/core";
-import DeleteBills from "../../components/Bill/DeleteBills";
 import EditIcon from "@material-ui/icons/Edit";
-import AddBills from "../../components/Bill/AddBills";
+import AddRepair from "../../components/Repair/AddRepair";
 import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
@@ -26,7 +25,8 @@ import CheckIcon from "@material-ui/icons/Check";
 import LoadingScreen from "../../components/LoadingScreen";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
-import BillHistory from "../../components/Bill/BillHistory";
+import DeleteRepair from "../../components/Repair/DeleteRepair";
+import RepairHistory from "../../components/Repair/RepairHistory";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -52,10 +52,10 @@ const useStyles = makeStyles((theme) => ({
   },
   box3: {
     marginBottom: 13,
+    paddingRight: 120,
     width: "100%",
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
   },
   avatar: {
     background: [theme.palette.secondary.main],
@@ -64,34 +64,30 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 20,
   },
 }));
-const Bills = () => {
+const Repair = () => {
   const {
-    bill,
-    status,
-    getBills,
+    repair,
+    getRepairs,
     setLoading,
     authAxios,
     loading,
     count,
     setCount,
+    status,
   } = useContext(UserContext);
-  const [deleteShow, setDeleteShow] = useState(false);
-  const [historyShow, setHistoryShow] = useState(false);
   const [data, setData] = useState("");
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [reference, setReference] = useState("");
-  const [amount, setAmount] = useState("");
-  const [reason, setReason] = useState("");
-  const [tenantid, setTenantid] = useState("");
-  const [statusid, setStatusid] = useState("");
+  const [reason, setReason] = useState(null);
+  const [statusid, setStatusid] = useState(null);
+  const [task, setTask] = useState("");
+  const [amount, setAmount] = useState(null);
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
 
   const classes = useStyles();
   useEffect(() => {
-    getBills();
+    getRepairs();
   }, [count]);
 
   const submit = async (e) => {
@@ -100,19 +96,17 @@ const Bills = () => {
     setSuccess("");
     setLoading(true);
     const updatedata = {
-      reference,
-      reason,
-      tenant: tenantid,
-      status: statusid,
-      endDate,
       amount,
+      reason,
+      taskid: task,
+      status: statusid,
     };
     try {
-      await authAxios.put(`/bills/update/${data}`, updatedata);
+      await authAxios.put(`/repairs/update/${data}`, updatedata);
       setLoading(false);
       setEditing(false);
-      setSuccess("Facture modifié avec succès");
       setCount((count) => count + 1);
+      setSuccess("Réparation modifié avec succès");
     } catch (err) {
       setLoading(false);
       setError(err.response.data);
@@ -120,32 +114,28 @@ const Bills = () => {
   };
 
   const dynamicSearch = () => {
-    if (bill) {
-      return bill.filter(
+    if (repair) {
+      return repair.filter(
         (name) =>
           name._id
             .toString()
             .toLowerCase()
             .includes(search.toString().toLowerCase()) ||
-          name.tenant.name.toLowerCase().includes(search.toLowerCase()) ||
-          name.tenant.lastname.toLowerCase().includes(search.toLowerCase()) ||
-          name.reference
+          name.reason
             .toString()
             .toLowerCase()
             .includes(search.toString().toLowerCase()) ||
-          name.amount
-            .toString()
+          name.status.name
             .toLowerCase()
             .includes(search.toString().toLowerCase()) ||
-          name.reason.toLowerCase().includes(search.toLowerCase()) ||
-          name.status.name.toLowerCase().includes(search.toLowerCase())
+          name.amount.toString().includes(search.toString())
       );
     }
   };
   return (
     <div>
       <Typography variant="h3" color="primary">
-        Les Factures
+        Les Reparations
       </Typography>
       <Divider className={classes.divider} />
       <div style={{ marginBottom: "10px" }}>
@@ -172,35 +162,17 @@ const Bills = () => {
             ),
           }}
         />
-        <Paper
-          style={{
-            paddingLeft: "20px",
-            paddingRight: "40px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Typography variant="h6">
-            Total :{" "}
-            {bill.length > 0 &&
-              dynamicSearch().reduce((acc, bill) => acc + bill.amount, 0)}
-            CHF
-          </Typography>
-        </Paper>
       </Box>
       <TableContainer className={classes.table} component={Paper} square>
         <Table stickyHeader>
           <TableHead style={{ background: "#fff" }}>
             <TableRow>
               {[
-                "Facture n°",
-                "Locataire",
-                "Référence",
-                "Raison",
-                "Montant (CHF)",
-                "Statut",
-                "Echéance",
+                "Réparation n°",
+                "Tâche n°",
+                "raison",
+                "montant (CHF)",
+                "statut",
                 "Créé le",
                 "Dernière modification",
                 "Actions",
@@ -214,18 +186,41 @@ const Bills = () => {
           <TableBody>
             <Fragment>
               {!loading ? (
-                bill.length > 0 &&
-                dynamicSearch().map((bill) => (
-                  <TableRow key={bill._id}>
-                    <TableCell>{bill._id}</TableCell>
-                    <TableCell>
-                      {bill.tenant.name + " " + bill.tenant.lastname}
+                repair.length > 0 &&
+                dynamicSearch().map((repair) => (
+                  <TableRow key={repair._id}>
+                    <TableCell component="th" scope="row">
+                      {repair._id}
                     </TableCell>
-                    <TableCell>{bill.reference}</TableCell>
-                    <TableCell>{bill.reason}</TableCell>
-                    <TableCell>{bill.amount}</TableCell>
+                    <TableCell>{repair.taskid._id}</TableCell>
                     <TableCell>
-                      {editing && data === bill._id ? (
+                      {editing && data === repair._id ? (
+                        <TextField
+                          id={repair.reason}
+                          type="text"
+                          value={reason}
+                          onChange={(e) => setReason(e.target.value)}
+                          placeholder="Raison"
+                        />
+                      ) : (
+                        repair.reason
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {editing && data === repair._id ? (
+                        <TextField
+                          id={repair.amount.toString()}
+                          type="number"
+                          value={amount}
+                          onChange={(e) => setAmount(e.target.value)}
+                          placeholder="Montant"
+                        />
+                      ) : (
+                        repair.amount
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {editing && data === repair._id ? (
                         <TextField
                           id="Status"
                           select
@@ -242,21 +237,17 @@ const Bills = () => {
                             ))}
                         </TextField>
                       ) : (
-                        bill.status.name
+                        repair.status.name
                       )}
                     </TableCell>
-
                     <TableCell>
-                      {moment(bill.endDate).format("YYYY-MM-DD")}
+                      {moment(repair.createdAt).format("YYYY-MM-DD")}
                     </TableCell>
                     <TableCell>
-                      {moment(bill.createdAt).format("YYYY-MM-DD")}
+                      {moment(repair.updatedAt).format("YYYY-MM-DD")}
                     </TableCell>
                     <TableCell>
-                      {moment(bill.updateddAt).format("YYYY-MM-DD")}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === bill._id ? (
+                      {editing && data === repair._id ? (
                         <Fragment>
                           <Button>
                             <CheckIcon onClick={submit} />
@@ -267,25 +258,23 @@ const Bills = () => {
                         </Fragment>
                       ) : (
                         <Fragment>
-                           <BillHistory data={bill._id} />
+                          <RepairHistory data={repair._id} />
                           <Button>
                             <EditIcon
                               onClick={() => {
-                                setReference(bill.reference);
-                                setAmount(bill.amount);
-                                setReason(bill.reason);
-                                setTenantid(bill.tenant._id);
-                                setStatusid(bill.status._id);
-                                setEndDate(moment(bill.endDate));
-                                setData(bill._id);
+                                setAmount(repair.amount);
+                                setReason(repair.reason);
+                                setStatusid(repair.status._id);
+                                setTask(repair.taskid._id);
+                                setData(repair._id);
                                 setError("");
                                 setSuccess("");
                                 setEditing(!editing);
                               }}
                             />
                           </Button>
-                          <DeleteBills
-                            data={bill}
+                          <DeleteRepair
+                            data={repair}
                             setSuccess={setSuccess}
                             setError={setError}
                           />
@@ -295,18 +284,19 @@ const Bills = () => {
                   </TableRow>
                 ))
               ) : (
-                <LoadingScreen />
+                <TableRow>
+                  <LoadingScreen />
+                </TableRow>
               )}
             </Fragment>
           </TableBody>
         </Table>
       </TableContainer>
-
       <div style={{ marginTop: "13px" }}>
-        <AddBills />
+
       </div>
     </div>
   );
 };
 
-export default Bills;
+export default Repair;
