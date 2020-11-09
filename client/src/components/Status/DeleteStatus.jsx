@@ -1,75 +1,67 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, Fragment } from "react";
 import {
-  Button,
-  makeStyles,
   Dialog,
-  DialogTitle,
   DialogContent,
+  DialogTitle,
+  Button,
   Box,
-  List,
-  ListItem,
+  makeStyles,
+  Divider,
 } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 const useStyles = makeStyles({
   box: {
-    width: "100%",
     display: "flex",
     flexDirection: "row-reverse",
+    marginRight: 10,
   },
 });
 
-const DeleteMessage = ({ id, setSuccess, setError }) => {
-  const classes = useStyles();
+const DeleteStatus = ({ data, setSuccess, setError }) => {
   const [open, setOpen] = useState(false);
-  const { authAxios, setLoading, setCount } = useContext(UserContext);
+  const classes = useStyles();
+  const { setLoading, authAxios, setCount } = useContext(UserContext);
 
-  const submit = async (id) => {
-    setOpen(!open);
-    setError("");
+  const DeleteStatus = async (statusid) => {
     setSuccess("");
+    setError("");
+    setOpen(!open);
     setLoading(true);
     try {
-      await authAxios.delete(`/messages/delete/${id}`);
-
+      await authAxios.delete(`status/delete/${statusid}`);
       setLoading(false);
-      setSuccess("Message supprimé");
+      setSuccess("Statut supprimé avec succès");
       setCount((count) => count + 1);
     } catch (err) {
-      setLoading(false);
       setError(err.response.data);
+      setLoading(false);
     }
   };
+
   return (
-    <div>
+    <Fragment>
       <Button
         onClick={() => {
           setOpen(!open);
         }}
       >
-        Supprimer
+        <DeleteIcon />
       </Button>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>Supprimer un contrat</DialogTitle>
+        <DialogTitle>Supprimer un appartement</DialogTitle>
+        <Divider />
         <DialogContent>
           {" "}
           <DialogContent>
-            Êtez-vous sûr de vouloir supprimer le message <br />
-            <strong>{id}</strong> ? <br />
-            Cette action entrainera : <br />
-            <List>
-              <ListItem>
-                La suppression du message et de ses commentaires.
-              </ListItem>
-            </List>
-            <strong>
-              Archivez le message si vous voulez garder une trace.
-            </strong>
-            <br />
+            Êtez-vous sûr de vouloir supprimer le statut <br />
+            <strong>{data.name}</strong> ? <br />
             Une fois validé, il n'est plus possible de revenir en arrière.
           </DialogContent>
         </DialogContent>
+        <Divider />
         <Box className={classes.box}>
           <Button
             className={classes.button}
@@ -80,7 +72,7 @@ const DeleteMessage = ({ id, setSuccess, setError }) => {
           </Button>
 
           <Button
-            onClick={() => submit(id)}
+            onClick={() => DeleteStatus(data._id)}
             color="primary"
             className={classes.button}
           >
@@ -88,8 +80,8 @@ const DeleteMessage = ({ id, setSuccess, setError }) => {
           </Button>
         </Box>
       </Dialog>
-    </div>
+    </Fragment>
   );
 };
 
-export default DeleteMessage;
+export default DeleteStatus;

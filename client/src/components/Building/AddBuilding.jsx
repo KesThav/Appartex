@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from "react";
-import { UserContext } from "../middlewares/ContextAPI";
+import React, { useState, useContext} from "react";
+import { UserContext } from "../../middlewares/ContextAPI";
 import {
   makeStyles,
   Box,
@@ -8,10 +8,10 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
-  Typography,
   Fab,
+  Typography,
+  CircularProgress,
 } from "@material-ui/core";
-
 import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
@@ -31,30 +31,38 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddBills = () => {
+const AddBuilding = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const { getStatus, status, setLoading, authAxios } = useContext(UserContext);
+  const {
+    setLoading,
+    authAxios,
+    loading,
+    setCount,
+  } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [name, setName] = useState("");
-  const [count, setCount] = useState(0);
+  const [adress, setAdress] = useState("");
+  const [postalcode, setPostalcode] = useState("");
+  const [city, setCity] = useState("");
 
   const submit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (!name) {
-      setError("Complétez le nom");
+    if (!adress || !postalcode || !city) {
+      setError("Complétez tous les champs");
     } else {
       setLoading(true);
       const data = {
-        name,
+        adress,
+        postalcode,
+        city,
       };
       try {
-        await authAxios.post("/status/add", data);
+        await authAxios.post("/buildings/add", data);
         setLoading(false);
-        setSuccess("Status créé avec succès");
+        setSuccess("Immeuble créé avec succès");
         setCount((count) => count + 1);
       } catch (err) {
         setLoading(false);
@@ -67,12 +75,10 @@ const AddBills = () => {
     setOpen(!open);
     setError("");
     setSuccess("");
-    setName("");
+    setPostalcode("");
+    setCity("");
+    setAdress("");
   };
-
-  useEffect(() => {
-    getStatus();
-  }, [count]);
 
   return (
     <div>
@@ -83,23 +89,41 @@ const AddBills = () => {
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>{"Créer un Contrat"}</DialogTitle>
+        <DialogTitle>{"Créer un immeuble"}</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}
             {success && <Alert severity="success">{success}</Alert>}
+            {loading && <CircularProgress />}
           </div>
           <form onSubmit={submit}>
             <TextField
-              id="name"
+              id="adress"
+              type="text"
               variant="outlined"
-              type="string"
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setAdress(e.target.value)}
               fullWidth
-              placeholder="Nom du statut"
+              placeholder="Adresse"
               className={classes.form}
             />
-
+            <TextField
+              id="codepostal"
+              variant="outlined"
+              type="number"
+              onChange={(e) => setPostalcode(e.target.value)}
+              fullWidth
+              placeholder="Code postal"
+              className={classes.form}
+            />
+            <TextField
+              id="city"
+              type="text"
+              variant="outlined"
+              onChange={(e) => setCity(e.target.value)}
+              fullWidth
+              placeholder="Ville"
+              className={classes.form}
+            />
             <Box className={classes.box2}>
               <Button
                 className={classes.button}
@@ -120,4 +144,4 @@ const AddBills = () => {
   );
 };
 
-export default AddBills;
+export default AddBuilding;

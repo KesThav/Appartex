@@ -546,6 +546,7 @@ router.delete("/delete/:messageid", jwt, async (ctx) => {
       await Comment.findByIdAndDelete(comments.comments[i]);
     }
     await Message.findByIdAndDelete(ctx.params.messageid);
+    ctx.body = "ok";
   } catch (err) {
     ctx.throw(500, err);
   }

@@ -24,7 +24,7 @@ import {
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import AddAppart from "../../components/AddAppart";
+import AddAppart from "../../components/Appart/AddAppart";
 import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
@@ -32,6 +32,7 @@ import CheckIcon from "@material-ui/icons/Check";
 import LoadingScreen from "../../components/LoadingScreen";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
+import DeleteAppart from "../../components/Appart/DeleteAppart";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -70,9 +71,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const Appart = () => {
-  const { appart, getApparts, setLoading, authAxios, loading } = useContext(
-    UserContext
-  );
+  const {
+    appart,
+    getApparts,
+    setLoading,
+    authAxios,
+    loading,
+    count,
+    setCount,
+  } = useContext(UserContext);
   const [deleteShow, setDeleteShow] = useState(false);
   const [data, setData] = useState("");
   const [err, setError] = useState("");
@@ -84,26 +91,11 @@ const Appart = () => {
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
   const [build, setBuild] = useState(null);
-  const [count, setCount] = useState(0);
 
   const classes = useStyles();
   useEffect(() => {
     getApparts();
   }, [count]);
-
-  const DeleteAppart = async (appartid) => {
-    setDeleteShow(!deleteShow);
-    setLoading(true);
-    try {
-      await authAxios.delete(`appartments/delete/${appartid}`);
-      setLoading(false);
-      setSuccess("Appartement supprimé avec succès");
-      setCount((count) => count + 1);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
-  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -330,14 +322,11 @@ const Appart = () => {
                                 }}
                               />
                             </Button>
-                            <Button>
-                              <DeleteIcon
-                                onClick={() => {
-                                  setData(appart);
-                                  setDeleteShow(!deleteShow);
-                                }}
-                              />
-                            </Button>{" "}
+                            <DeleteAppart
+                              data={appart}
+                              setSuccess={setSuccess}
+                              setError={setError}
+                            />
                           </Fragment>
                         )}
                       </TableCell>
@@ -345,7 +334,7 @@ const Appart = () => {
                   ) : (
                     <TableRow key={appart._id}>
                       <TableCell component="th" scope="row">
-                        Oui
+                        {appart.building._id}
                       </TableCell>
                       <TableCell>{appart._id}</TableCell>
                       <TableCell>{appart.building.adress}</TableCell>
@@ -413,14 +402,11 @@ const Appart = () => {
                                 }}
                               />
                             </Button>
-                            <Button>
-                              <DeleteIcon
-                                onClick={() => {
-                                  setData(appart);
-                                  setDeleteShow(!deleteShow);
-                                }}
-                              />
-                            </Button>{" "}
+                            <DeleteAppart
+                              data={appart}
+                              setSuccess={setSuccess}
+                              setError={setError}
+                            />
                           </Fragment>
                         )}
                       </TableCell>
@@ -440,43 +426,6 @@ const Appart = () => {
         <AddAppart />
       </div>
 
-      <Dialog
-        open={deleteShow}
-        onClose={() => setDeleteShow(!deleteShow)}
-        disableBackdropClick
-      >
-        <DialogTitle>Supprimer un Immeuble</DialogTitle>
-        <DialogContent>
-          {" "}
-          <DialogContent>
-            Êtez-vous sûr de vouloir supprimer l'appartment
-            <br />
-            <strong>{data._id}</strong> ? <br />
-            Cette action entrainera : <br />
-            <List>
-              <ListItem>le suppression du contract lié à l'appartment</ListItem>
-            </List>
-            Une fois validé, il n'est plus possible de revenir en arrière.
-          </DialogContent>
-        </DialogContent>
-        <Box className={classes.box}>
-          <Button
-            className={classes.button}
-            color="inherit"
-            onClick={() => setDeleteShow(!deleteShow)}
-          >
-            Retour
-          </Button>
-
-          <Button
-            onClick={() => DeleteAppart(data._id)}
-            color="primary"
-            className={classes.button}
-          >
-            Valider
-          </Button>
-        </Box>
-      </Dialog>
     </div>
   );
 };

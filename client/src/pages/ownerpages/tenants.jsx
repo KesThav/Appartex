@@ -10,23 +10,18 @@ import {
   TableBody,
   Button,
   makeStyles,
-  Dialog,
-  DialogContent,
   Box,
   TextField,
-  DialogTitle,
   MenuItem,
   Chip,
-  List,
-  ListItem,
   Paper,
   Typography,
   Divider,
-  CircularProgress,
+  ButtonGroup,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import AddTenant from "../../components/AddTenant";
+import AddTenant from "../../components/Tenant/AddTenant";
 import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
@@ -35,6 +30,7 @@ import HistoryIcon from "@material-ui/icons/History";
 import LoadingScreen from "../../components/LoadingScreen";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
+import DeleteTenant from "../../components/Tenant/DeleteTenant";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -79,6 +75,8 @@ const Tenant = () => {
     loading,
     setLoading,
     authAxios,
+    count,
+    setCount,
   } = useContext(UserContext);
   const [deleteShow, setDeleteShow] = useState(false);
   const [data, setData] = useState("");
@@ -91,27 +89,11 @@ const Tenant = () => {
   const [editing, setEditing] = useState(false);
   const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
-  const [count, setCount] = useState(0);
 
   const classes = useStyles();
   useEffect(() => {
     getTenants();
   }, [count]);
-
-  const DeleteTenant = async (tenantid) => {
-    setDeleteShow(!deleteShow);
-    setLoading(true);
-    try {
-      await authAxios.delete(`tenants/delete/${tenantid}`);
-      setLoading(false);
-      setSuccess("Locataire supprimé avec succès");
-      setCount((count) => count + 1);
-    } catch (err) {
-      setDeleteShow(!deleteShow);
-      console.log(err);
-      setLoading(false);
-    }
-  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -341,21 +323,18 @@ const Tenant = () => {
                               }}
                             />
                           </Button>
-                          <Button>
-                            <DeleteIcon
-                              onClick={() => {
-                                setData(tenant);
-                                setDeleteShow(!deleteShow);
-                              }}
-                            />
-                          </Button>{" "}
+                          <DeleteTenant
+                            data={tenant}
+                            setSuccess={setSuccess}
+                            setError={setError}
+                          />
                         </Fragment>
                       )}
                     </TableCell>
                   </TableRow>
                 ))
               ) : (
-                <CircularProgress />
+                <LoadingScreen />
               )}
             </Fragment>
           </TableBody>
@@ -364,48 +343,6 @@ const Tenant = () => {
       <div style={{ marginTop: "13px" }}>
         <AddTenant />
       </div>
-      <Dialog
-        open={deleteShow}
-        onClose={() => setDeleteShow(!deleteShow)}
-        disableBackdropClick
-      >
-        <DialogTitle>Supprimer un locataire</DialogTitle>
-        <DialogContent>
-          Êtez-vous sûr de vouloir supprimer le locataire{" "}
-          <strong>
-            {data.lastname} {data.name}
-          </strong>{" "}
-          ? <br />
-          Cette action entrainera : <br />
-          <List>
-            <ListItem>la suppression du locataire</ListItem>
-            <ListItem>
-              la suppression de tous les contrats liés au locataire
-            </ListItem>
-            <ListItem>
-              la suppression de toutes les factures liées au locataire
-            </ListItem>
-          </List>
-          Une fois validé, il n'est plus possible de revenir en arrière.
-        </DialogContent>
-        <Box className={classes.box}>
-          <Button
-            className={classes.button}
-            color="inherit"
-            onClick={() => setDeleteShow(!deleteShow)}
-          >
-            Retour
-          </Button>
-
-          <Button
-            onClick={() => DeleteTenant(data._id)}
-            color="primary"
-            className={classes.button}
-          >
-            Valider
-          </Button>
-        </Box>
-      </Dialog>
     </div>
   );
 };

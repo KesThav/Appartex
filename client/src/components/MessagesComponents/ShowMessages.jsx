@@ -12,10 +12,8 @@ import Divider from "@material-ui/core/Divider";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
-import IconButton from "@material-ui/core/IconButton";
 import CardActions from "@material-ui/core/CardActions";
 import ChatBubbleIcon from "@material-ui/icons/ChatBubble";
-import Badge from "@material-ui/core/Badge";
 import AddComments from "./AddComments";
 import DeleteMessage from "./DeleteMessage";
 import ArchiveMessage from "./ArchiveMessage";
@@ -23,6 +21,7 @@ import UnArchiveMessage from "./UnArchiveMessage";
 import EditMessageStatus from "./EditMessageStatus";
 import AddTask from "./AddTask";
 import { CircularProgress } from "@material-ui/core";
+import Chip from "@material-ui/core/Chip";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ShowMessages = ({ message, getMessages }) => {
+const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
   const classes = useStyles();
   const { authAxios, user, loading } = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
@@ -64,16 +63,17 @@ const ShowMessages = ({ message, getMessages }) => {
               <Card className={classes.root}>
                 <CardHeader
                   avatar={<Avatar className={classes.avatar} />}
-                  title={
-                    data.createdBy.name +
-                    " " +
-                    data.createdBy.lastname +
-                    " -> " +
-                    data.sendedTo.name +
-                    " " +
-                    data.sendedTo.lastname
-                  }
+                  title={`${
+                    data.createdBy
+                      ? data.createdBy.name + " " + data.createdBy.lastname
+                      : "Compte supprimé"
+                  }  -> ${
+                    data.sendedTo
+                      ? data.sendedTo.name + " " + data.sendedTo.lastname
+                      : "Compte supprimé"
+                  } `}
                   subheader={moment(data.createdAt).format("YYYY-MM-DD")}
+                  action={<Chip label={data.status} color="primary" />}
                 />
                 <CardContent>
                   <Typography variant="h6" color="textPrimary" component="p">
@@ -103,10 +103,14 @@ const ShowMessages = ({ message, getMessages }) => {
                         <ArchiveMessage
                           getMessages={getMessages}
                           id={data._id}
+                          setError={setError}
+                          setSuccess={setSuccess}
                         />
                         <DeleteMessage
                           getMessages={getMessages}
                           id={data._id}
+                          setError={setError}
+                          setSuccess={setSuccess}
                         />
                         <EditMessageStatus
                           getMessages={getMessages}
@@ -120,10 +124,14 @@ const ShowMessages = ({ message, getMessages }) => {
                         <UnArchiveMessage
                           getMessages={getMessages}
                           id={data._id}
+                          setError={setError}
+                          setSuccess={setSuccess}
                         />
                         <DeleteMessage
                           getMessages={getMessages}
                           id={data._id}
+                          setError={setError}
+                          setSuccess={setSuccess}
                         />
                       </Fragment>
                     ))}

@@ -1,20 +1,10 @@
-import React, { useState, useContext, useEffect } from "react";
-import { Button, makeStyles } from "@material-ui/core";
+import React, {  useContext, } from "react";
+import { Button, } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
-import Alert from "@material-ui/lab/Alert";
 
-const useStyles = makeStyles({
-  box: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "row-reverse",
-  },
-});
 
-const UnArchiveMessage = ({ id, getMessages }) => {
-  const classes = useStyles();
-  const [err, setError] = useState("");
-  const [success, setSuccess] = useState("");
+const UnArchiveMessage = ({ id, setSuccess, setError }) => {
+
   const { authAxios, setLoading, setCount } = useContext(UserContext);
 
   const submit = async (id) => {

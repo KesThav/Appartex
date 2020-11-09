@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { UserContext } from "../middlewares/ContextAPI";
+import { UserContext } from "../../middlewares/ContextAPI";
 import {
   makeStyles,
   Box,
@@ -40,9 +40,8 @@ const AddAppart = () => {
     setLoading,
     authAxios,
     getBuildings,
-    appart,
-    setAppart,
-    getApparts,
+    count,
+    setCount,
   } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -51,7 +50,6 @@ const AddAppart = () => {
   const [city, setCity] = useState(null);
   const [size, setSize] = useState("");
   const [build, setBuild] = useState(null);
-  const [count, setCount] = useState(0);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -101,7 +99,6 @@ const AddAppart = () => {
 
   useEffect(() => {
     getBuildings();
-    getApparts();
   }, [count]);
 
   return (

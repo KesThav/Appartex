@@ -9,31 +9,24 @@ import {
   TableBody,
   Button,
   makeStyles,
-  Dialog,
-  DialogContent,
   Box,
   TextField,
-  DialogTitle,
-  List,
-  ListItem,
   Paper,
-  Chip,
   Typography,
   Divider,
   MenuItem,
-  CircularProgress,
 } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
+import DeleteBills from "../../components/Bill/DeleteBills";
 import EditIcon from "@material-ui/icons/Edit";
-import AddBills from "../../components/AddBills";
+import AddBills from "../../components/Bill/AddBills";
 import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
-import HistoryIcon from "@material-ui/icons/History";
 import LoadingScreen from "../../components/LoadingScreen";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
+import BillHistory from "../../components/Bill/BillHistory";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -81,6 +74,8 @@ const Bills = () => {
     setLoading,
     authAxios,
     loading,
+    count,
+    setCount,
   } = useContext(UserContext);
   const [deleteShow, setDeleteShow] = useState(false);
   const [historyShow, setHistoryShow] = useState(false);
@@ -95,41 +90,11 @@ const Bills = () => {
   const [statusid, setStatusid] = useState("");
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
-  const [billhistory, setBillhistory] = useState("");
-  const [count, setCount] = useState(0);
 
   const classes = useStyles();
   useEffect(() => {
-    getTenants();
-    getStatus();
     getBills();
   }, [count]);
-
-  const DeleteBill = async (billid) => {
-    setDeleteShow(!deleteShow);
-    setLoading(true);
-    try {
-      await authAxios.delete(`bills/delete/${billid}`);
-      setLoading(false);
-      setSuccess("Facture supprimé avec succès");
-      setCount((count) => count + 1);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
-  };
-
-  const getBillHistories = async (billid) => {
-    setLoading(true);
-    try {
-      const res = await authAxios.get(`/history/bills/${billid}`);
-      setBillhistory(res.data);
-      setLoading(false);
-    } catch (err) {
-      setLoading(false);
-      console.log(err);
-    }
-  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -304,15 +269,7 @@ const Bills = () => {
                         </Fragment>
                       ) : (
                         <Fragment>
-                          <Button>
-                            <HistoryIcon
-                              onClick={() => {
-                                getBillHistories(bill._id);
-                                setData(bill._id);
-                                setHistoryShow(!historyShow);
-                              }}
-                            />
-                          </Button>
+                           <BillHistory data={bill._id} />
                           <Button>
                             <EditIcon
                               onClick={() => {
@@ -329,14 +286,11 @@ const Bills = () => {
                               }}
                             />
                           </Button>
-                          <Button>
-                            <DeleteIcon
-                              onClick={() => {
-                                setData(bill);
-                                setDeleteShow(!deleteShow);
-                              }}
-                            />
-                          </Button>{" "}
+                          <DeleteBills
+                            data={bill}
+                            setSuccess={setSuccess}
+                            setError={setError}
+                          />
                         </Fragment>
                       )}
                     </TableCell>
@@ -353,86 +307,6 @@ const Bills = () => {
       <div style={{ marginTop: "13px" }}>
         <AddBills />
       </div>
-      <Dialog
-        open={deleteShow}
-        onClose={() => setDeleteShow(!deleteShow)}
-        disableBackdropClick
-      >
-        <DialogTitle>Supprimer une facture</DialogTitle>
-        <DialogContent>
-          {" "}
-          <DialogContent>
-            Êtez-vous sûr de vouloir supprimer la facture
-            <br />
-            <strong>{data._id}</strong> ? <br />
-            Une fois validé, il n'est plus possible de revenir en arrière.
-          </DialogContent>
-        </DialogContent>
-        <Box className={classes.box}>
-          <Button
-            className={classes.button}
-            color="inherit"
-            onClick={() => setDeleteShow(!deleteShow)}
-          >
-            Retour
-          </Button>
-
-          <Button
-            onClick={() => DeleteBill(data._id)}
-            color="primary"
-            className={classes.button}
-          >
-            Valider
-          </Button>
-        </Box>
-      </Dialog>
-
-      {billhistory && (
-        <Dialog
-          open={historyShow}
-          onClose={() => setDeleteShow(!deleteShow)}
-          disableBackdropClick
-        >
-          <DialogTitle>Historique de la facture {data}</DialogTitle>
-          <DialogContent>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Date</TableCell>
-                  <TableCell>Statut</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {billhistory.map((bh) => (
-                  <TableRow key={bh._id}>
-                    <TableCell>
-                      {moment(bh.createdAt).format("YYYY-MM-DD")}
-                    </TableCell>
-                    <TableCell>{bh.status.name}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </DialogContent>
-          <Box className={classes.box}>
-            <Button
-              className={classes.button}
-              color="inherit"
-              onClick={() => setHistoryShow(!historyShow)}
-            >
-              Retour
-            </Button>
-
-            <Button
-              onClick={() => DeleteBill(data._id)}
-              color="primary"
-              className={classes.button}
-            >
-              Valider
-            </Button>
-          </Box>
-        </Dialog>
-      )}
     </div>
   );
 };

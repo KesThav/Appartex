@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { UserContext } from "../middlewares/ContextAPI";
+import { UserContext } from "../../middlewares/ContextAPI";
 import {
   makeStyles,
   Box,
@@ -36,15 +36,14 @@ const AddBills = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const {
-    bill,
     tenant,
     getTenants,
     setLoading,
     authAxios,
-    getBills,
     getStatus,
     status,
-    getBillHistories,
+    count,
+    setCount,
   } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -54,7 +53,6 @@ const AddBills = () => {
   const [reason, setReason] = useState("");
   const [tenantid, setTenantid] = useState("");
   const [statusid, setStatusid] = useState("");
-  const [count, setCount] = useState(0);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -101,7 +99,6 @@ const AddBills = () => {
   useEffect(() => {
     getTenants();
     getStatus();
-    getBills();
   }, [count]);
 
   return (

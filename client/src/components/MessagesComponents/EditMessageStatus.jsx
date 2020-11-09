@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext} from "react";
 import {
   Button,
   makeStyles,
@@ -25,12 +25,10 @@ const useStyles = makeStyles({
   },
 });
 
-const EditMessageStatus = ({ id, statustype, getMessages }) => {
+const EditMessageStatus = ({ id, statustype}) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const [title, setTitle] = useState("");
-  const { authAxios, user, setLoading, setCount } = useContext(UserContext);
-  const [content, setContent] = useState("");
+  const { authAxios, setLoading, setCount } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [status, setStatus] = useState(statustype);

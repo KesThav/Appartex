@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import {
   Button,
   makeStyles,
@@ -6,7 +6,6 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
-  MenuItem,
   Box,
 } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
@@ -28,7 +27,7 @@ const useStyles = makeStyles({
   },
 });
 
-const AddComments = ({ id, getMessages }) => {
+const AddComments = ({ id }) => {
   const classes = useStyles();
   const [content, setContent] = useState();
   const [open, setOpen] = useState(false);

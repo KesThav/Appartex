@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { UserContext } from "../middlewares/ContextAPI";
+import { UserContext } from "../../middlewares/ContextAPI";
 import {
   makeStyles,
   Box,
@@ -42,8 +42,8 @@ const AddContract = () => {
     getApparts,
     tenant,
     getTenants,
-    contract,
-    getContracts,
+    setCount,
+    count,
   } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -52,7 +52,6 @@ const AddContract = () => {
   const [appartid, setAppartid] = useState(null);
   const [rent, setRent] = useState("");
   const [other, setOther] = useState(null);
-  const [count, setCount] = useState(0);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -95,7 +94,6 @@ const AddContract = () => {
   useEffect(() => {
     getTenants();
     getApparts();
-    getContracts();
   }, [count]);
 
   return (

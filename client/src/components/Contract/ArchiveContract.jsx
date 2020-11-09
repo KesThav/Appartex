@@ -1,75 +1,67 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, Fragment } from "react";
 import {
-  Button,
-  makeStyles,
   Dialog,
-  DialogTitle,
   DialogContent,
+  DialogTitle,
+  Button,
   Box,
-  List,
-  ListItem,
+  makeStyles,
+  Divider,
 } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
+import ArchiveIcon from "@material-ui/icons/Archive";
 
 const useStyles = makeStyles({
   box: {
-    width: "100%",
     display: "flex",
     flexDirection: "row-reverse",
+    marginRight: 10,
   },
 });
 
-const DeleteMessage = ({ id, setSuccess, setError }) => {
-  const classes = useStyles();
+const ArchiveContract = ({ data, setSuccess, setError }) => {
   const [open, setOpen] = useState(false);
-  const { authAxios, setLoading, setCount } = useContext(UserContext);
+  const classes = useStyles();
+  const { setLoading, authAxios, setCount } = useContext(UserContext);
 
-  const submit = async (id) => {
+  const archive = async (data) => {
     setOpen(!open);
     setError("");
     setSuccess("");
     setLoading(true);
     try {
-      await authAxios.delete(`/messages/delete/${id}`);
-
+      await authAxios.put(`/contracts/archive/${data}`);
       setLoading(false);
-      setSuccess("Message supprimé");
       setCount((count) => count + 1);
+      setSuccess("Contrat archivé avec succès");
     } catch (err) {
       setLoading(false);
       setError(err.response.data);
     }
   };
+
   return (
-    <div>
+    <Fragment>
       <Button
         onClick={() => {
           setOpen(!open);
         }}
       >
-        Supprimer
+        <ArchiveIcon />
       </Button>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>Supprimer un contrat</DialogTitle>
+        <DialogTitle>Supprimer un contract</DialogTitle>
+        <Divider />
         <DialogContent>
           {" "}
           <DialogContent>
-            Êtez-vous sûr de vouloir supprimer le message <br />
-            <strong>{id}</strong> ? <br />
-            Cette action entrainera : <br />
-            <List>
-              <ListItem>
-                La suppression du message et de ses commentaires.
-              </ListItem>
-            </List>
-            <strong>
-              Archivez le message si vous voulez garder une trace.
-            </strong>
-            <br />
+            Êtez-vous sûr de vouloir archiver le contract <br />
+            <strong>{data._id}</strong> ? <br />
             Une fois validé, il n'est plus possible de revenir en arrière.
           </DialogContent>
         </DialogContent>
+        <Divider />
         <Box className={classes.box}>
           <Button
             className={classes.button}
@@ -80,7 +72,7 @@ const DeleteMessage = ({ id, setSuccess, setError }) => {
           </Button>
 
           <Button
-            onClick={() => submit(id)}
+            onClick={() => archive(data._id)}
             color="primary"
             className={classes.button}
           >
@@ -88,8 +80,8 @@ const DeleteMessage = ({ id, setSuccess, setError }) => {
           </Button>
         </Box>
       </Dialog>
-    </div>
+    </Fragment>
   );
 };
 
-export default DeleteMessage;
+export default ArchiveContract;

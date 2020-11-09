@@ -22,9 +22,9 @@ import {
   Divider,
   CircularProgress,
 } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
+import DeleteStatus from "../../components/Status/DeleteStatus";
 import EditIcon from "@material-ui/icons/Edit";
-import AddStatus from "../../components/AddStatus";
+import AddStatus from "../../components/Status/AddStatus";
 import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
@@ -74,9 +74,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const Statut = () => {
-  const { status, getStatus, setLoading, authAxios, loading } = useContext(
-    UserContext
-  );
+  const {
+    status,
+    getStatus,
+    setLoading,
+    authAxios,
+    loading,
+    count,
+    setCount,
+  } = useContext(UserContext);
   const [deleteShow, setDeleteShow] = useState(false);
   const [data, setData] = useState("");
   const [err, setError] = useState("");
@@ -84,26 +90,12 @@ const Statut = () => {
   const [name, setName] = useState("");
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
-  const [count, setCount] = useState(0);
 
   const classes = useStyles();
   useEffect(() => {
     getStatus();
   }, [count]);
 
-  const DeleteStatus = async (buildingid) => {
-    setDeleteShow(!deleteShow);
-    setLoading(true);
-    try {
-      await authAxios.delete(`status/delete/${buildingid}`);
-      setLoading(false);
-      setSuccess("Statut supprimé avec succès");
-      setCount((count) => count + 1);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
-  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -242,14 +234,11 @@ const Statut = () => {
                               }}
                             />
                           </Button>
-                          <Button>
-                            <DeleteIcon
-                              onClick={() => {
-                                setData(status);
-                                setDeleteShow(!deleteShow);
-                              }}
-                            />
-                          </Button>
+                          <DeleteStatus
+                            data={status}
+                            setSuccess={setSuccess}
+                            setError={setError}
+                          />
                         </Fragment>
                       )}
                     </TableCell>
@@ -265,39 +254,6 @@ const Statut = () => {
       <div style={{ marginTop: "13px" }}>
         <AddStatus />
       </div>
-
-      <Dialog
-        open={deleteShow}
-        onClose={() => setDeleteShow(!deleteShow)}
-        disableBackdropClick
-      >
-        <DialogTitle>Supprimer un Immeuble</DialogTitle>
-        <DialogContent>
-          {" "}
-          <DialogContent>
-            Êtez-vous sûr de vouloir supprimer le statut <br />
-            <strong>{data.name}</strong> ? <br />
-            Une fois validé, il n'est plus possible de revenir en arrière.
-          </DialogContent>
-        </DialogContent>
-        <Box className={classes.box}>
-          <Button
-            className={classes.button}
-            color="inherit"
-            onClick={() => setDeleteShow(!deleteShow)}
-          >
-            Retour
-          </Button>
-
-          <Button
-            onClick={() => DeleteStatus(data._id)}
-            color="primary"
-            className={classes.button}
-          >
-            Valider
-          </Button>
-        </Box>
-      </Dialog>
     </div>
   );
 };

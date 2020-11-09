@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { UserContext } from "../middlewares/ContextAPI";
+import { UserContext } from "../../middlewares/ContextAPI";
 import {
   makeStyles,
   Box,
@@ -7,7 +7,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   TextField,
   InputAdornment,
   Typography,
@@ -39,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 const AddTenant = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const { loading, setLoading, authAxios, tenant, getTenants } = useContext(
+  const { setLoading, authAxios, getTenants } = useContext(
     UserContext
   );
   const [err, setError] = useState("");

@@ -2,6 +2,7 @@ const Router = require("@koa/router");
 const router = new Router({ prefix: "/status" });
 const Status = require("../models/status.model");
 const Bill = require("../models/bill.model");
+const Task = require("../models/task.model");
 const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
 let ObjectId = require("mongodb").ObjectId;
@@ -243,7 +244,12 @@ router.delete("/delete/:statusid", jwt, adminAccess, async (ctx) => {
   try {
     const bill = await Bill.findOne({ status: statusid });
     if (bill) {
-      ctx.throw(400, "delete all bills containing status before deleting");
+      ctx.throw(400, "can't delete status. Status is used in bills");
+    }
+
+    const task = await Task.findOne({ status: statusid });
+    if (bill) {
+      ctx.throw(400, "can't delete status. Status is used in tasks");
     }
 
     await Status.findByIdAndDelete(statusid);

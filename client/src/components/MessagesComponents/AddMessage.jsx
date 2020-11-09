@@ -28,7 +28,7 @@ const useStyles = makeStyles({
   },
 });
 
-const AddMessage = ({ getMessages }) => {
+const AddMessage = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");

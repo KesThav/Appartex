@@ -14,25 +14,21 @@ import {
   Box,
   TextField,
   DialogTitle,
-  List,
-  ListItem,
   Paper,
-  Avatar,
   Typography,
   Divider,
-  CircularProgress,
 } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import AddContract from "../../components/AddContract";
+import AddContract from "../../components/Contract/AddContract";
 import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
-import ArchiveIcon from "@material-ui/icons/Archive";
 import LoadingScreen from "../../components/LoadingScreen";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
+import DeleteContract from "../../components/Contract/DeleteContract";
+import ArchiveContract from "../../components/Contract/ArchiveContract";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -75,18 +71,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 const Contract = () => {
   const {
-    tenant,
-    getTenants,
-    appart,
-    getApparts,
     contract,
     getContracts,
     setLoading,
     authAxios,
     loading,
+    count,
+    setCount,
   } = useContext(UserContext);
-  const [deleteShow, setDeleteShow] = useState(false);
-  const [archiveShow, setArchiveShow] = useState(false);
   const [data, setData] = useState("");
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -97,28 +89,11 @@ const Contract = () => {
   const [other, setOther] = useState(null);
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
-  const [count, setCount] = useState(0);
 
   const classes = useStyles();
   useEffect(() => {
-    getApparts();
     getContracts();
-    getTenants();
   }, [count]);
-
-  const DeleteContract = async (contractid) => {
-    setDeleteShow(!deleteShow);
-    setLoading(true);
-    try {
-      await authAxios.delete(`contracts/delete/${contractid}`);
-      setLoading(false);
-      setCount((count) => count + 1);
-      setSuccess("Contrat supprimé avec succès");
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
-  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -138,22 +113,6 @@ const Contract = () => {
       setEditing(false);
       setCount((count) => count + 1);
       setSuccess("Contrat modifié avec succès");
-    } catch (err) {
-      setLoading(false);
-      setError(err.response.data);
-    }
-  };
-
-  const archive = async (data) => {
-    setArchiveShow(!archiveShow);
-    setError("");
-    setSuccess("");
-    setLoading(true);
-    try {
-      await authAxios.put(`/contracts/archive/${data}`);
-      setLoading(false);
-      setCount((count) => count + 1);
-      setSuccess("Contrat archivé avec succès");
     } catch (err) {
       setLoading(false);
       setError(err.response.data);
@@ -363,24 +322,18 @@ const Contract = () => {
                                   }}
                                 />
                               </Button>
-                              <Button>
-                                <ArchiveIcon
-                                  onClick={() => {
-                                    setData(contract);
-                                    setArchiveShow(!archiveShow);
-                                  }}
-                                />
-                              </Button>
+                              <ArchiveContract
+                                data={contract}
+                                setSuccess={setSuccess}
+                                setError={setError}
+                              />
                             </Fragment>
                           )}
-                          <Button>
-                            <DeleteIcon
-                              onClick={() => {
-                                setData(contract);
-                                setDeleteShow(!deleteShow);
-                              }}
-                            />
-                          </Button>
+                          <DeleteContract
+                            data={contract}
+                            setSuccess={setSuccess}
+                            setError={setError}
+                          />
                         </Fragment>
                       )}
                     </TableCell>
@@ -396,76 +349,6 @@ const Contract = () => {
       <div style={{ marginTop: "13px" }}>
         <AddContract />
       </div>
-
-      <Dialog
-        open={deleteShow}
-        onClose={() => setDeleteShow(!deleteShow)}
-        disableBackdropClick
-      >
-        <DialogTitle>Supprimer un contrat</DialogTitle>
-        <DialogContent>
-          {" "}
-          <DialogContent>
-            Êtez-vous sûr de vouloir supprimer le contrat <br />
-            <strong>{data._id}</strong> ? <br />
-            Cette action entrainera : <br />
-            <List>
-              <ListItem>L'appartment lié au contract passera en libre</ListItem>
-            </List>
-            Une fois validé, il n'est plus possible de revenir en arrière.
-          </DialogContent>
-        </DialogContent>
-        <Box className={classes.box}>
-          <Button
-            className={classes.button}
-            color="inherit"
-            onClick={() => setDeleteShow(!deleteShow)}
-          >
-            Retour
-          </Button>
-
-          <Button
-            onClick={() => DeleteContract(data._id)}
-            color="primary"
-            className={classes.button}
-          >
-            Valider
-          </Button>
-        </Box>
-      </Dialog>
-
-      <Dialog
-        open={archiveShow}
-        onClose={() => setArchiveShow(!archiveShow)}
-        disableBackdropClick
-      >
-        <DialogTitle>Archiver un contrat</DialogTitle>
-        <DialogContent>
-          {" "}
-          <DialogContent>
-            Êtez-vous sûr de vouloir archiver le contract <br />
-            <strong>{data._id}</strong> ? <br />
-            Une fois validé, il n'est plus possible de revenir en arrière.
-          </DialogContent>
-        </DialogContent>
-        <Box className={classes.box}>
-          <Button
-            className={classes.button}
-            color="inherit"
-            onClick={() => setArchiveShow(!archiveShow)}
-          >
-            Retour
-          </Button>
-
-          <Button
-            onClick={() => archive(data._id)}
-            color="primary"
-            className={classes.button}
-          >
-            Valider
-          </Button>
-        </Box>
-      </Dialog>
     </div>
   );
 };

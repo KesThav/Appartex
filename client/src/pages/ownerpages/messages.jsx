@@ -8,6 +8,7 @@ import Box from "@material-ui/core/Box";
 import ShowMessages from "../../components/MessagesComponents/ShowMessages";
 import AddMessage from "../../components/MessagesComponents/AddMessage";
 import { UserContext } from "../../middlewares/ContextAPI";
+import Alert from "@material-ui/lab/Alert";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -54,6 +55,8 @@ const Drawer = (props) => {
   const [receivedmessage, setReceivedMessage] = useState("");
   const [sendedmessage, setSendedMessage] = useState("");
   const [archivedmessage, setArchivedMessage] = useState("");
+  const [err, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const getMessages = async () => {
     const received = await authAxios.get("/messages/received");
@@ -75,6 +78,10 @@ const Drawer = (props) => {
   return (
     <Fragment>
       <AddMessage getMessages={getMessages} />
+      <div style={{ marginBottom: "10px" }}>
+        {err && <Alert severity="error">{err}</Alert>}
+        {success && <Alert severity="success">{success}</Alert>}
+      </div>
       <div className={classes.root}>
         <Tabs
           orientation="vertical"
@@ -94,18 +101,33 @@ const Drawer = (props) => {
         <TabPanel value={value} index={0}>
           <Fragment>
             {sendedmessage.length > 0 && (
-              <ShowMessages getMessages={getMessages} message={sendedmessage} />
+              <ShowMessages
+                getMessages={getMessages}
+                setError={setError}
+                setSuccess={setSuccess}
+                message={sendedmessage}
+              />
             )}
           </Fragment>
         </TabPanel>
         <TabPanel value={value} index={1}>
           {receivedmessage.length > 0 && (
-            <ShowMessages getMessages={getMessages} message={receivedmessage} />
+            <ShowMessages
+              getMessages={getMessages}
+              setError={setError}
+              setSuccess={setSuccess}
+              message={receivedmessage}
+            />
           )}
         </TabPanel>
         <TabPanel value={value} index={2}>
           {archivedmessage.length > 0 && (
-            <ShowMessages getMessages={getMessages} message={archivedmessage} />
+            <ShowMessages
+              getMessages={getMessages}
+              setError={setError}
+              setSuccess={setSuccess}
+              message={archivedmessage}
+            />
           )}
         </TabPanel>
       </div>

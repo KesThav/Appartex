@@ -28,9 +28,9 @@ export default {
       disableElevation: true,
     },
   },
-  shape: {
+/*   shape: {
     borderRadius: 0,
-  },
+  }, */
   /* overrides: {
     MuiCssBaseline: {
       "@global": {

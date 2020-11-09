@@ -20,9 +20,8 @@ import {
   Typography,
   Divider,
 } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import AddBuilding from "../../components/AddBuilding";
+import AddBuilding from "../../components/Building/AddBuilding";
 import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
@@ -30,6 +29,7 @@ import CheckIcon from "@material-ui/icons/Check";
 import LoadingScreen from "../../components/LoadingScreen";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
+import DeleteBuilding from "../../components/Building/DeleteBuilding";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -74,13 +74,13 @@ const useStyles = makeStyles((theme) => ({
 const Building = (props) => {
   const {
     building,
-    setBuilding,
     getBuildings,
     setLoading,
     authAxios,
     loading,
+    count,
+    setCount,
   } = useContext(UserContext);
-  const [deleteShow, setDeleteShow] = useState(false);
   const [data, setData] = useState("");
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -89,28 +89,11 @@ const Building = (props) => {
   const [city, setCity] = useState("");
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
-  const [count, setCount] = useState(0);
 
   const classes = useStyles();
   useEffect(() => {
     getBuildings();
   }, [count]);
-
-  const DeleteBuilding = async (buildingid) => {
-    setDeleteShow(!deleteShow);
-    setLoading(true);
-
-    try {
-      await authAxios.delete(`buildings/delete/${buildingid}`);
-      setLoading(false);
-      setSuccess("Immeuble supprimé avec succès");
-      setCount((count) => count + 1);
-    } catch (err) {
-      setDeleteShow(!deleteShow);
-      console.log(err);
-      setLoading(false);
-    }
-  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -283,14 +266,11 @@ const Building = (props) => {
                             }}
                           />
                         </Button>
-                        <Button>
-                          <DeleteIcon
-                            onClick={() => {
-                              setData(building);
-                              setDeleteShow(!deleteShow);
-                            }}
-                          />
-                        </Button>
+                        <DeleteBuilding
+                          data={building}
+                          setSuccess={setSuccess}
+                          setError={setError}
+                        />
                       </Fragment>
                     )}
                   </TableCell>
@@ -307,51 +287,6 @@ const Building = (props) => {
       <div style={{ marginTop: "13px" }}>
         <AddBuilding />
       </div>
-
-      <Dialog
-        open={deleteShow}
-        onClose={() => setDeleteShow(!deleteShow)}
-        disableBackdropClick
-      >
-        <DialogTitle>Supprimer un Immeuble</DialogTitle>
-        <DialogContent>
-          {" "}
-          <DialogContent>
-            Êtez-vous sûr de vouloir supprimer l'immeuble se trouvant à <br />
-            <strong>
-              {data.adress} {data.postalcode} {data.city}
-            </strong>{" "}
-            ? <br />
-            Cette action entrainera : <br />
-            <List>
-              <ListItem>
-                la suppression de tous les appartements liés dans l'immeuble
-              </ListItem>
-              <ListItem>
-                le suppression de tous les contrats liés à l'immeuble
-              </ListItem>
-            </List>
-            Une fois validé, il n'est plus possible de revenir en arrière.
-          </DialogContent>
-        </DialogContent>
-        <Box className={classes.box}>
-          <Button
-            className={classes.button}
-            color="inherit"
-            onClick={() => setDeleteShow(!deleteShow)}
-          >
-            Retour
-          </Button>
-
-          <Button
-            onClick={() => DeleteBuilding(data._id)}
-            color="primary"
-            className={classes.button}
-          >
-            Valider
-          </Button>
-        </Box>
-      </Dialog>
     </div>
   );
 };
