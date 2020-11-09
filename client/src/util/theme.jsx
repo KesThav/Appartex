@@ -28,7 +28,7 @@ export default {
       disableElevation: true,
     },
   },
-/*   shape: {
+  /*   shape: {
     borderRadius: 0,
   }, */
   /* overrides: {
@@ -56,9 +56,15 @@ export default {
     },
     MuiTypography: {
       h3: {
-        fontFamily : 'Source Sans Pro'
+        fontFamily: "Source Sans Pro",
+      },
+    },
+    MuiPaper: {
+      elevation4: {
+        boxShadow: "none",
       },
     },
   },
-
 };
+
+/**.MuiPaper-elevation4 */

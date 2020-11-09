@@ -1,20 +1,20 @@
-import React, { useState, useContext, useEffect } from "react";
-import { UserContext } from "../../middlewares/ContextAPI";
+import React, { useState, useContext } from "react";
+import EditIcon from "@material-ui/icons/Edit";
 import {
-  makeStyles,
-  Box,
-  Button,
+  DialogContent,
   Dialog,
   DialogTitle,
-  DialogContent,
   TextField,
   MenuItem,
+  Box,
+  Button,
+  makeStyles,
 } from "@material-ui/core";
-import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
-import LoadingScreen from "../LoadingScreen";
+import moment from "moment";
+import { UserContext } from "../../middlewares/ContextAPI";
 
-const useStyles = makeStyles((theme) => ({
+const useStyle = makeStyles({
   table: {
     minWidth: 650,
     maxWidth: "100%",
@@ -29,30 +29,33 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row-reverse",
   },
-}));
+});
 
-const AddTask = ({ id }) => {
-  const classes = useStyles();
+const EditTaks = ({
+  appointmentData,
+  setVisible,
+  visible,
+  setSuccess,
+  setError,
+}) => {
   const [open, setOpen] = useState(false);
-  const {
-    setLoading,
-    authAxios,
-    status,
-    getStatus,
-    loading,
-    count,
-  } = useContext(UserContext);
-  const [err, setError] = useState("");
-  const [statusid, setStatusid] = useState("");
-  const [success, setSuccess] = useState("");
-  const [messageid, setMessageid] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const classes = useStyle();
+  const [statusid, setStatusid] = useState(appointmentData.status._id);
+  const [messageid, setMessageid] = useState(appointmentData.messageid._id);
+  const [startDate, setStartDate] = useState(
+    moment(appointmentData.startDate).format("YYYY-MM-DDTHH:MM")
+  );
+  const [endDate, setEndDate] = useState(
+    moment(appointmentData.endDate).format("YYYY-MM-DDTHH:MM")
+  );
+  const [title, setTitle] = useState(appointmentData.title);
+  const [content, setContent] = useState(appointmentData.content);
+  const [taskid, setTaskid] = useState(appointmentData._id);
+  const { authAxios, status, setCount, setLoading } = useContext(UserContext);
 
   const submit = async (e) => {
     e.preventDefault();
+    /* setVisible(!visible); */
     setError("");
     setSuccess("");
     if (!startDate || !endDate || !messageid || !title || !content) {
@@ -71,41 +74,28 @@ const AddTask = ({ id }) => {
         status: statusid,
       };
       try {
-        const res = await authAxios.post("/tasks/add", data);
-        setSuccess("Tâche créé avec succès");
+        const res = await authAxios.put(`/tasks/update/${taskid}`, data);
+        setSuccess("Tâche modifié avec succès");
+        setCount((count) => count + 1);
       } catch (err) {
-        setLoading(false);
         setError(err.response.data);
       }
     }
   };
 
-  const OnOpen = () => {
-    setOpen(!open);
-    setError("");
-    setSuccess("");
-    setTitle("");
-    setContent("");
-    setStartDate("");
-    setEndDate("");
-    setMessageid(id);
-  };
-
-  useEffect(() => {
-    getStatus();
-  }, [count]);
-
   return (
     <div>
-      <Button onClick={() => OnOpen()}>Créer une tâche</Button>
-      {loading && <LoadingScreen />}
+      <Button>
+        <EditIcon
+          onClick={() => {
+            setOpen(!open);
+          }}
+        />
+      </Button>
+
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>Créer une tâche</DialogTitle>
+        <DialogTitle>Editer une tâche</DialogTitle>
         <DialogContent>
-          <div style={{ marginBottom: "10px" }}>
-            {err && <Alert severity="error">{err}</Alert>}
-            {success && <Alert severity="success">{success}</Alert>}
-          </div>
           <form onSubmit={submit}>
             <TextField
               id="messageid"
@@ -162,7 +152,7 @@ const AddTask = ({ id }) => {
               type="datetime-local"
               variant="outlined"
               label="Date de début"
-              defaultValue={moment().format("YYYY-MM-DDTHH:MM")}
+              value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
               fullWidth
               placeholder="Description"
@@ -173,7 +163,7 @@ const AddTask = ({ id }) => {
               type="datetime-local"
               variant="outlined"
               label="Date de fin"
-              defaultValue={moment().format("YYYY-MM-DDTHH:MM")}
+              value={endDate}
               onChange={(e) => {
                 setEndDate(e.target.value);
               }}
@@ -205,4 +195,4 @@ const AddTask = ({ id }) => {
   );
 };
 
-export default AddTask;
+export default EditTaks;

@@ -45,8 +45,7 @@ const EditMessageStatus = ({ id, statustype}) => {
       setSuccess("Statut modifié");
       setCount((count) => count + 1);
     } catch (err) {
-      setLoading(false);
-      console.log(err.response.data);
+      setError(err.response.data);
     }
   };
 

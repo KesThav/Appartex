@@ -19,7 +19,7 @@ import DeleteMessage from "./DeleteMessage";
 import ArchiveMessage from "./ArchiveMessage";
 import UnArchiveMessage from "./UnArchiveMessage";
 import EditMessageStatus from "./EditMessageStatus";
-import AddTask from "./AddTask";
+import AddTask from "../Task/AddTask";
 import { CircularProgress } from "@material-ui/core";
 import Chip from "@material-ui/core/Chip";
 
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
   const classes = useStyles();
-  const { authAxios, user, loading } = useContext(UserContext);
+  const { user, loading } = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
 
   return (

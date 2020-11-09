@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
 const Drawer = (props) => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
+
   const { user, authAxios, count } = useContext(UserContext);
   const [receivedmessage, setReceivedMessage] = useState("");
   const [sendedmessage, setSendedMessage] = useState("");
