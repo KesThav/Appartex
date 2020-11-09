@@ -68,7 +68,8 @@ router.get("/", jwt, adminAccess, async (ctx) => {
   try {
     let alltasks = await Task.find({ createdBy: ctx.request.jwt._id })
       .populate("status")
-      .populate("messageid");
+      .populate("messageid")
+      .sort({ updatedAt: -1 });
     ctx.status = 200;
     ctx.body = alltasks;
   } catch (err) {
