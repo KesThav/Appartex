@@ -5,6 +5,7 @@ const Contract = require("../models/contract.model");
 const Bill = require("../models/bill.model");
 const Appart = require("../models/appartment.model");
 const Building = require("../models/building.model");
+const Billstatus = require("../models/bill_status.model");
 let ObjectId = require("mongodb").ObjectId;
 const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
@@ -309,6 +310,7 @@ router.put("/update/password/:tenantid", jwt, filterAccess, async (ctx) => {
 
 router.delete("/delete/:tenantid", jwt, adminAccess, async (ctx) => {
   let buildingid = [];
+  let billhistoriesid = [];
   let validate = ObjectId.isValid(ctx.params.tenantid);
   if (!validate) return ctx.throw(404, "No tenant found");
   let tenantid = new ObjectId(ctx.params.tenantid);
@@ -317,6 +319,22 @@ router.delete("/delete/:tenantid", jwt, adminAccess, async (ctx) => {
     ctx.throw(404, "No tenant found");
   }
   try {
+    //delete bill history
+    const bills = await Bill.find({ tenant: tenantid }).select({
+      _id: 1,
+    });
+
+    for (i = 0; i < bills.length; i++) {
+      billhistoriesid.push(
+        await Billstatus.find({ billid: bills[i]._id }).select({ _id: 1 })
+      );
+    }
+
+    for (i = 0; i < billhistoriesid.length; i++) {
+      await Billstatus.findByIdAndDelete(billhistoriesid[i]._id);
+    }
+
+    //delete bills
     await Bill.deleteMany({ tenant: tenantid });
 
     //change appartment statut
@@ -362,119 +380,6 @@ router.delete("/delete/:tenantid", jwt, adminAccess, async (ctx) => {
 });
 
 /*########################################################## Tenant endpoints #####################################################################################*/
-/**
- *  @swagger
- * /tenants/buildings/{tenant_id}:
- *  get :
- *    summary : Return tenant building
- *    operationId : gettenantbuilding
- *    tags :
- *        - tenant
- *    security:
- *        - bearerAuth: []
- *    parameters:
- *     - name: tenant_id
- *       in: path
- *       required: true
- *       description: the id of the tenant
- *    responses:
- *      '200':
- *        description: 'Success'
- *        content :
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/Building'
- *      '403':
- *         description: Forbidden
- *      '404':
- *         description: No building found
- *      '500':
- *         description: Server error
- *
- */
-
-router.get("/buildings/:tenantid", jwt, filterAccess, async (ctx) => {
-  let buildings = [];
-  let validate = ObjectId.isValid(ctx.params.tenantid);
-  if (!validate) return ctx.throw(404, "no building found");
-  try {
-    let tenantid = new ObjectId(ctx.params.tenantid);
-    const buildingid = await Contract.find({ tenant: tenantid }).select({
-      buildingid: 1,
-      _id: 0,
-    });
-
-    for (i = 0; i < buildingid.length; i++) {
-      buildings.push(await Building.findById(buildingid[i].buildingid));
-    }
-
-    if (!buildingid) {
-      ctx.throw(404, "no building found");
-    } else {
-      ctx.body = buildings;
-    }
-  } catch (err) {
-    ctx.throw(500, err);
-  }
-});
-
-/**
- *  @swagger
- * /tenants/appartments/{tenant_id}:
- *  get :
- *    summary : Return tenant appartment
- *    operationId : gettenantappartment
- *    tags :
- *        - tenant
- *    security:
- *        - bearerAuth: []
- *    parameters:
- *     - name: tenant_id
- *       in: path
- *       required: true
- *       description: the id of the tenant
- *    responses:
- *      '200':
- *        description: 'Success'
- *        content :
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/Appartment'
- *      '403':
- *         description: Forbidden
- *      '404':
- *         description: No appartment found
- *      '500':
- *         description: Server error
- *
- */
-
-router.get("/appartments/:tenantid", jwt, filterAccess, async (ctx) => {
-  let appartments = [];
-  let validate = ObjectId.isValid(ctx.params.tenantid);
-  if (!validate) return ctx.throw(404, "no appartment found");
-  try {
-    let tenantid = new ObjectId(ctx.params.tenantid);
-    const appartid = await Contract.find({ tenant: tenantid }).select({
-      appartmentid: 1,
-      _id: 0,
-    });
-
-    for (i = 0; i < appartid.length; i++) {
-      if (appartid[i].appartmentid !== null) {
-        appartments.push(await Appart.findById(appartid[i].appartmentid));
-      }
-    }
-
-    if (!appartid) {
-      ctx.throw(404, "no appartment found");
-    } else {
-      ctx.body = appartments;
-    }
-  } catch (err) {
-    ctx.throw(500, err);
-  }
-});
 
 /**
  *  @swagger
