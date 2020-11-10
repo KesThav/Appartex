@@ -15,6 +15,7 @@ import HomeIcon from "@material-ui/icons/Home";
 import FolderIcon from "@material-ui/icons/Folder";
 import PeopleIcon from "@material-ui/icons/People";
 import HistoryIcon from "@material-ui/icons/History";
+import TimelineIcon from "@material-ui/icons/Timeline";
 import {
   Scheduler,
   WeekView,
@@ -60,27 +61,18 @@ const useStyles = makeStyles((theme) => ({
 const AdminDashboard = (props) => {
   const classes = useStyles();
   const {
-    user,
-    setUser,
-    authAxios,
     tenant,
-    setTenant,
     getTenants,
     building,
-    setBuilding,
     getBuildings,
     appart,
-    setAppart,
     getApparts,
     contract,
-    setContract,
     getContracts,
     bill,
-    setBill,
     getBills,
-    billhistory,
-    setBillhistory,
-    getBillHistories,
+    getRepairs,
+    repair,
     getTasks,
     task,
   } = useContext(UserContext);
@@ -91,7 +83,7 @@ const AdminDashboard = (props) => {
     getApparts();
     getContracts();
     getBills();
-    getBillHistories();
+    getRepairs();
     getTasks();
     if (!window.location.hash) {
       window.location = window.location + "#loaded";
@@ -170,21 +162,21 @@ const AdminDashboard = (props) => {
             />
           </Grid>
         )}
-        {!billhistory ? (
+        {!repair ? (
           <CircularProgress />
         ) : (
           <Grid item lg={2} md={12} sm={12} xs={12}>
             <Badges
-              icon={<HistoryIcon className={classes.icons} />}
-              value={billhistory.length}
+              icon={<TimelineIcon className={classes.icons} />}
+              value={repair.length}
               style={{ background: "#482880" }}
-              name={"Historiques des factures"}
+              name={"Réparations"}
             />
           </Grid>
         )}
         <Grid item lg={6} md={12}>
           {!task ? (
-            <CircularProgress/>
+            <CircularProgress />
           ) : (
             <Paper>
               <Scheduler data={task}>

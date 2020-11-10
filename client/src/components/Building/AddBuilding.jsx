@@ -1,4 +1,4 @@
-import React, { useState, useContext} from "react";
+import React, { useState, useContext } from "react";
 import { UserContext } from "../../middlewares/ContextAPI";
 import {
   makeStyles,
@@ -11,6 +11,7 @@ import {
   Fab,
   Typography,
   CircularProgress,
+  Tooltip,
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 
@@ -34,12 +35,7 @@ const useStyles = makeStyles((theme) => ({
 const AddBuilding = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const {
-    setLoading,
-    authAxios,
-    loading,
-    setCount,
-  } = useContext(UserContext);
+  const { setLoading, authAxios, loading, setCount } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [adress, setAdress] = useState("");
@@ -83,9 +79,11 @@ const AddBuilding = () => {
   return (
     <div>
       <Box className={classes.box}>
-        <Fab color="primary" onClick={OnOpen}>
-          <Typography variant="h5">+</Typography>
-        </Fab>
+        <Tooltip title="Créer un immeuble">
+          <Fab color="primary" onClick={OnOpen}>
+            <Typography variant="h5">+</Typography>
+          </Fab>
+        </Tooltip>
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>

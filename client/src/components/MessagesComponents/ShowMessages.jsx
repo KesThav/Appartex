@@ -13,7 +13,6 @@ import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
-import ChatBubbleIcon from "@material-ui/icons/ChatBubble";
 import AddComments from "./AddComments";
 import DeleteMessage from "./DeleteMessage";
 import ArchiveMessage from "./ArchiveMessage";
@@ -22,6 +21,8 @@ import EditMessageStatus from "./EditMessageStatus";
 import AddTask from "../Task/AddTask";
 import Chip from "@material-ui/core/Chip";
 import LoadingScreen from "../LoadingScreen";
+import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineOutlined";
+import { ButtonGroup } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,6 +34,11 @@ const useStyles = makeStyles((theme) => ({
     displax: "flex",
     flexDirection: "column",
     boxShadow: "none",
+  },
+  accordion: {
+    marginTop: 20,
+    width: "100%",
+    paddingBottom: 0,
   },
 }));
 
@@ -46,7 +52,11 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
       {!loading ? (
         message.length > 0 &&
         message.map((data) => (
-          <Accordion key={data._id} expanded={expanded === data._id}>
+          <Accordion
+            key={data._id}
+            expanded={expanded === data._id}
+            className={classes.accordion}
+          >
             <AccordionSummary
               component={"span"}
               expandIcon={
@@ -72,7 +82,7 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
                       ? data.sendedTo.name + " " + data.sendedTo.lastname
                       : "Compte supprimé"
                   } `}
-                  subheader={moment(data.createdAt).format("YYYY-MM-DD")}
+                  subheader={moment(data.createdAt).fromNow()}
                   action={<Chip label={data.status} color="primary" />}
                 />
                 <CardContent>
@@ -89,8 +99,7 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
                 </CardContent>
                 <CardActions disableSpacing>
                   {data.comments.length}
-                  <ChatBubbleIcon />
-
+                  <ChatBubbleOutlineOutlinedIcon />
                   {user && user.role !== "Admin" && (
                     <AddComments getMessages={getMessages} id={data._id} />
                   )}
@@ -99,25 +108,26 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
                     user.role == "Admin" &&
                     (data.status !== "Archivé" ? (
                       <Fragment>
-                        <AddComments getMessages={getMessages} id={data._id} />
-                        <ArchiveMessage
-                          getMessages={getMessages}
-                          id={data._id}
-                          setError={setError}
-                          setSuccess={setSuccess}
-                        />
-                        <DeleteMessage
-                          getMessages={getMessages}
-                          id={data._id}
-                          setError={setError}
-                          setSuccess={setSuccess}
-                        />
-                        <EditMessageStatus
-                          getMessages={getMessages}
-                          id={data._id}
-                          statustype={data.status}
-                        />
-                        <AddTask id={data._id} />
+                        <ButtonGroup>
+                          <ArchiveMessage
+                            getMessages={getMessages}
+                            id={data._id}
+                            setError={setError}
+                            setSuccess={setSuccess}
+                          />
+                          <DeleteMessage
+                            getMessages={getMessages}
+                            id={data._id}
+                            setError={setError}
+                            setSuccess={setSuccess}
+                          />
+                          <EditMessageStatus
+                            getMessages={getMessages}
+                            id={data._id}
+                            statustype={data.status}
+                          />
+                          <AddTask id={data._id} />
+                        </ButtonGroup>
                       </Fragment>
                     ) : (
                       <Fragment>
@@ -136,10 +146,24 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
                       </Fragment>
                     ))}
                 </CardActions>
+                <CardActions>
+                  {user && user.role == "Admin" && data.status !== "Archivé" && (
+                    <div className={classes.root}>
+                      <Divider />
+                      <AddComments
+                        getMessages={getMessages}
+                        id={data._id}
+                        setError={setError}
+                        setSuccess={setSuccess}
+                      />
+                      
+                    </div>
+                  )}
+                </CardActions>
               </Card>
             </AccordionSummary>
             <AccordionDetails>
-              <div>
+              <div className={classes.root}>
                 {data.comments.map((data) => (
                   <Fragment key={data._id}>
                     <Divider />
@@ -154,7 +178,7 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
                         title={
                           data.createdBy.name + " " + data.createdBy.lastname
                         }
-                        subheader={moment(data.createdAt).format("YYYY-MM-DD")}
+                        subheader={moment(data.createdAt).fromNow()}
                       />
                       <CardContent>
                         <Typography

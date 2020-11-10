@@ -11,6 +11,7 @@ import {
   MenuItem,
   Typography,
   Fab,
+  Tooltip,
 } from "@material-ui/core";
 import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
@@ -104,9 +105,11 @@ const AddBills = () => {
   return (
     <div>
       <Box className={classes.box}>
-        <Fab color="primary" onClick={OnOpen}>
-          <Typography variant="h5">+</Typography>
-        </Fab>
+        <Tooltip title="Créer une facture">
+          <Fab color="primary" onClick={OnOpen}>
+            <Typography variant="h5">+</Typography>
+          </Fab>
+        </Tooltip>
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>

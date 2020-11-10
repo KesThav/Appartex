@@ -7,16 +7,14 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Button,
+  IconButton,
   makeStyles,
-  Dialog,
-  DialogContent,
   Box,
   TextField,
-  DialogTitle,
   Paper,
   Typography,
   Divider,
+  MenuItem,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import AddContract from "../../components/Contract/AddContract";
@@ -34,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
   table: {
     maxWidth: "100%",
     height: "60vh",
+    boxShadow: "none",
   },
   header: {
     backgroundColor: "#fff",
@@ -54,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   },
   box3: {
     marginBottom: 13,
-    paddingRight: 120,
+    padding: 15,
     width: "100%",
     display: "flex",
     flexDirection: "row",
@@ -90,6 +89,7 @@ const Contract = () => {
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
 
+
   const classes = useStyles();
   useEffect(() => {
     getContracts();
@@ -121,231 +121,246 @@ const Contract = () => {
 
   const dynamicSearch = () => {
     if (contract)
-      return contract.filter((name) =>
-        !name.appartmentid.building
-          ? name._id
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.charge.toString().includes(search.toString()) ||
-            name.rent.toString().toLowerCase().includes(search.toLowerCase()) ||
-            name.tenant
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.appartmentid
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.other
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.tenant.name.toLowerCase().includes(search.toLowerCase()) ||
-            name.tenant.lastname.toLowerCase().includes(search.toLowerCase()) ||
-            name.appartmentid.adress
-              .toLowerCase()
-              .includes(search.toLowerCase()) ||
-            name.status.toLowerCase().includes(search.toString().toLowerCase())
-          : name._id
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.charge.toString().includes(search.toString()) ||
-            name.rent.toString().toLowerCase().includes(search.toLowerCase()) ||
-            name.tenant
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.appartmentid
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.other
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.tenant.name.toLowerCase().includes(search.toLowerCase()) ||
-            name.tenant.lastname.toLowerCase().includes(search.toLowerCase()) ||
-            name.appartmentid.building.adress
-              .toLowerCase()
-              .includes(search.toLowerCase()) ||
-            name.status.toLowerCase().includes(search.toString().toLowerCase())
-      );
+      return contract
+        .filter((name) =>
+          !name.appartmentid.building
+            ? name._id
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.charge.toString().includes(search.toString()) ||
+              name.rent
+                .toString()
+                .toLowerCase()
+                .includes(search.toLowerCase()) ||
+              name.tenant
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.appartmentid
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.other
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.tenant.name.toLowerCase().includes(search.toLowerCase()) ||
+              name.tenant.lastname
+                .toLowerCase()
+                .includes(search.toLowerCase()) ||
+              name.appartmentid.adress
+                .toLowerCase()
+                .includes(search.toLowerCase()) ||
+              name.status
+                .toLowerCase()
+                .includes(search.toString().toLowerCase())
+            : name._id
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.charge.toString().includes(search.toString()) ||
+              name.rent
+                .toString()
+                .toLowerCase()
+                .includes(search.toLowerCase()) ||
+              name.tenant
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.appartmentid
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.other
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.tenant.name.toLowerCase().includes(search.toLowerCase()) ||
+              name.tenant.lastname
+                .toLowerCase()
+                .includes(search.toLowerCase()) ||
+              name.appartmentid.building.adress
+                .toLowerCase()
+                .includes(search.toLowerCase()) ||
+              name.status
+                .toLowerCase()
+                .includes(search.toString().toLowerCase())
+        );
   };
 
   return (
     <div>
-      <Typography variant="h3" color="primary">
+      <Typography variant="h3">
         Les contrats
       </Typography>
 
-      <Divider className={classes.divider} />
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}
       </div>
-
-      <Box className={classes.box3}>
-        <TextField
-          variant="outlined"
-          id="search"
-          type="text"
-          value={search}
-          placeholder="Filter"
-          onChange={(e) => {
-            setSearch(e.target.value);
-          }}
-          style={{ width: "30%" }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Box>
-      <TableContainer className={classes.table} component={Paper} square>
-        <Table stickyHeader>
-          <TableHead style={{ background: "#fff" }}>
-            <TableRow>
+      <Paper>
+        <Box className={classes.box3}>
+          <TextField
+            variant="outlined"
+            id="search"
+            type="text"
+            value={search}
+            placeholder="Filter"
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+            style={{ width: "30%" }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+        <TableContainer className={classes.table} component={Paper} square>
+          <Table stickyHeader>
+            <TableHead style={{ background: "#fff" }}>
+              <TableRow>
+                <Fragment>
+                  {[
+                    "contrat n°",
+                    "Locataire",
+                    "Appartment",
+                    "Charge",
+                    "Loyer",
+                    "Autre",
+                    "Statut",
+                    "Créé le",
+                    "Dernière modification",
+                    "Actions",
+                  ].map((title, index) => (
+                    <TableCell key={index}>
+                      <strong>{title}</strong>
+                    </TableCell>
+                  ))}
+                </Fragment>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               <Fragment>
-                {[
-                  "contrat n°",
-                  "Locataire",
-                  "Appartment",
-                  "Charge",
-                  "Loyer",
-                  "Autre",
-                  "Statut",
-                  "Créé le",
-                  "Dernière modification",
-                  "Actions",
-                ].map((title, index) => (
-                  <TableCell key={index}>
-                    <strong>{title}</strong>
-                  </TableCell>
-                ))}
-              </Fragment>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <Fragment>
-              {!loading ? (
-                contract.length > 0 &&
-                dynamicSearch().map((contract) => (
-                  <TableRow key={contract._id}>
-                    <TableCell component="th" scope="row">
-                      {contract._id}
-                    </TableCell>
-                    <TableCell>
-                      {contract.tenant.name + " " + contract.tenant.lastname}
-                    </TableCell>
-                    <TableCell>
-                      {!contract.appartmentid.building
-                        ? contract.appartmentid.adress
-                        : contract.appartmentid.building.adress}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === contract._id ? (
-                        <TextField
-                          id={contract.charge}
-                          type="number"
-                          value={charge}
-                          onChange={(e) => setCharge(e.target.value)}
-                          placeholder="Charge"
-                        />
-                      ) : (
-                        contract.charge
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === contract._id ? (
-                        <TextField
-                          id={contract.rent}
-                          type="number"
-                          value={rent}
-                          onChange={(e) => setRent(e.target.value)}
-                          placeholder="Loyer"
-                        />
-                      ) : (
-                        contract.rent
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === contract._id ? (
-                        <TextField
-                          id={contract.other}
-                          type="text"
-                          value={other}
-                          onChange={(e) => setOther(e.target.value)}
-                          placeholder="Autres"
-                        />
-                      ) : (
-                        contract.other
-                      )}
-                    </TableCell>
-                    <TableCell>{contract.status}</TableCell>
-                    <TableCell>
-                      {moment(contract.createdAt).format("YYYY-MM-DD")}
-                    </TableCell>
-                    <TableCell>
-                      {moment(contract.updatedAt).format("YYYY-MM-DD")}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === contract._id ? (
-                        <Fragment>
-                          <Button>
-                            <CheckIcon onClick={submit} />
-                          </Button>
-                          <Button>
-                            <CloseIcon onClick={() => setEditing(!editing)} />
-                          </Button>
-                        </Fragment>
-                      ) : (
-                        <Fragment>
-                          {contract.status !== "Archivé" && (
-                            <Fragment>
-                              <Button>
-                                <EditIcon
-                                  onClick={() => {
-                                    setCharge(contract.charge);
-                                    setRent(contract.rent);
-                                    setTenantid(contract.tenant._id);
-                                    setAppartid(contract.appartmentid._id);
-                                    setOther(contract.other);
-                                    setData(contract._id);
-                                    setError("");
-                                    setSuccess("");
-                                    setEditing(!editing);
-                                  }}
-                                />
-                              </Button>
-                              <ArchiveContract
-                                data={contract}
-                                setSuccess={setSuccess}
-                                setError={setError}
-                              />
-                            </Fragment>
-                          )}
-                          <DeleteContract
-                            data={contract}
-                            setSuccess={setSuccess}
-                            setError={setError}
+                {!loading ? (
+                  contract.length > 0 &&
+                  dynamicSearch().map((contract) => (
+                    <TableRow key={contract._id}>
+                      <TableCell component="th" scope="row">
+                        {contract._id}
+                      </TableCell>
+                      <TableCell>
+                        {contract.tenant.name + " " + contract.tenant.lastname}
+                      </TableCell>
+                      <TableCell>
+                        {!contract.appartmentid.building
+                          ? contract.appartmentid.adress
+                          : contract.appartmentid.building.adress}
+                      </TableCell>
+                      <TableCell>
+                        {editing && data === contract._id ? (
+                          <TextField
+                            id={contract.charge}
+                            type="number"
+                            value={charge}
+                            onChange={(e) => setCharge(e.target.value)}
+                            placeholder="Charge"
                           />
-                        </Fragment>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <LoadingScreen />
-              )}
-            </Fragment>
-          </TableBody>
-        </Table>
-      </TableContainer>
+                        ) : (
+                          contract.charge
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editing && data === contract._id ? (
+                          <TextField
+                            id={contract.rent}
+                            type="number"
+                            value={rent}
+                            onChange={(e) => setRent(e.target.value)}
+                            placeholder="Loyer"
+                          />
+                        ) : (
+                          contract.rent
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editing && data === contract._id ? (
+                          <TextField
+                            id={contract.other}
+                            type="text"
+                            value={other}
+                            onChange={(e) => setOther(e.target.value)}
+                            placeholder="Autres"
+                          />
+                        ) : (
+                          contract.other
+                        )}
+                      </TableCell>
+                      <TableCell>{contract.status}</TableCell>
+                      <TableCell>
+                        {moment(contract.createdAt).format("YYYY-MM-DD")}
+                      </TableCell>
+                      <TableCell>
+                        {moment(contract.updatedAt).format("YYYY-MM-DD")}
+                      </TableCell>
+                      <TableCell>
+                        {editing && data === contract._id ? (
+                          <Fragment>
+                            <IconButton>
+                              <CheckIcon onClick={submit} />
+                            </IconButton>
+                            <IconButton>
+                              <CloseIcon onClick={() => setEditing(!editing)} />
+                            </IconButton>
+                          </Fragment>
+                        ) : (
+                          <Fragment>
+                            {contract.status !== "Archivé" && (
+                              <Fragment>
+                                <IconButton>
+                                  <EditIcon
+                                    onClick={() => {
+                                      setCharge(contract.charge);
+                                      setRent(contract.rent);
+                                      setTenantid(contract.tenant._id);
+                                      setAppartid(contract.appartmentid._id);
+                                      setOther(contract.other);
+                                      setData(contract._id);
+                                      setError("");
+                                      setSuccess("");
+                                      setEditing(!editing);
+                                    }}
+                                  />
+                                </IconButton>
+                                <ArchiveContract
+                                  data={contract}
+                                  setSuccess={setSuccess}
+                                  setError={setError}
+                                />
+                              </Fragment>
+                            )}
+                            <DeleteContract
+                              data={contract}
+                              setSuccess={setSuccess}
+                              setError={setError}
+                            />
+                          </Fragment>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <LoadingScreen />
+                )}
+              </Fragment>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
       <div style={{ marginTop: "13px" }}>
         <AddContract />
       </div>

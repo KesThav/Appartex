@@ -11,6 +11,7 @@ import {
   InputAdornment,
   Typography,
   Fab,
+  Tooltip,
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import EmailIcon from "@material-ui/icons/Email";
@@ -38,9 +39,7 @@ const useStyles = makeStyles((theme) => ({
 const AddTenant = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const { setLoading, authAxios, getTenants } = useContext(
-    UserContext
-  );
+  const { setLoading, authAxios, getTenants } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [name, setName] = useState("");
@@ -101,13 +100,14 @@ const AddTenant = () => {
     getTenants();
   }, [count]);
 
-
   return (
     <div>
       <Box className={classes.box}>
-        <Fab color="primary" onClick={OnOpen}>
-          <Typography variant="h5">+</Typography>
-        </Fab>
+        <Tooltip title="Créer un locataire">
+          <Fab color="primary" onClick={OnOpen}>
+            <Typography variant="h5">+</Typography>
+          </Fab>
+        </Tooltip>
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>

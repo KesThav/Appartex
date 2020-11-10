@@ -9,6 +9,8 @@ import {
   Box,
   Button,
   makeStyles,
+  Tooltip,
+  IconButton,
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import moment from "moment";
@@ -84,13 +86,15 @@ const EditTaks = ({
 
   return (
     <Fragment>
-      <Button>
-        <EditIcon
-          onClick={() => {
-            setOpen(!open);
-          }}
-        />
-      </Button>
+      <Tooltip title="Editer">
+        <IconButton>
+          <EditIcon
+            onClick={() => {
+              setOpen(!open);
+            }}
+          />
+        </IconButton>
+      </Tooltip>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
         <DialogTitle>Editer une tâche</DialogTitle>

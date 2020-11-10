@@ -1,4 +1,4 @@
-import React, { useState, useContext} from "react";
+import React, { useState, useContext } from "react";
 import {
   Button,
   makeStyles,
@@ -8,9 +8,12 @@ import {
   TextField,
   MenuItem,
   Box,
+  Tooltip,
+  IconButton,
 } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
 import Alert from "@material-ui/lab/Alert";
+import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 
 const useStyles = makeStyles({
   box: {
@@ -25,7 +28,7 @@ const useStyles = makeStyles({
   },
 });
 
-const EditMessageStatus = ({ id, statustype}) => {
+const EditMessageStatus = ({ id, statustype }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const { authAxios, setLoading, setCount } = useContext(UserContext);
@@ -58,15 +61,18 @@ const EditMessageStatus = ({ id, statustype}) => {
 
   return (
     <div>
-      <Button
-        onClick={() => {
-          setOpen(!open);
-        }}
-      >
-        Editer le statut
-      </Button>
+      <Tooltip title="Editer le statut">
+        <IconButton
+          onClick={() => {
+            setOpen(!open);
+          }}
+        >
+          <EditOutlinedIcon />
+        </IconButton>
+      </Tooltip>
+
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>{"Envoyer un message"}</DialogTitle>
+        <DialogTitle>{"Editer un statut"}</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}

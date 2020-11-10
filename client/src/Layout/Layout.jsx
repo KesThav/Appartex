@@ -30,11 +30,11 @@ import HomeIcon from "@material-ui/icons/Home";
 import FolderIcon from "@material-ui/icons/Folder";
 import StorageIcon from "@material-ui/icons/Storage";
 import Chip from "@material-ui/core/Chip";
-import Axios from "axios";
 import PersonIcon from "@material-ui/icons/Person";
 import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 import ForumIcon from "@material-ui/icons/Forum";
 import TrendingUpIcon from "@material-ui/icons/TrendingUp";
+import TimelineIcon from "@material-ui/icons/Timeline";
 
 const drawerWidth = 250;
 
@@ -166,7 +166,7 @@ const Layout = (props) => {
         {
           id: 9,
           name: "Les Réparations",
-          icon: <FormatListBulletedIcon />,
+          icon: <TimelineIcon />,
           link: "/repairs",
         },
       ].map((data) => (

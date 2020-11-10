@@ -7,6 +7,8 @@ import {
   Box,
   makeStyles,
   Divider,
+  IconButton,
+  Tooltip,
 } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
 import ArchiveIcon from "@material-ui/icons/Archive";
@@ -42,13 +44,15 @@ const ArchiveContract = ({ data, setSuccess, setError }) => {
 
   return (
     <Fragment>
-      <Button
-        onClick={() => {
-          setOpen(!open);
-        }}
-      >
-        <ArchiveIcon />
-      </Button>
+      <Tooltip title="Archiver">
+        <IconButton
+          onClick={() => {
+            setOpen(!open);
+          }}
+        >
+          <ArchiveIcon />
+        </IconButton>
+      </Tooltip>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
         <DialogTitle>Supprimer un contract</DialogTitle>

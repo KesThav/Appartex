@@ -15,6 +15,8 @@ import {
   Chip,
   CardContent,
   Divider,
+  IconButton,
+  Tooltip,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { UserContext } from "../../middlewares/ContextAPI";
@@ -26,9 +28,11 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     boxShadow: "none",
   },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightRegular,
+  accordion: {
+    marginTop: 20,
+    width: "100%",
+    paddingBottom: 0,
+    boxShadow: "none",
   },
   root2: {
     width: "100%",
@@ -56,24 +60,31 @@ const ExpandMessage = ({ id }) => {
 
   return (
     <div>
-      <Button
-        onClick={() => {
-          getOneMessage(id);
-          setOpen(!open);
-        }}
-      >
-        <ExpandMoreIcon />
-        {id}
-      </Button>
+      <Tooltip title="Détails">
+        <Button
+          onClick={() => {
+            getOneMessage(id);
+            setOpen(!open);
+          }}
+        >
+          <ExpandMoreIcon />
+          {id}
+        </Button>
+      </Tooltip>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        disableBackdropClick
+        classeName={classes.root}
+      >
         <DialogTitle>Message</DialogTitle>
         <DialogContent>
           {message && (
             <Accordion
               key={message._id}
               expanded={expanded === message._id}
-              className={classes.root}
+              className={classes.accordion}
             >
               <AccordionSummary
                 onClick={() =>
@@ -119,7 +130,7 @@ const ExpandMessage = ({ id }) => {
                 </Card>
               </AccordionSummary>
               <AccordionDetails>
-                <div>
+                <div className={classes.root}>
                   {message.comments.map((data) => (
                     <Fragment key={data._id}>
                       <Divider />

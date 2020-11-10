@@ -12,6 +12,8 @@ import {
   Box,
   makeStyles,
   Divider,
+  Tooltip,
+  IconButton
 } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
 import HistoryIcon from "@material-ui/icons/History";
@@ -47,13 +49,15 @@ const TaskHistory = ({ data }) => {
 
   return (
     <Fragment>
-      <Button
-        onClick={() => {
-          setOpen(!open);
-        }}
-      >
-        <HistoryIcon />
-      </Button>
+      <Tooltip title="Détails">
+        <IconButton
+          onClick={() => {
+            setOpen(!open);
+          }}
+        >
+          <HistoryIcon />
+        </IconButton>
+      </Tooltip>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
         <DialogTitle>Détail de la tâche</DialogTitle>

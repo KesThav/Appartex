@@ -1,10 +1,9 @@
-import React, {  useContext, } from "react";
-import { Button, } from "@material-ui/core";
+import React, { useContext } from "react";
+import { IconButton, Tooltip } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
-
+import UnarchiveOutlinedIcon from "@material-ui/icons/UnarchiveOutlined";
 
 const UnArchiveMessage = ({ id, setSuccess, setError }) => {
-
   const { authAxios, setLoading, setCount } = useContext(UserContext);
 
   const submit = async (id) => {
@@ -23,7 +22,11 @@ const UnArchiveMessage = ({ id, setSuccess, setError }) => {
   };
   return (
     <div>
-      <Button onClick={() => submit(id)}>Désarchiver</Button>
+      <Tooltip title="Désarchiver">
+        <IconButton onClick={() => submit(id)}>
+          <UnarchiveOutlinedIcon />
+        </IconButton>
+      </Tooltip>
     </div>
   );
 };

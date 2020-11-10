@@ -9,10 +9,13 @@ import {
   DialogContent,
   TextField,
   MenuItem,
+  Tooltip,
+  IconButton,
 } from "@material-ui/core";
 import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import LoadingScreen from "../LoadingScreen";
+import AddOutlinedIcon from "@material-ui/icons/AddOutlined";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -98,7 +101,12 @@ const AddTask = ({ id }) => {
 
   return (
     <Fragment>
-      <Button onClick={() => OnOpen()}>Créer une tâche</Button>
+      <Tooltip title="Créer une tâche">
+        <IconButton onClick={() => OnOpen()}>
+          <AddOutlinedIcon />
+        </IconButton>
+      </Tooltip>
+
       {loading && <LoadingScreen />}
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
         <DialogTitle>Créer une tâche</DialogTitle>

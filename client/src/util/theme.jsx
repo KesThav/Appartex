@@ -32,13 +32,6 @@ export default {
     borderRadius: 0,
   }, */
   /* overrides: {
-    MuiCssBaseline: {
-      "@global": {
-        body: {
-          backgroundColor: "#fafafa",
-        },
-      },
-    },
   }, */
   overrides: {
     MuiTableCell: {
@@ -56,12 +49,19 @@ export default {
     },
     MuiTypography: {
       h3: {
-        fontFamily: "Source Sans Pro",
+        fontFamily: "Poppins",
       },
     },
     MuiPaper: {
       elevation4: {
         boxShadow: "none",
+      },
+    },
+    MuiCssBaseline: {
+      "@global": {
+        body: {
+          backgroundColor: "#f4f6f8",
+        },
       },
     },
   },

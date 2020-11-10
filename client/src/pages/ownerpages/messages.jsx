@@ -99,7 +99,7 @@ const Drawer = (props) => {
             <Tab label="Messages Archivés" {...a11yProps(2)} />
           ) : null}
         </Tabs>
-        <TabPanel value={value} index={0}>
+        <TabPanel value={value} index={0} style={{ width: "50%" }}>
           <Fragment>
             {sendedmessage.length > 0 && (
               <ShowMessages
@@ -111,7 +111,7 @@ const Drawer = (props) => {
             )}
           </Fragment>
         </TabPanel>
-        <TabPanel value={value} index={1}>
+        <TabPanel value={value} index={1} style={{ width: "50%" }}>
           {receivedmessage.length > 0 && (
             <ShowMessages
               getMessages={getMessages}
@@ -121,7 +121,7 @@ const Drawer = (props) => {
             />
           )}
         </TabPanel>
-        <TabPanel value={value} index={2}>
+        <TabPanel value={value} index={2} style={{ width: "50%" }}>
           {archivedmessage.length > 0 && (
             <ShowMessages
               getMessages={getMessages}

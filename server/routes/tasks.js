@@ -3,8 +3,9 @@ const router = new Router({ prefix: "/tasks" });
 const Task = require("../models/task.model");
 const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
-const { taskSchema, messageSchema } = require("../helpers/validation");
+const { taskSchema } = require("../helpers/validation");
 const Taskstatus = require("../models/task_status.model");
+const Repair = require("../models/repair.model");
 let ObjectId = require("mongodb").ObjectId;
 
 /**
@@ -240,7 +241,14 @@ router.delete("/delete/:taskid", jwt, adminAccess, async (ctx) => {
 
   const task = await Task.findById(taskid);
   if (!task) {
-    ctx.throw(400, "task not found");
+    ctx.throw(
+      400,
+      "task is linked to a repair. Delete Repair then delete task"
+    );
+  }
+  const repair = Repair.findOne({ taskid: taskid });
+  if (repair) {
+    ctx.throw(400, "Can't delete task. Task is linked to repair");
   }
   try {
     await Taskstatus.deleteMany({ taskid: taskid });

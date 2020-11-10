@@ -11,7 +11,7 @@ import {
   Box,
   TextField,
   Paper,
-  Button,
+  MenuItem,
 } from "@material-ui/core";
 
 import moment from "moment";
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   table: {
     maxWidth: "100%",
     height: "60vh",
-    color: "#fff",
+    boxShadow: "none",
   },
   header: {
     backgroundColor: "#fff",
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
   box3: {
     marginBottom: 13,
-    paddingRight: 120,
+    padding: 15,
     width: "100%",
     display: "flex",
     flexDirection: "row",
@@ -65,140 +65,138 @@ const useStyles = makeStyles((theme) => ({
 }));
 const Task = ({ setError, setSuccess, task }) => {
   const classes = useStyles();
-  const { setLoading, authAxios, loading, setCount } = useContext(UserContext);
-  const [data, setData] = useState("");
-  const [adress, setAdress] = useState("");
-  const [postalcode, setPostalcode] = useState("");
-  const [city, setCity] = useState("");
-  const [editing, setEditing] = useState(false);
+  const { loading, status } = useContext(UserContext);
   const [search, setSearch] = useState("");
-
-  const submit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-    setLoading(true);
-    const updatedata = {
-      city,
-      adress,
-      postalcode,
-    };
-    try {
-      await authAxios.put(`/buildings/update/${data}`, updatedata);
-      setLoading(false);
-      setEditing(false);
-      setCount((count) => count + 1);
-      setSuccess("Immeuble modifié avec succès");
-    } catch (err) {
-      setLoading(false);
-      setError(err.response.data);
-    }
-  };
+  const [filter, setFilter] = useState("");
 
   const dynamicSearch = () => {
     if (task)
-      return task.filter(
-        (name) =>
-          name._id
-            .toString()
-            .toLowerCase()
-            .includes(search.toString().toLowerCase()) ||
-          name.messageid._id.toString().includes(search.toString()) ||
-          name.status.name.toLowerCase().includes(search.toLowerCase()) ||
-          name.content.toLowerCase().includes(search.toLowerCase()) ||
-          name.title.toLowerCase().includes(search.toLowerCase())
-      );
+      return task
+        .filter((data) => data.status.name.includes(filter))
+        .filter(
+          (name) =>
+            name._id
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.messageid._id.toString().includes(search.toString()) ||
+            name.status.name.toLowerCase().includes(search.toLowerCase()) ||
+            name.content.toLowerCase().includes(search.toLowerCase()) ||
+            name.title.toLowerCase().includes(search.toLowerCase())
+        );
   };
 
   return (
     <div>
-      <Box className={classes.box3}>
-        <TextField
-          variant="outlined"
-          id="search"
-          type="text"
-          value={search}
-          placeholder="Filter"
-          onChange={(e) => {
-            setSearch(e.target.value);
-          }}
-          style={{ width: "30%" }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Box>
-      <TableContainer className={classes.table} component={Paper} square>
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              <Fragment>
-                {[
-                  "Tâche n°",
-                  "Titre",
-                  "Contenu",
-                  "message n°",
-                  "statut",
-                  "Créé le",
-                  "Dernière modification",
-                  "Actions",
-                ].map((title, index) => (
-                  <TableCell key={index}>
-                    <strong>{title}</strong>
-                  </TableCell>
-                ))}
-              </Fragment>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {!loading ? (
-              task.length > 0 &&
-              dynamicSearch().map((task) => (
-                <TableRow key={task._id}>
-                  <TableCell component="th" scope="row">
-                    {task._id}
-                  </TableCell>
-                  <TableCell>{task.title}</TableCell>
-                  <TableCell>{task.content}</TableCell>
-                  <TableCell>
-                    <ExpandMessage id={task.messageid._id} />
-                  </TableCell>
-                  <TableCell>{task.status.name}</TableCell>
-                  <TableCell>
-                    {moment(task.createdAt).format("YYYY-MM-DD")}
-                  </TableCell>
-                  <TableCell>
-                    {moment(task.updatedAt).format("YYYY-MM-DD")}
-                  </TableCell>
-                  <TableCell>
-                    <Fragment>
-                      <TaskHistory data={task._id} />
-                      <EditTask
-                        setSuccess={setSuccess}
-                        setError={setError}
-                        appointmentData={task}
-                      />
-                      <DeleteTask
-                        id={task._id}
-                        setSuccess={setSuccess}
-                        setError={setError}
-                      />
-                    </Fragment>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
+      <Paper>
+        <Box className={classes.box3}>
+          <TextField
+            style={{ width: "10%", marginRight: "20px" }}
+            id="Status"
+            label="Statut"
+            variant="outlined"
+            select
+            value={filter}
+            onChange={(e) => {
+              setFilter(e.target.value);
+            }}
+            className={classes.form}
+          >
+            <MenuItem value="">Tout</MenuItem>
+            {status &&
+              status.map((option) => (
+                <MenuItem key={option._id} value={option.name}>
+                  {option.name}
+                </MenuItem>
+              ))}
+          </TextField>
+          <TextField
+            variant="outlined"
+            id="search"
+            type="text"
+            value={search}
+            placeholder="Filter"
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+            style={{ width: "30%" }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+        <TableContainer className={classes.table} component={Paper} square>
+          <Table stickyHeader>
+            <TableHead>
               <TableRow>
-                <LoadingScreen />
+                <Fragment>
+                  {[
+                    "Tâche n°",
+                    "Titre",
+                    "Contenu",
+                    "message n°",
+                    "statut",
+                    "Créé le",
+                    "Dernière modification",
+                    "Actions",
+                  ].map((title, index) => (
+                    <TableCell key={index}>
+                      <strong>{title}</strong>
+                    </TableCell>
+                  ))}
+                </Fragment>
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {!loading ? (
+                task.length > 0 &&
+                dynamicSearch().map((task) => (
+                  <TableRow key={task._id}>
+                    <TableCell component="th" scope="row">
+                      {task._id}
+                    </TableCell>
+                    <TableCell>{task.title}</TableCell>
+                    <TableCell>{task.content}</TableCell>
+                    <TableCell>
+                      <ExpandMessage id={task.messageid._id} />
+                    </TableCell>
+                    <TableCell>{task.status.name}</TableCell>
+                    <TableCell>
+                      {moment(task.createdAt).format("YYYY-MM-DD")}
+                    </TableCell>
+                    <TableCell>
+                      {moment(task.updatedAt).format("YYYY-MM-DD")}
+                    </TableCell>
+                    <TableCell>
+                      <Fragment>
+                        <TaskHistory data={task._id} />
+                        <EditTask
+                          setSuccess={setSuccess}
+                          setError={setError}
+                          appointmentData={task}
+                        />
+                        <DeleteTask
+                          id={task._id}
+                          setSuccess={setSuccess}
+                          setError={setError}
+                        />
+                      </Fragment>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <LoadingScreen />
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
       <div style={{ marginTop: "13px" }}></div>
     </div>
   );

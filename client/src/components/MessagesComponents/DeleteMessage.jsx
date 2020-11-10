@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import {
+  IconButton,
   Button,
   makeStyles,
   Dialog,
@@ -8,8 +9,10 @@ import {
   Box,
   List,
   ListItem,
+  Tooltip,
 } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
+import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 
 const useStyles = makeStyles({
   box: {
@@ -42,16 +45,18 @@ const DeleteMessage = ({ id, setSuccess, setError }) => {
   };
   return (
     <div>
-      <Button
+      <IconButton
         onClick={() => {
           setOpen(!open);
         }}
       >
-        Supprimer
-      </Button>
+        <Tooltip title="Supprimer">
+          <DeleteOutlinedIcon />
+        </Tooltip>
+      </IconButton>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>Supprimer un contrat</DialogTitle>
+        <DialogTitle>Supprimer un message</DialogTitle>
         <DialogContent>
           {" "}
           <DialogContent>

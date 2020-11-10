@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
-import { Button, makeStyles } from "@material-ui/core";
+import { IconButton, makeStyles, Tooltip } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
+import ArchiveOutlinedIcon from "@material-ui/icons/ArchiveOutlined";
 
 const ArchiveMessage = ({ id, setSuccess, setError }) => {
   const { authAxios, setLoading, setCount } = useContext(UserContext);
@@ -21,7 +22,11 @@ const ArchiveMessage = ({ id, setSuccess, setError }) => {
   };
   return (
     <div>
-      <Button onClick={() => submit(id)}>Archiver</Button>
+      <Tooltip title="Archiver">
+        <IconButton onClick={() => submit(id)}>
+          <ArchiveOutlinedIcon />
+        </IconButton>
+      </Tooltip>
     </div>
   );
 };

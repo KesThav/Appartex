@@ -14,7 +14,8 @@ import {
   Paper,
   Chip,
   Typography,
-  Divider,
+  Breadcrumbs,
+  MenuItem,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import AddAppart from "../../components/Appart/AddAppart";
@@ -26,11 +27,13 @@ import LoadingScreen from "../../components/LoadingScreen";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteAppart from "../../components/Appart/DeleteAppart";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   table: {
     maxWidth: "100%",
     height: "60vh",
+    boxShadow: "none",
   },
   header: {
     backgroundColor: "#fff",
@@ -51,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   },
   box3: {
     marginBottom: 13,
-    paddingRight: 120,
+    padding: 15,
     width: "100%",
     display: "flex",
     flexDirection: "row",
@@ -83,6 +86,7 @@ const Appart = () => {
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
   const [build, setBuild] = useState(null);
+  const [status, setStatus] = useState("");
 
   const classes = useStyles();
   useEffect(() => {
@@ -113,307 +117,339 @@ const Appart = () => {
     }
   };
 
+  const statut = [
+    { value: "", label: "Tout" },
+    { value: "Libre", label: "Libre" },
+    { value: "Occupé", label: "Occupé" },
+  ];
+
   const dynamicSearch = () => {
     if (appart) {
-      return appart.filter((name) =>
-        !name.building
-          ? name._id
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.postalcode
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.adress.toLowerCase().includes(search.toLowerCase()) ||
-            name.city.toLowerCase().includes(search.toLowerCase()) ||
-            name.size
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.status.toLowerCase().includes(search.toString().toLowerCase())
-          : name._id
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.building.postalcode
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.building.adress.toLowerCase().includes(search.toLowerCase()) ||
-            name.building.city.toLowerCase().includes(search.toLowerCase()) ||
-            name.size
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.status.toLowerCase().includes(search.toString().toLowerCase())
-      );
+      return appart
+        .filter((data) => data.status.includes(status))
+        .filter((name) =>
+          !name.building
+            ? name._id
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.postalcode
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.adress.toLowerCase().includes(search.toLowerCase()) ||
+              name.city.toLowerCase().includes(search.toLowerCase()) ||
+              name.size
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.status
+                .toLowerCase()
+                .includes(search.toString().toLowerCase())
+            : name._id
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.building.postalcode
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.building.adress
+                .toLowerCase()
+                .includes(search.toLowerCase()) ||
+              name.building.city.toLowerCase().includes(search.toLowerCase()) ||
+              name.size
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.status
+                .toLowerCase()
+                .includes(search.toString().toLowerCase())
+        );
     }
   };
   return (
     <div>
-      <Typography variant="h3" color="primary">
-        Les Appartements
-      </Typography>
-      <Divider className={classes.divider} />
+      <Typography variant="h3">Les Appartements</Typography>
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}
       </div>
 
-      <Box className={classes.box3}>
-        <TextField
-          variant="outlined"
-          id="search"
-          type="text"
-          value={search}
-          placeholder="Filter"
-          onChange={(e) => {
-            setSearch(e.target.value);
-          }}
-          style={{ width: "30%" }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Box>
-      <TableContainer className={classes.table} component={Paper} square>
-        <Table stickyHeader>
-          <TableHead style={{ background: "#fff" }}>
-            <TableRow>
-              {[
-                "Immeuble ?",
-                "Appartment n°",
-                "Adresse",
-                "Code postale",
-                "Ville",
-                "Taille",
-                "Statut",
-                "Créé le",
-                "Dernière modification",
-                "Actions",
-              ].map((title, index) => (
-                <TableCell key={index}>
-                  <strong>{title}</strong>
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <Fragment>
-              {!loading ? (
-                appart.length > 0 &&
-                dynamicSearch().map((appart) => {
-                  return !appart.building ? (
-                    <TableRow key={appart._id}>
-                      <TableCell component="th" scope="row">
-                        Non
-                      </TableCell>
-                      <TableCell>{appart._id}</TableCell>
-                      <TableCell>
-                        {editing && data === appart._id ? (
-                          <TextField
-                            id={appart.adress}
-                            type="text"
-                            value={adress}
-                            onChange={(e) => setAdress(e.target.value)}
-                            placeholder="Adresse"
-                          />
-                        ) : (
-                          appart.adress
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === appart._id ? (
-                          <TextField
-                            id={appart.postalcode.toString()}
-                            type="number"
-                            value={postalcode}
-                            onChange={(e) => setPostalcode(e.target.value)}
-                            placeholder="Code postale"
-                          />
-                        ) : (
-                          appart.postalcode
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === appart._id ? (
-                          <TextField
-                            id={appart.city}
-                            type="text"
-                            value={city}
-                            onChange={(e) => setCity(e.target.value)}
-                            placeholder="Ville"
-                          />
-                        ) : (
-                          appart.city
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === appart._id ? (
-                          <TextField
-                            id={appart.size.toString()}
-                            type="number"
-                            value={size}
-                            onChange={(e) => setSize(e.target.value)}
-                            placeholder="Ville"
-                          />
-                        ) : (
-                          appart.size
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div>
-                          {appart.status == "Libre" ? (
-                            <Chip
-                              style={{ background: "#52b202", color: "#fff" }}
-                              label={appart.status}
+      <Paper>
+        <Box className={classes.box3}>
+          <TextField
+            style={{ width: "10%", marginRight: "20px" }}
+            label="Statut"
+            id="statut"
+            select
+            variant="outlined"
+            onChange={(e) => setStatus(e.target.value)}
+          >
+            {statut.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            variant="outlined"
+            id="search"
+            type="text"
+            value={search}
+            placeholder="Filter"
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+            style={{ width: "30%" }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+        <TableContainer className={classes.table} component={Paper} square>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                {[
+                  "Immeuble ?",
+                  "Appartment n°",
+                  "Adresse",
+                  "Code postale",
+                  "Ville",
+                  "Taille",
+                  "Statut",
+                  "Créé le",
+                  "Dernière modification",
+                  "Actions",
+                ].map((title, index) => (
+                  <TableCell key={index}>
+                    <strong>{title}</strong>
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <Fragment>
+                {!loading ? (
+                  appart.length > 0 &&
+                  dynamicSearch().map((appart) => {
+                    return !appart.building ? (
+                      <TableRow key={appart._id}>
+                        <TableCell component="th" scope="row">
+                          Non
+                        </TableCell>
+                        <TableCell>{appart._id}</TableCell>
+                        <TableCell>
+                          {editing && data === appart._id ? (
+                            <TextField
+                              id={appart.adress}
+                              type="text"
+                              value={adress}
+                              onChange={(e) => setAdress(e.target.value)}
+                              placeholder="Adresse"
                             />
                           ) : (
-                            <Chip
-                              style={{ background: "red", color: "#fff" }}
-                              label={appart.status}
-                            />
+                            appart.adress
                           )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {moment(appart.createdAt).format("YYYY-MM-DD")}
-                      </TableCell>
-                      <TableCell>
-                        {moment(appart.updatedAt).format("YYYY-MM-DD")}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === appart._id ? (
-                          <Fragment>
-                            <Button>
-                              <CheckIcon onClick={submit} />
-                            </Button>
-                            <Button>
-                              <CloseIcon onClick={() => setEditing(!editing)} />
-                            </Button>
-                          </Fragment>
-                        ) : (
-                          <Fragment>
-                            <Button>
-                              <EditIcon
-                                onClick={() => {
-                                  setSize(appart.size);
-                                  setAdress(appart.adress);
-                                  setPostalcode(appart.postalcode);
-                                  setCity(appart.city);
-                                  setData(appart._id);
-                                  setBuild(null);
-                                  setError("");
-                                  setSuccess("");
-                                  setEditing(!editing);
-                                }}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === appart._id ? (
+                            <TextField
+                              id={appart.postalcode.toString()}
+                              type="number"
+                              value={postalcode}
+                              onChange={(e) => setPostalcode(e.target.value)}
+                              placeholder="Code postale"
+                            />
+                          ) : (
+                            appart.postalcode
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === appart._id ? (
+                            <TextField
+                              id={appart.city}
+                              type="text"
+                              value={city}
+                              onChange={(e) => setCity(e.target.value)}
+                              placeholder="Ville"
+                            />
+                          ) : (
+                            appart.city
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === appart._id ? (
+                            <TextField
+                              id={appart.size.toString()}
+                              type="number"
+                              value={size}
+                              onChange={(e) => setSize(e.target.value)}
+                              placeholder="Ville"
+                            />
+                          ) : (
+                            appart.size
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <div>
+                            {appart.status == "Libre" ? (
+                              <Chip
+                                style={{ background: "#52b202", color: "#fff" }}
+                                label={appart.status}
                               />
-                            </Button>
-                            <DeleteAppart
-                              data={appart}
-                              setSuccess={setSuccess}
-                              setError={setError}
-                            />
-                          </Fragment>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    <TableRow key={appart._id}>
-                      <TableCell component="th" scope="row">
-                        {appart.building._id}
-                      </TableCell>
-                      <TableCell>{appart._id}</TableCell>
-                      <TableCell>{appart.building.adress}</TableCell>
-                      <TableCell>{appart.building.postalcode}</TableCell>
-                      <TableCell>{appart.building.city}</TableCell>
-                      <TableCell>
-                        {editing && data === appart._id ? (
-                          <TextField
-                            id={appart.size.toString()}
-                            type="number"
-                            value={size}
-                            onChange={(e) => setSize(e.target.value)}
-                            placeholder="Ville"
-                          />
-                        ) : (
-                          appart.size
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div>
-                          {appart.status == "Libre" ? (
-                            <Chip
-                              style={{ background: "#52b202", color: "#fff" }}
-                              label={appart.status}
+                            ) : (
+                              <Chip
+                                style={{ background: "red", color: "#fff" }}
+                                label={appart.status}
+                              />
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {moment(appart.createdAt).format("YYYY-MM-DD")}
+                        </TableCell>
+                        <TableCell>
+                          {moment(appart.updatedAt).format("YYYY-MM-DD")}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === appart._id ? (
+                            <Fragment>
+                              <Button>
+                                <CheckIcon onClick={submit} />
+                              </Button>
+                              <Button>
+                                <CloseIcon
+                                  onClick={() => setEditing(!editing)}
+                                />
+                              </Button>
+                            </Fragment>
+                          ) : (
+                            <Fragment>
+                              <Button>
+                                <EditIcon
+                                  onClick={() => {
+                                    setSize(appart.size);
+                                    setAdress(appart.adress);
+                                    setPostalcode(appart.postalcode);
+                                    setCity(appart.city);
+                                    setData(appart._id);
+                                    setBuild(null);
+                                    setError("");
+                                    setSuccess("");
+                                    setEditing(!editing);
+                                  }}
+                                />
+                              </Button>
+                              <DeleteAppart
+                                data={appart}
+                                setSuccess={setSuccess}
+                                setError={setError}
+                              />
+                            </Fragment>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      <TableRow key={appart._id}>
+                        <TableCell component="th" scope="row">
+                          {appart.building._id}
+                        </TableCell>
+                        <TableCell>{appart._id}</TableCell>
+                        <TableCell>{appart.building.adress}</TableCell>
+                        <TableCell>{appart.building.postalcode}</TableCell>
+                        <TableCell>{appart.building.city}</TableCell>
+                        <TableCell>
+                          {editing && data === appart._id ? (
+                            <TextField
+                              id={appart.size.toString()}
+                              type="number"
+                              value={size}
+                              onChange={(e) => setSize(e.target.value)}
+                              placeholder="Ville"
                             />
                           ) : (
-                            <Chip
-                              style={{ background: "red", color: "#fff" }}
-                              label={appart.status}
-                            />
+                            appart.size
                           )}
-                        </div>
-                      </TableCell>
+                        </TableCell>
+                        <TableCell>
+                          <div>
+                            {appart.status == "Libre" ? (
+                              <Chip
+                                style={{ background: "#52b202", color: "#fff" }}
+                                label={appart.status}
+                              />
+                            ) : (
+                              <Chip
+                                style={{ background: "red", color: "#fff" }}
+                                label={appart.status}
+                              />
+                            )}
+                          </div>
+                        </TableCell>
 
-                      <TableCell>
-                        {moment(appart.createdAt).format("YYYY-MM-DD")}
-                      </TableCell>
-                      <TableCell>
-                        {moment(appart.updatedAt).format("YYYY-MM-DD")}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === appart._id ? (
-                          <Fragment>
-                            <Button>
-                              <CheckIcon onClick={submit} />
-                            </Button>
-                            <Button>
-                              <CloseIcon onClick={() => setEditing(!editing)} />
-                            </Button>
-                          </Fragment>
-                        ) : (
-                          <Fragment>
-                            <Button>
-                              <EditIcon
-                                onClick={() => {
-                                  setSize(appart.size);
-                                  setAdress("");
-                                  setPostalcode("");
-                                  setCity("");
-                                  setData(appart._id);
-                                  setBuild(appart.building._id);
-                                  setError("");
-                                  setSuccess("");
-                                  setEditing(!editing);
-                                }}
+                        <TableCell>
+                          {moment(appart.createdAt).format("YYYY-MM-DD")}
+                        </TableCell>
+                        <TableCell>
+                          {moment(appart.updatedAt).format("YYYY-MM-DD")}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === appart._id ? (
+                            <Fragment>
+                              <Button>
+                                <CheckIcon onClick={submit} />
+                              </Button>
+                              <Button>
+                                <CloseIcon
+                                  onClick={() => setEditing(!editing)}
+                                />
+                              </Button>
+                            </Fragment>
+                          ) : (
+                            <Fragment>
+                              <Button>
+                                <EditIcon
+                                  onClick={() => {
+                                    setSize(appart.size);
+                                    setAdress("");
+                                    setPostalcode("");
+                                    setCity("");
+                                    setData(appart._id);
+                                    setBuild(appart.building._id);
+                                    setError("");
+                                    setSuccess("");
+                                    setEditing(!editing);
+                                  }}
+                                />
+                              </Button>
+                              <DeleteAppart
+                                data={appart}
+                                setSuccess={setSuccess}
+                                setError={setError}
                               />
-                            </Button>
-                            <DeleteAppart
-                              data={appart}
-                              setSuccess={setSuccess}
-                              setError={setError}
-                            />
-                          </Fragment>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              ) : (
-                <TableRow>
-                  <LoadingScreen />
-                </TableRow>
-              )}
-            </Fragment>
-          </TableBody>
-        </Table>
-      </TableContainer>
+                            </Fragment>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                ) : (
+                  <TableRow>
+                    <LoadingScreen />
+                  </TableRow>
+                )}
+              </Fragment>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+
       <div style={{ marginTop: "13px" }}>
         <AddAppart />
       </div>

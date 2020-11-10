@@ -9,6 +9,8 @@ import {
   Box,
   makeStyles,
   Divider,
+  IconButton,
+  Tooltip,
 } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -43,13 +45,15 @@ const DeleteTenant = ({ data, setSuccess, setError }) => {
 
   return (
     <Fragment>
-      <Button
-        onClick={() => {
-          setOpen(!open);
-        }}
-      >
-        <DeleteIcon />
-      </Button>
+      <Tooltip title="Supprimer">
+        <IconButton
+          onClick={() => {
+            setOpen(!open);
+          }}
+        >
+          <DeleteIcon />
+        </IconButton>
+      </Tooltip>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
         <DialogTitle>Supprimer un immeuble</DialogTitle>
