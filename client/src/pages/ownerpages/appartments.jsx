@@ -27,7 +27,6 @@ import LoadingScreen from "../../components/LoadingScreen";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteAppart from "../../components/Appart/DeleteAppart";
-import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   table: {

@@ -69,15 +69,12 @@ const useStyles = makeStyles((theme) => ({
 const Tenant = () => {
   const {
     tenant,
-    setTenant,
     getTenants,
-    loading,
     setLoading,
     authAxios,
     count,
     setCount,
   } = useContext(UserContext);
-  const [deleteShow, setDeleteShow] = useState(false);
   const [data, setData] = useState("");
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");

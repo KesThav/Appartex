@@ -97,7 +97,6 @@ const Layout = (props) => {
   const { user, setUser, setTenant } = useContext(UserContext);
   const { window } = props;
   const classes = useStyles();
-  const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [checked, setChecked] = useState(true);
   const [select, setSelect] = useState(null);

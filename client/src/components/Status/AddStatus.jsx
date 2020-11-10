@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddBills = () => {
+const AddStatus = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const { setCount, setLoading, authAxios } = useContext(UserContext);
@@ -118,4 +118,4 @@ const AddBills = () => {
   );
 };
 
-export default AddBills;
+export default AddStatus;

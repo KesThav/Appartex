@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
 }));
-const Task = ({ setError, setSuccess, task }) => {
+const TaskViewTask = ({ setError, setSuccess, task }) => {
   const classes = useStyles();
   const { loading, status } = useContext(UserContext);
   const [search, setSearch] = useState("");
@@ -202,4 +202,4 @@ const Task = ({ setError, setSuccess, task }) => {
   );
 };
 
-export default Task;
+export default TaskViewTask;

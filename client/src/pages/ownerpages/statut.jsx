@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
 }));
-const Statut = () => {
+const Status = () => {
   const {
     status,
     getStatus,
@@ -247,4 +247,4 @@ const Statut = () => {
   );
 };
 
-export default Statut;
+export default Status;

@@ -12,7 +12,6 @@ import {
   Tooltip,
   IconButton,
 } from "@material-ui/core";
-import Alert from "@material-ui/lab/Alert";
 import moment from "moment";
 import { UserContext } from "../../middlewares/ContextAPI";
 
@@ -35,8 +34,6 @@ const useStyle = makeStyles({
 
 const EditTaks = ({
   appointmentData,
-  setVisible,
-  visible,
   setSuccess,
   setError,
 }) => {

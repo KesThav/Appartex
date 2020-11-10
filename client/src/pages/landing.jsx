@@ -71,15 +71,9 @@ const useStyles = makeStyles({
   },
 });
 
-const Login = () => {
+const Landing = () => {
   const classes = useStyles();
 
-  useEffect(() => {
-    if (window.location == "/") {
-      window.location = window.location + "#loaded";
-      window.location.reload();
-    }
-  }, []);
   return (
     <Fragment>
       <Container className={classes.root}>
@@ -152,4 +146,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Landing;

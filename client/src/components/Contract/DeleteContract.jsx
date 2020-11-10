@@ -23,7 +23,7 @@ const useStyles = makeStyles({
   },
 });
 
-const DeleteAppart = ({ data, setSuccess, setError }) => {
+const DeleteContract = ({ data, setSuccess, setError }) => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const { setLoading, authAxios, setCount } = useContext(UserContext);
@@ -89,4 +89,4 @@ const DeleteAppart = ({ data, setSuccess, setError }) => {
   );
 };
 
-export default DeleteAppart;
+export default DeleteContract;
