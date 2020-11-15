@@ -28,6 +28,9 @@ import Status from "./pages/ownerpages/statut";
 import Message from "./pages/ownerpages/messages";
 import Tasks from "./pages/ownerpages/tasks";
 import Repair from "./pages/ownerpages/repairs";
+import AuthRoute from "./middlewares/AuthRoutes";
+import Document from "./pages/ownerpages/documents";
+import ShowAppartDocuments from "./components/Appart/AppartDocumentSkeleton";
 
 const theme = createMuiTheme(themeSheet);
 
@@ -195,10 +198,10 @@ const App = () => {
         >
           <Router>
             <Switch>
-              <Route exact path="/" component={Landing} />
-              <Route exact path="/login" component={Login} />
-              <Route exact path="/signup" component={Signup} />
-              <Route exact path="/tenant/login" component={Tenantlogin} />
+              <AuthRoute exact path="/" component={Landing} />
+              <AuthRoute exact path="/login" component={Login} />
+              <AuthRoute exact path="/signup" component={Signup} />
+              <AuthRoute exact path="/tenant/login" component={Tenantlogin} />
               <Route>
                 <Layout>
                   <Switch>
@@ -210,6 +213,11 @@ const App = () => {
                       path="/appartments"
                       component={Appartment}
                     />
+                    <AdminRoute
+                      exact
+                      path="/appartments/:appartid"
+                      component={ShowAppartDocuments}
+                    />
                     <AdminRoute exact path="/bills" component={Bill} />
                     <AdminRoute exact path="/contracts" component={Contract} />
                     <AdminRoute exact path="/status" component={Status} />
@@ -220,6 +228,7 @@ const App = () => {
                     />
                     <AdminRoute exact path="/tasks" component={Tasks} />
                     <AdminRoute exact path="/repairs" component={Repair} />
+                    <AdminRoute exact path="/documents" component={Document} />
                     <ProtectedRoute
                       exact
                       path="/messages"

@@ -7,6 +7,7 @@ const cors = require("@koa/cors");
 const json = require("koa-json");
 const { koaSwagger } = require("koa2-swagger-ui");
 const Swagger = require("./middlewares/swagger");
+const serve = require("koa-static");
 
 require("dotenv").config();
 
@@ -19,7 +20,7 @@ const mongooseOptions = {
   useFindAndModify: false,
 };
 // Connect to the MongoDB database
-Mongoose.connect(process.env.DB_ONLINE, mongooseOptions, () =>
+Mongoose.connect(process.env.DB, mongooseOptions, () =>
   console.log("connected")
 );
 
@@ -71,4 +72,5 @@ app
   .use(bodyParser())
   .use(json())
   .use(router())
+  .use(serve("./public"))
   .listen(port, () => console.log(`listen on port ${port}`));

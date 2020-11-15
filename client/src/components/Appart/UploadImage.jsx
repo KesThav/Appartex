@@ -1,0 +1,167 @@
+import React, { useState, useContext, useEffect, Fragment } from "react";
+import { UserContext } from "../../middlewares/ContextAPI";
+import {
+  Paper,
+  makeStyles,
+  Card,
+  Button,
+  TextField,
+  MenuItem,
+  OutlinedInput,
+} from "@material-ui/core";
+import LoadingScreen from "../LoadingScreen";
+import DeleteIcon from "@material-ui/icons/Delete";
+import { Link } from "react-router-dom";
+
+const useStyles = makeStyles((theme) => ({
+  table: {
+    minWidth: 650,
+    maxWidth: "100%",
+  },
+  box: {
+    marginBottom: 20,
+  },
+  form: {
+    marginBottom: 17,
+  },
+  box2: {
+    display: "flex",
+    flexDirection: "row-reverse",
+  },
+}));
+
+const UploadImage = ({ setSuccess, setError }) => {
+  const classes = useStyles();
+  const [open, setOpen] = useState(false);
+  const {
+    appart,
+    setLoading,
+    authAxios,
+    getApparts,
+    count,
+    setCount,
+    loading,
+  } = useContext(UserContext);
+  const [pic, setPic] = useState([]);
+  const [appartid, setAppartid] = useState("");
+  const [data, setData] = useState([]);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    if (!pic) {
+      setError("Le champ ne peut pas être vide");
+    } else {
+      setLoading(true);
+      const picture = new FormData();
+      for (let i = 0; i < pic.length; i++) {
+        picture.append("picture", pic[i]);
+      }
+      try {
+        await authAxios.put(`/appartments/upload/${appartid}`, picture, {
+          headers: {
+            "Content-type": "multipart/form-data",
+          },
+        });
+        setLoading(false);
+        setSuccess("Image ajouté avec succès");
+        setCount((count) => count + 1);
+      } catch (err) {
+        setLoading(false);
+        setError(err.response.data);
+      }
+    }
+  };
+
+  const getOneAppart = async (dt) => {
+    try {
+      const res = await authAxios.get(`/appartments/${dt}`);
+      setData(res.data.picture);
+      setCount((count) => count + 1);
+    } catch (err) {
+      /* setError(err); */
+      console.log(err);
+    }
+  };
+
+  const deletePicture = async (dt) => {
+    setLoading(true);
+    try {
+      await authAxios.put(`/appartments/delete/file/${appartid}`, {
+        picture: dt,
+      });
+      setCount((count) => count + 1);
+      setLoading(false);
+    } catch (err) {
+      console.log(err.response.data);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getApparts();
+  }, [count]);
+
+  return (
+    <Fragment>
+      {loading && <LoadingScreen />}
+      <form onSubmit={submit}>
+        <OutlinedInput
+          component={"span"}
+          variant="outlined"
+          id="assets"
+          name="assets"
+          type="file"
+          inputProps={{ multiple: true }}
+          variant="outlined"
+          onChange={(e) => setPic(e.target.files)}
+          fullWidth
+          className={classes.form}
+        />
+        <TextField
+          component={"span"}
+          variant="outlined"
+          id="appartid"
+          select
+          value={appartid}
+          label="Immeuble"
+          onChange={(e) => {
+            setAppartid(e.target.value);
+            getOneAppart(e.target.value);
+          }}
+          helperText="Selectionner un appartement"
+          fullWidth
+        >
+          {appart &&
+            appart.map((option) => (
+              <MenuItem key={option._id} value={option._id}>
+                {option._id}
+              </MenuItem>
+            ))}
+        </TextField>
+        <Button type="submit" color="primary" className={classes.button}>
+          Valider
+        </Button>
+      </form>
+      {data.length > 0 &&
+        data.map((data) => (
+          <Paper
+            square
+            style={{
+              margin: "2px",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <Link to={`//localhost:5000/${data}`} target="_blank">
+              {data}
+            </Link>
+            <DeleteIcon onClick={() => deletePicture(data)} />
+          </Paper>
+        ))}
+    </Fragment>
+  );
+};
+
+export default UploadImage;

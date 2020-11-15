@@ -7,7 +7,35 @@ const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
 let ObjectId = require("mongodb").ObjectId;
 const appartValidation = require("../helpers/appartValidation");
-const { findOne } = require("../models/appartment.model");
+const multer = require("@koa/multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/appartment");
+  },
+  filename: function (req, file, cb) {
+    let type = file.originalname.split(".")[1];
+    let filename = file.originalname.split(".")[0];
+    cb(null, `${filename}-${Date.now().toString(16)}.${type}`);
+  },
+});
+
+const limits = {
+  fields: 10,
+  fileSize: 500 * 1024,
+};
+
+const upload = multer({
+  storage,
+  fileFilter: function (req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+      return cb(new Error("Only image files are allowed!"));
+    }
+    cb(null, true);
+  },
+  limits,
+});
 
 /**
  * @swagger
@@ -141,39 +169,47 @@ router.get("/:appartid", jwt, adminAccess, async (ctx) => {
  *
  */
 
-router.post("/add", jwt, adminAccess, appartValidation, async (ctx) => {
-  const { size, adress, city } = ctx.request.body;
-  let { building, postalcode } = ctx.request.body;
+router.post(
+  "/add",
+  jwt,
+  adminAccess,
+  appartValidation,
+  upload.array("file"),
+  async (ctx) => {
+    const { size, adress, city } = ctx.request.body;
+    let { building, postalcode } = ctx.request.body;
 
-  console.log(ctx.request.body);
-  if (building == "") {
-    building = undefined;
-  }
-
-  if (postalcode == "") {
-    postalcode = -1;
-  }
-  try {
-    let newappart = new Appart({
-      size,
-      adress,
-      postalcode,
-      city,
-      building,
-      createdBy: new ObjectId(ctx.request.jwt._id),
-    });
-
-    if (building) {
-      await Building.findByIdAndUpdate(building, {
-        $inc: { numberofAppart: 1 },
-      });
+    console.log(ctx.request.body);
+    if (building == "") {
+      building = undefined;
     }
-    await newappart.save();
-    ctx.body = newappart;
-  } catch (err) {
-    ctx.throw(500, err);
+
+    if (postalcode == "") {
+      postalcode = -1;
+    }
+    try {
+      let newappart = new Appart({
+        size,
+        adress,
+        postalcode,
+        city,
+        building,
+        createdBy: new ObjectId(ctx.request.jwt._id),
+      });
+
+      if (building) {
+        await Building.findByIdAndUpdate(building, {
+          $inc: { numberofAppart: 1 },
+        });
+      }
+      await newappart.save();
+
+      ctx.body = newappart;
+    } catch (err) {
+      ctx.throw(500, err);
+    }
   }
-});
+);
 
 /**
  *  @swagger
@@ -207,6 +243,29 @@ router.post("/add", jwt, adminAccess, appartValidation, async (ctx) => {
  *        description: Server error
  *
  */
+router.put("/upload/:appartid", upload.array("picture"), async (ctx) => {
+  console.log(ctx.files);
+  let validate = ObjectId.isValid(ctx.params.appartid);
+  if (!validate) return ctx.throw(404, "appartment not found");
+  let appartid = new ObjectId(ctx.params.appartid);
+
+  const appart = await Appart.findById(appartid);
+  if (!appart) {
+    ctx.throw(404, "appartment not found");
+  }
+  try {
+    for (i = 0; i < ctx.files.length; i++) {
+      await Appart.findByIdAndUpdate(appartid, {
+        $push: {
+          picture: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
+        },
+      });
+    }
+    ctx.body = "ok";
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
 
 router.put(
   "/update/:appartid",
@@ -344,6 +403,27 @@ router.delete("/delete/:appartid", jwt, adminAccess, async (ctx) => {
 
     await Appart.findByIdAndDelete(appartid);
 
+    ctx.body = "ok";
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+router.put("/delete/file/:appartid", jwt, adminAccess, async (ctx) => {
+  console.log(ctx.request.body);
+  let validate = ObjectId.isValid(ctx.params.appartid);
+  if (!validate) return ctx.throw(404, "appartment not found");
+  let appartid = new ObjectId(ctx.params.appartid);
+
+  const appart = await Appart.findById(appartid);
+  if (!appart) {
+    ctx.throw(404, "appartment not found");
+  }
+
+  try {
+    await Appart.findByIdAndUpdate(appartid, {
+      $pull: { picture: ctx.request.body.picture },
+    });
     ctx.body = "ok";
   } catch (err) {
     ctx.throw(500, err);

@@ -17,6 +17,7 @@ import {
   Paper,
   Typography,
   Divider,
+  Avatar,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import AddTenant from "../../components/Tenant/AddTenant";
@@ -33,7 +34,7 @@ import DeleteTenant from "../../components/Tenant/DeleteTenant";
 const useStyles = makeStyles((theme) => ({
   table: {
     maxWidth: "100%",
-    height: "60vh",
+    maxHeight: "60vh",
     boxShadow: "none",
   },
   header: {

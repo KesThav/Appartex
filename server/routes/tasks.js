@@ -3,10 +3,11 @@ const router = new Router({ prefix: "/tasks" });
 const Task = require("../models/task.model");
 const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
-const { taskSchema } = require("../helpers/validation");
+const { taskSchema, messageSchema } = require("../helpers/validation");
 const Taskstatus = require("../models/task_status.model");
 const Repair = require("../models/repair.model");
 let ObjectId = require("mongodb").ObjectId;
+const Message = require("../models/message.model");
 
 /**
  * @swagger
@@ -140,6 +141,7 @@ router.post("/add", jwt, adminAccess, async (ctx) => {
 
     await newtaskstatus.save();
 
+    await Message.findByIdAndUpdate(messageid, { status: "Tâche créé" });
     ctx.body = newtask;
   } catch (err) {
     ctx.throw(500, err);
@@ -241,13 +243,11 @@ router.delete("/delete/:taskid", jwt, adminAccess, async (ctx) => {
 
   const task = await Task.findById(taskid);
   if (!task) {
-    ctx.throw(
-      400,
-      "task is linked to a repair. Delete Repair then delete task"
-    );
+    ctx.throw(400, "task not found");
   }
-  const repair = Repair.findOne({ taskid: taskid });
+  const repair = await Repair.findOne({ taskid: taskid });
   if (repair) {
+    console.log(repair);
     ctx.throw(400, "Can't delete task. Task is linked to repair");
   }
   try {

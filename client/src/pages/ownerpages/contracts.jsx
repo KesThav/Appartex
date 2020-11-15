@@ -31,7 +31,7 @@ import ArchiveContract from "../../components/Contract/ArchiveContract";
 const useStyles = makeStyles((theme) => ({
   table: {
     maxWidth: "100%",
-    height: "60vh",
+    maxHeight: "60vh",
     boxShadow: "none",
   },
   header: {

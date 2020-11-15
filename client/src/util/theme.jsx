@@ -36,7 +36,7 @@ export default {
   overrides: {
     MuiTableCell: {
       stickyHeader: {
-        backgroundColor: "#ffff",
+        /* backgroundColor: "#ffff", */
       },
     },
     MuiTableFooter: {

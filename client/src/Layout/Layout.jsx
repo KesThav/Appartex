@@ -35,6 +35,7 @@ import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 import ForumIcon from "@material-ui/icons/Forum";
 import TrendingUpIcon from "@material-ui/icons/TrendingUp";
 import TimelineIcon from "@material-ui/icons/Timeline";
+import AssignmentIcon from "@material-ui/icons/Assignment";
 
 const drawerWidth = 250;
 
@@ -167,6 +168,12 @@ const Layout = (props) => {
           name: "Les Réparations",
           icon: <TimelineIcon />,
           link: "/repairs",
+        },
+        {
+          id: 10,
+          name: "Gérer les documents",
+          icon: <AssignmentIcon />,
+          link: "/documents",
         },
       ].map((data) => (
         <Link

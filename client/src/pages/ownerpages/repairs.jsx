@@ -31,7 +31,7 @@ import RepairHistory from "../../components/Repair/RepairHistory";
 const useStyles = makeStyles((theme) => ({
   table: {
     maxWidth: "100%",
-    height: "60vh",
+    maxHeight: "60vh",
     boxShadow: "none",
   },
   header: {

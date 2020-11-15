@@ -14,9 +14,10 @@ import {
   Paper,
   Chip,
   Typography,
-  Breadcrumbs,
+  IconButton,
   MenuItem,
 } from "@material-ui/core";
+import { Link } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import AddAppart from "../../components/Appart/AddAppart";
 import moment from "moment";
@@ -27,11 +28,13 @@ import LoadingScreen from "../../components/LoadingScreen";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteAppart from "../../components/Appart/DeleteAppart";
+import ShowDocument from "../../components/Appart/AppartDocumentSkeleton";
+import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 
 const useStyles = makeStyles((theme) => ({
   table: {
     maxWidth: "100%",
-    height: "60vh",
+    maxHeight: "60vh",
     boxShadow: "none",
   },
   header: {
@@ -74,6 +77,7 @@ const Appart = () => {
     loading,
     count,
     setCount,
+    building,
   } = useContext(UserContext);
   const [data, setData] = useState("");
   const [err, setError] = useState("");
@@ -86,6 +90,7 @@ const Appart = () => {
   const [search, setSearch] = useState("");
   const [build, setBuild] = useState(null);
   const [status, setStatus] = useState("");
+  const [filter, setFilter] = useState("");
 
   const classes = useStyles();
   useEffect(() => {
@@ -125,6 +130,11 @@ const Appart = () => {
   const dynamicSearch = () => {
     if (appart) {
       return appart
+        .filter((data) =>
+          data.building
+            ? data.building._id.includes(filter)
+            : data.adress.includes(filter)
+        )
         .filter((data) => data.status.includes(status))
         .filter((name) =>
           !name.building
@@ -174,7 +184,6 @@ const Appart = () => {
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}
       </div>
-
       <Paper>
         <Box className={classes.box3}>
           <TextField
@@ -190,6 +199,24 @@ const Appart = () => {
                 {option.label}
               </MenuItem>
             ))}
+          </TextField>
+          <TextField
+            style={{ width: "10%", marginRight: "20px" }}
+            variant="outlined"
+            id="Building"
+            select
+            value={filter}
+            label="Immeuble"
+            onChange={(e) => setFilter(e.target.value)}
+            className={classes.form}
+          >
+            <MenuItem value="">Tout</MenuItem>
+            {building &&
+              building.map((option) => (
+                <MenuItem key={option._id} value={option._id}>
+                  {option.adress} {option.postalcode} {option.city}
+                </MenuItem>
+              ))}
           </TextField>
           <TextField
             variant="outlined"
@@ -330,7 +357,16 @@ const Appart = () => {
                             </Fragment>
                           ) : (
                             <Fragment>
-                              <Button>
+                              {appart.picture.length}
+                              <Link
+                                to={`/appartments/${appart._id}`}
+                                className={classes.link}
+                              >
+                                <IconButton>
+                                  <ArrowForwardIcon />
+                                </IconButton>
+                              </Link>
+                              <IconButton>
                                 <EditIcon
                                   onClick={() => {
                                     setSize(appart.size);
@@ -344,7 +380,7 @@ const Appart = () => {
                                     setEditing(!editing);
                                   }}
                                 />
-                              </Button>
+                              </IconButton>
                               <DeleteAppart
                                 data={appart}
                                 setSuccess={setSuccess}
@@ -412,7 +448,16 @@ const Appart = () => {
                             </Fragment>
                           ) : (
                             <Fragment>
-                              <Button>
+                              {appart.picture.length}
+                              <Link
+                                to={`/appartments/${appart._id}`}
+                                className={classes.link}
+                              >
+                                <IconButton>
+                                  <ArrowForwardIcon />
+                                </IconButton>
+                              </Link>
+                              <IconButton>
                                 <EditIcon
                                   onClick={() => {
                                     setSize(appart.size);
@@ -426,7 +471,7 @@ const Appart = () => {
                                     setEditing(!editing);
                                   }}
                                 />
-                              </Button>
+                              </IconButton>
                               <DeleteAppart
                                 data={appart}
                                 setSuccess={setSuccess}

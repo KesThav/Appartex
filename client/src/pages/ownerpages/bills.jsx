@@ -32,7 +32,7 @@ import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 const useStyles = makeStyles((theme) => ({
   table: {
     maxWidth: "100%",
-    height: "60vh",
+    maxHeight: "60vh",
     boxShadow: "none",
   },
   header: {
@@ -158,7 +158,7 @@ const Bills = () => {
     if (bill) {
       return bill
         .filter(
-          (data) => moment(data.endDate).diff(moment(), "days") >= lowbound
+          (data) => moment(data.endDate).diff(moment(), "days") > lowbound
         )
         .filter(
           (data) => moment(data.endDate).diff(moment(), "days") <= upbound
@@ -216,7 +216,7 @@ const Bills = () => {
           <TextField
             style={{ width: "10%", marginRight: "20px" }}
             variant="outlined"
-            id="Nombre de jours"
+            id="Nombre de jours restant"
             select
             value={lowbound}
             label="Nombre de jours"
@@ -336,15 +336,18 @@ const Bills = () => {
                         )}
                       </TableCell>
                       <TableCell>
-                        {console.log(
-                          moment(bill.endDate).diff(moment(), "days")
-                        )}
                         {moment(bill.endDate).diff(moment(), "days") > 30 ? (
+                          <Chip
+                            style={{ background: "#29b6f6", color: "#fff" }}
+                            label={moment(bill.endDate).format("YYYY-MM-DD")}
+                          />
+                        ) : moment(bill.endDate).diff(moment(), "days") <= 30 &&
+                          moment(bill.endDate).diff(moment(), "days") > 15 ? (
                           <Chip
                             style={{ background: "#52b202", color: "#fff" }}
                             label={moment(bill.endDate).format("YYYY-MM-DD")}
                           />
-                        ) : moment(bill.endDate).diff(moment(), "days") > 15 ||
+                        ) : moment(bill.endDate).diff(moment(), "days") <= 15 &&
                           moment(bill.endDate).diff(moment(), "days") > 0 ? (
                           <Chip
                             style={{ background: "#ffb300", color: "#fff" }}
@@ -352,7 +355,7 @@ const Bills = () => {
                           />
                         ) : (
                           <Chip
-                            style={{ background: "#d50000", color: "#fff" }}
+                            style={{ background: "#dd2c00", color: "#fff" }}
                             label={moment(bill.endDate).format("YYYY-MM-DD")}
                           />
                         )}

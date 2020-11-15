@@ -7,7 +7,26 @@ let ObjectId = require("mongodb").ObjectId;
 const contractValidation = require("../helpers/contractValidation");
 const Appart = require("../models/appartment.model");
 const Building = require("../models/building.model");
+const multer = require("@koa/multer");
+const path = require("path");
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/upload");
+  },
+  filename: function (req, file, cb) {
+    let type = file.originalname.split(".")[1];
+    let filename = file.originalname.split(".")[0];
+    cb(null, `${filename}-${Date.now().toString(16)}.${type}`);
+  },
+});
+
+const limits = {
+  fields: 10,
+  fileSize: 500 * 1024,
+};
+
+const upload = multer({ storage, limits });
 /**
  * @swagger
  *
@@ -370,6 +389,13 @@ router.delete("/delete/:contractid", jwt, adminAccess, async (ctx) => {
   } catch (err) {
     ctx.throw(err);
   }
+});
+
+router.post("/upload", upload.array("file"), async (ctx) => {
+  ctx.body = {
+    code: 1,
+    data: ctx.files.length,
+  };
 });
 
 module.exports = router;
