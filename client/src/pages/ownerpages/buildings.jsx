@@ -25,6 +25,7 @@ import LoadingScreen from "../../components/LoadingScreen";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteBuilding from "../../components/Building/DeleteBuilding";
+import { Prompt } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -128,6 +129,10 @@ const Building = (props) => {
 
   return (
     <div>
+      <Prompt
+        when={editing}
+        message="You avez des changements non enregitrés, est-ce sûr de vouloir quitter la page ?"
+      />
       <Typography variant="h3">Les immeubles</Typography>
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}

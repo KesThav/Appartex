@@ -1,13 +1,5 @@
 import React, { Fragment, useState, useEffect, useContext } from "react";
-import {
-  Box,
-  Typography,
-  Tab,
-  Tabs,
-  Paper,
-  makeStyles,
-  AppBar,
-} from "@material-ui/core";
+import { Tab, Paper, makeStyles, AppBar } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import { UserContext } from "../../middlewares/ContextAPI";
 import TabContext from "@material-ui/lab/TabContext";

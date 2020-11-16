@@ -81,13 +81,13 @@ const TaskHistory = ({ data }) => {
                     <TableCell>
                       {moment(ts.createdAt).format("YYYY-MM-DD")}
                     </TableCell>
-                    <TableCell>{ts.taskid.title}</TableCell>
-                    <TableCell>{ts.taskid.content}</TableCell>
+                    <TableCell>{ts.title}</TableCell>
+                    <TableCell>{ts.content}</TableCell>
                     <TableCell>
-                      {moment(ts.taskid.startDate).format("YYYY-MM-DD")}
+                      {moment(ts.startDate).format("YYYY-MM-DD")}
                     </TableCell>
                     <TableCell>
-                      {moment(ts.taskid.endDate).format("YYYY-MM-DD")}
+                      {moment(ts.endDate).format("YYYY-MM-DD")}
                     </TableCell>
                     <TableCell>{ts.status.name}</TableCell>
                   </TableRow>

@@ -13,8 +13,6 @@ import {
   TextField,
   Paper,
   Typography,
-  Divider,
-  MenuItem,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import AddContract from "../../components/Contract/AddContract";
@@ -27,6 +25,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteContract from "../../components/Contract/DeleteContract";
 import ArchiveContract from "../../components/Contract/ArchiveContract";
+import { Prompt } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -89,7 +88,6 @@ const Contract = () => {
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
 
-
   const classes = useStyles();
   useEffect(() => {
     getContracts();
@@ -121,79 +119,66 @@ const Contract = () => {
 
   const dynamicSearch = () => {
     if (contract)
-      return contract
-        .filter((name) =>
-          !name.appartmentid.building
-            ? name._id
-                .toString()
-                .toLowerCase()
-                .includes(search.toString().toLowerCase()) ||
-              name.charge.toString().includes(search.toString()) ||
-              name.rent
-                .toString()
-                .toLowerCase()
-                .includes(search.toLowerCase()) ||
-              name.tenant
-                .toString()
-                .toLowerCase()
-                .includes(search.toString().toLowerCase()) ||
-              name.appartmentid
-                .toString()
-                .toLowerCase()
-                .includes(search.toString().toLowerCase()) ||
-              name.other
-                .toString()
-                .toLowerCase()
-                .includes(search.toString().toLowerCase()) ||
-              name.tenant.name.toLowerCase().includes(search.toLowerCase()) ||
-              name.tenant.lastname
-                .toLowerCase()
-                .includes(search.toLowerCase()) ||
-              name.appartmentid.adress
-                .toLowerCase()
-                .includes(search.toLowerCase()) ||
-              name.status
-                .toLowerCase()
-                .includes(search.toString().toLowerCase())
-            : name._id
-                .toString()
-                .toLowerCase()
-                .includes(search.toString().toLowerCase()) ||
-              name.charge.toString().includes(search.toString()) ||
-              name.rent
-                .toString()
-                .toLowerCase()
-                .includes(search.toLowerCase()) ||
-              name.tenant
-                .toString()
-                .toLowerCase()
-                .includes(search.toString().toLowerCase()) ||
-              name.appartmentid
-                .toString()
-                .toLowerCase()
-                .includes(search.toString().toLowerCase()) ||
-              name.other
-                .toString()
-                .toLowerCase()
-                .includes(search.toString().toLowerCase()) ||
-              name.tenant.name.toLowerCase().includes(search.toLowerCase()) ||
-              name.tenant.lastname
-                .toLowerCase()
-                .includes(search.toLowerCase()) ||
-              name.appartmentid.building.adress
-                .toLowerCase()
-                .includes(search.toLowerCase()) ||
-              name.status
-                .toLowerCase()
-                .includes(search.toString().toLowerCase())
-        );
+      return contract.filter((name) =>
+        !name.appartmentid.building
+          ? name._id
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.charge.toString().includes(search.toString()) ||
+            name.rent.toString().toLowerCase().includes(search.toLowerCase()) ||
+            name.tenant
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.appartmentid
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.other
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.tenant.name.toLowerCase().includes(search.toLowerCase()) ||
+            name.tenant.lastname.toLowerCase().includes(search.toLowerCase()) ||
+            name.appartmentid.adress
+              .toLowerCase()
+              .includes(search.toLowerCase()) ||
+            name.status.toLowerCase().includes(search.toString().toLowerCase())
+          : name._id
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.charge.toString().includes(search.toString()) ||
+            name.rent.toString().toLowerCase().includes(search.toLowerCase()) ||
+            name.tenant
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.appartmentid
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.other
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.tenant.name.toLowerCase().includes(search.toLowerCase()) ||
+            name.tenant.lastname.toLowerCase().includes(search.toLowerCase()) ||
+            name.appartmentid.building.adress
+              .toLowerCase()
+              .includes(search.toLowerCase()) ||
+            name.status.toLowerCase().includes(search.toString().toLowerCase())
+      );
   };
 
   return (
     <div>
-      <Typography variant="h3">
-        Les contrats
-      </Typography>
+      <Prompt
+        when={editing}
+        message="You avez des changements non enregitrés, est-ce sûr de vouloir quitter la page ?"
+      />
+      <Typography variant="h3">Les contrats</Typography>
 
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}

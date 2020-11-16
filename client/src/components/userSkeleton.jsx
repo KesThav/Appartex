@@ -300,6 +300,7 @@ const UserSkeleton = (props) => {
                             "Loyer",
                             "Statut",
                             "Date",
+                            "Documents",
                           ].map((data, index) => (
                             <TableCell key={index}>
                               <strong>{data}</strong>
@@ -326,6 +327,16 @@ const UserSkeleton = (props) => {
                               <TableCell>{data.status}</TableCell>
                               <TableCell>
                                 {moment(data.updatedAt).format("YYYY-MM-DD")}
+                              </TableCell>
+                              <TableCell>
+                                {data.file.map((doc) => (
+                                  <Link
+                                    to={`//localhost:5000/${doc}`}
+                                    target="_blank"
+                                  >
+                                    {doc}
+                                  </Link>
+                                ))}
                               </TableCell>
                             </TableRow>
                           ))}
@@ -356,6 +367,7 @@ const UserSkeleton = (props) => {
                             "Montant",
                             "Statut",
                             "Echéance",
+                            "Documents",
                           ].map((data, index) => (
                             <TableCell key={index}>
                               <strong>{data}</strong>
@@ -374,6 +386,16 @@ const UserSkeleton = (props) => {
                               <TableCell>{data.status.name}</TableCell>
                               <TableCell>
                                 {moment(data.updatedAt).format("YYYY-MM-DD")}
+                              </TableCell>
+                              <TableCell>
+                                {data.file.map((doc) => (
+                                  <Link
+                                    to={`//localhost:5000/${doc}`}
+                                    target="_blank"
+                                  >
+                                    {doc}
+                                  </Link>
+                                ))}
                               </TableCell>
                             </TableRow>
                           ))}

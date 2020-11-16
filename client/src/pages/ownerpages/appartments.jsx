@@ -17,7 +17,7 @@ import {
   IconButton,
   MenuItem,
 } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Prompt } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import AddAppart from "../../components/Appart/AddAppart";
 import moment from "moment";
@@ -29,7 +29,6 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteAppart from "../../components/Appart/DeleteAppart";
 import ShowDocument from "../../components/Appart/AppartDocumentSkeleton";
-import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -179,6 +178,10 @@ const Appart = () => {
   };
   return (
     <div>
+      <Prompt
+        when={editing}
+        message="You avez des changements non enregitrés, est-ce sûr de vouloir quitter la page ?"
+      />
       <Typography variant="h3">Les Appartements</Typography>
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}

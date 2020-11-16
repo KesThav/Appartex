@@ -28,6 +28,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import BillHistory from "../../components/Bill/BillHistory";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
+import { Prompt } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -187,6 +188,10 @@ const Bills = () => {
   };
   return (
     <div>
+      <Prompt
+        when={editing}
+        message="You avez des changements non enregitrés, est-ce sûr de vouloir quitter la page ?"
+      />
       <Typography variant="h3">Les Factures</Typography>
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}

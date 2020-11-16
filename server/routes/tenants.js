@@ -12,6 +12,8 @@ const adminAccess = require("../middlewares/adminAccess");
 const filterAccess = require("../middlewares/filterAccess");
 const bcrypt = require("bcrypt");
 const { userSchema } = require("../helpers/validation");
+const Task = require("../models/task.model");
+const Message = require("../models/message.model");
 
 /**
  * @swagger
@@ -414,7 +416,7 @@ router.delete("/delete/:tenantid", jwt, adminAccess, async (ctx) => {
 
 router.get("/contracts/:tenantid", jwt, filterAccess, async (ctx) => {
   let validate = ObjectId.isValid(ctx.params.tenantid);
-  if (!validate) return ctx.throw(404, "no contract found");
+  if (!validate) return ctx.throw(404, "no tenant found");
   try {
     let tenantid = new ObjectId(ctx.params.tenantid);
     const contracts = await Contract.find({ tenant: tenantid })
@@ -467,7 +469,7 @@ router.get("/contracts/:tenantid", jwt, filterAccess, async (ctx) => {
 
 router.get("/bills/:tenantid", jwt, filterAccess, async (ctx) => {
   let validate = ObjectId.isValid(ctx.params.tenantid);
-  if (!validate) return ctx.throw(404, "no bill found");
+  if (!validate) return ctx.throw(404, "no tenant found");
   try {
     let tenantid = new ObjectId(ctx.params.tenantid);
     const bills = await Bill.find({ tenant: tenantid })
@@ -479,6 +481,67 @@ router.get("/bills/:tenantid", jwt, filterAccess, async (ctx) => {
     } else {
       ctx.body = bills;
     }
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+/**
+ *  @swagger
+ * /tenants/tasks/{tenant_id}:
+ *  get :
+ *    summary : Return tenant tasks
+ *    operationId : gettenanttasks
+ *    tags :
+ *        - tenant
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: tenant_id
+ *       in: path
+ *       required: true
+ *       description: the id of the tenant
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Task'
+ *      '403':
+ *         description: Forbidden
+ *      '404':
+ *         description: No Task found
+ *      '500':
+ *         description: Server error
+ *
+ */
+
+router.get("/tasks/:tenantid", jwt, filterAccess, async (ctx) => {
+  let tasks = [];
+  let validate = ObjectId.isValid(ctx.params.tenantid);
+  if (!validate) return ctx.throw(404, "no bill found");
+  try {
+    const task = await Task.find({}).select({
+      messageid: 1,
+      _id: 1,
+    });
+    for (i = 0; i < task.length; i++) {
+      const res = await Message.findOne({
+        _id: task[i].messageid,
+        $or: [
+          { createdBy: ctx.params.tenantid },
+          { sendedTo: ctx.params.tenantid },
+        ],
+      });
+      if (res) {
+        tasks.push(await Task.findOne({ messageid: res._id }));
+      }
+    }
+
+    ctx.body = tasks.sort((a, b) => {
+      return new Date(b.startDate) - new Date(a.startDate);
+    });
   } catch (err) {
     ctx.throw(500, err);
   }

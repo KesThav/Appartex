@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, Fragment } from "react";
-
+import Schedule from "../../components/Schedule";
 import {
   makeStyles,
   Paper,
@@ -82,10 +82,9 @@ const useStyles = makeStyles((theme) => ({
 const Tenantboard = (props) => {
   const classes = useStyles();
   const { authAxios, setLoading, user } = useContext(UserContext);
-
-  const [tenant, setTenant] = useState("");
   const [bills, setBills] = useState("");
   const [contract, setContracts] = useState("");
+  const [task, setTasks] = useState("");
   const [name, setName] = useState(user.name);
   const [lastname, setLastname] = useState(user.lastname);
   const [email, setEmail] = useState(user.email);
@@ -113,6 +112,17 @@ const Tenantboard = (props) => {
     try {
       const res = await authAxios.get(`tenants/contracts/${user._id}`);
       setContracts(res.data);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+    }
+  };
+
+  const getTasks = async () => {
+    try {
+      const res = await authAxios.get(`tenants/tasks/${user._id}`);
+      setTasks(res.data);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -159,6 +169,7 @@ const Tenantboard = (props) => {
   useEffect(() => {
     getBills();
     getContracts();
+    getTasks();
     if (!window.location.hash) {
       window.location = window.location + "#loaded";
       window.location.reload();
@@ -167,7 +178,6 @@ const Tenantboard = (props) => {
 
   return (
     <Fragment>
-      {bills && console.log(bills)}
       <Container maxWidthLg>
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}
@@ -372,6 +382,23 @@ const Tenantboard = (props) => {
                       </TableBody>
                     </Table>
                   </TableContainer>
+                </AccordionDetails>
+              </Accordion>
+
+              <Accordion>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel2a-content"
+                  id="panel2a-header"
+                >
+                  <Typography className={classes.heading}>
+                    Les Tâches prévus
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails
+                  style={{ display: "flex", flexDirection: "column" }}
+                >
+                  <Schedule data={task} />
                 </AccordionDetails>
               </Accordion>
             </div>

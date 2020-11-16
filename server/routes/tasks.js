@@ -134,6 +134,10 @@ router.post("/add", jwt, adminAccess, async (ctx) => {
     await newtask.save();
 
     const newtaskstatus = new Taskstatus({
+      title: newtask.title,
+      content: newtask.content,
+      startDate: newtask.startDate,
+      endDate: newtask.endDate,
       taskid: newtask._id,
       status: newtask.status,
       createdBy: new ObjectId(ctx.request.jwt._id),
@@ -197,6 +201,10 @@ router.put("/update/:taskid", jwt, adminAccess, async (ctx) => {
     });
 
     const taskstatus = new Taskstatus({
+      title: ctx.request.body.title,
+      content: ctx.request.body.content,
+      startDate: ctx.request.body.startDate,
+      endDate: ctx.request.body.endDate,
       taskid: taskid,
       status: ctx.request.body.status,
       createdBy: new ObjectId(ctx.request.jwt._id),
