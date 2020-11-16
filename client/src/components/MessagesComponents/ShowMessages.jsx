@@ -100,9 +100,6 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
                 <CardActions disableSpacing>
                   {data.comments.length}
                   <ChatBubbleOutlineOutlinedIcon />
-                  {user && user.role !== "Admin" && (
-                    <AddComments getMessages={getMessages} id={data._id} />
-                  )}
 
                   {user &&
                     user.role == "Admin" &&
@@ -147,7 +144,7 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
                     ))}
                 </CardActions>
                 <CardActions>
-                  {user && user.role == "Admin" && data.status !== "Archivé" && (
+                  {user && data.status !== "Archivé" && (
                     <div className={classes.root}>
                       <Divider />
                       <AddComments
@@ -156,7 +153,6 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
                         setError={setError}
                         setSuccess={setSuccess}
                       />
-                      
                     </div>
                   )}
                 </CardActions>

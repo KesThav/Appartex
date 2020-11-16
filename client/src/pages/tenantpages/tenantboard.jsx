@@ -6,7 +6,6 @@ import {
   Box,
   Typography,
   Container,
-  Grid,
   Avatar,
   Accordion,
   AccordionSummary,
@@ -26,6 +25,7 @@ import moment from "moment";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Alert from "@material-ui/lab/Alert";
 import PersonIcon from "@material-ui/icons/Person";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   flex: {
@@ -270,6 +270,7 @@ const Tenantboard = (props) => {
                             "Loyer",
                             "Statut",
                             "Date",
+                            "Documents",
                           ].map((data, index) => (
                             <TableCell key={index}>
                               <strong>{data}</strong>
@@ -296,6 +297,16 @@ const Tenantboard = (props) => {
                               <TableCell>{data.status}</TableCell>
                               <TableCell>
                                 {moment(data.updatedAt).format("YYYY-MM-DD")}
+                              </TableCell>
+                              <TableCell>
+                                {data.file.map((doc) => (
+                                  <Link
+                                    to={`//localhost:5000/${doc}`}
+                                    target="_blank"
+                                  >
+                                    {doc}
+                                  </Link>
+                                ))}
                               </TableCell>
                             </TableRow>
                           ))}
@@ -326,6 +337,7 @@ const Tenantboard = (props) => {
                             "Montant",
                             "Statut",
                             "Echéance",
+                            "Documents",
                           ].map((data, index) => (
                             <TableCell key={index}>
                               <strong>{data}</strong>
@@ -344,6 +356,16 @@ const Tenantboard = (props) => {
                               <TableCell>{data.status.name}</TableCell>
                               <TableCell>
                                 {moment(data.updatedAt).format("YYYY-MM-DD")}
+                              </TableCell>
+                              <TableCell>
+                                {data.file.map((doc) => (
+                                  <Link
+                                    to={`//localhost:5000/${doc}`}
+                                    target="_blank"
+                                  >
+                                    {doc}
+                                  </Link>
+                                ))}
                               </TableCell>
                             </TableRow>
                           ))}

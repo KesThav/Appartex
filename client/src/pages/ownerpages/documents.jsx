@@ -5,6 +5,9 @@ import Tab from "@material-ui/core/Tab";
 import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import UploadImage from "../../components/Appart/UploadImage";
+import UploadBillFile from "../../components/Bill/UploadFile";
+import UploadContractFile from "../../components/Contract/UploadFile";
+import UploadRepairFile from "../../components/Repair/UploadFile";
 import Alert from "@material-ui/lab/Alert";
 import LoadingScreen from "../../components/LoadingScreen";
 import { UserContext } from "../../middlewares/ContextAPI";
@@ -76,15 +79,19 @@ export default function VerticalTabs() {
           <Tab label="Appartements" {...a11yProps(0)} />
           <Tab label="Contrats" {...a11yProps(1)} />
           <Tab label="Factures" {...a11yProps(2)} />
+          <Tab label="Réparations" {...a11yProps(3)} />
         </Tabs>
         <TabPanel value={value} index={0}>
           <UploadImage setSuccess={setSuccess} setError={setError} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          Item Two
+          <UploadContractFile setSuccess={setSuccess} setError={setError} />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          Item Three
+          <UploadBillFile setSuccess={setSuccess} setError={setError} />
+        </TabPanel>
+        <TabPanel value={value} index={3}>
+          <UploadRepairFile setSuccess={setSuccess} setError={setError} />
         </TabPanel>
       </div>
     </Fragment>

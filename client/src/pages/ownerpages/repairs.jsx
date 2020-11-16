@@ -17,7 +17,6 @@ import {
   Divider,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
-import AddRepair from "../../components/Repair/AddRepair";
 import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
@@ -249,7 +248,6 @@ const Repair = () => {
                             value={statusid}
                             onChange={(e) => setStatusid(e.target.value)}
                             fullWidth
-                            className={classes.form}
                           >
                             {status &&
                               status.map((option) => (

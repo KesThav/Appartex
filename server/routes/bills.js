@@ -8,6 +8,36 @@ const { billSchema } = require("../helpers/validation");
 const Billstatus = require("../models/bill_status.model");
 let ObjectId = require("mongodb").ObjectId;
 
+const multer = require("@koa/multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/bills");
+  },
+  filename: function (req, file, cb) {
+    let type = file.originalname.split(".")[1];
+    let filename = file.originalname.split(".")[0];
+    cb(null, `${filename}-${Date.now().toString(16)}.${type}`);
+  },
+});
+
+const limits = {
+  fields: 10,
+  fileSize: 500 * 1024,
+};
+
+const upload = multer({
+  storage,
+  fileFilter: function (req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|pdf|doc|docx)$/)) {
+      return cb(new Error("Format not allow!"));
+    }
+    cb(null, true);
+  },
+  limits,
+});
+
 /**
  * @swagger
  *
@@ -173,6 +203,7 @@ router.post("/add", jwt, adminAccess, billValidation, async (ctx) => {
     await newbill.save();
 
     const newbillstatus = new Billstatus({
+      endDate: newbill.endDate,
       billid: newbill._id,
       status: newbill.status,
       createdBy: new ObjectId(ctx.request.jwt._id),
@@ -245,6 +276,7 @@ router.put("/update/:billid", jwt, adminAccess, billValidation, async (ctx) => {
     });
 
     const billstatus = new Billstatus({
+      endDate: update.endDate,
       billid: billid,
       status: update.status,
       createdBy: new ObjectId(ctx.request.jwt._id),
@@ -296,6 +328,133 @@ router.delete("/delete/:billid", jwt, adminAccess, async (ctx) => {
   try {
     await Billstatus.deleteMany({ billid: billid });
     await Bill.findByIdAndDelete(billid);
+    ctx.body = "ok";
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+/**
+ *  @swagger
+ * /bills/upload/{bill_id}:
+ *  put :
+ *    summary : Add file to bill
+ *    operationId : addfilebill
+ *    tags :
+ *        - bill
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: bill_id
+ *       in: path
+ *       required: true
+ *       description: the id of the bill
+ *    requestBody :
+ *     required: true
+ *     content :
+ *       multipart/form-data:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              file:
+ *                type: string
+ *                format: binary
+ *            required:
+ *              - file
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Bill not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.put(
+  "/upload/:billid",
+  jwt,
+  adminAccess,
+  upload.array("file"),
+  async (ctx) => {
+    let validate = ObjectId.isValid(ctx.params.billid);
+    if (!validate) return ctx.throw(404, "bill not found");
+    let billid = new ObjectId(ctx.params.billid);
+
+    const bill = await Bill.findById(billid);
+    if (!bill) {
+      ctx.throw(404, "bill not found");
+    }
+    try {
+      for (i = 0; i < ctx.files.length; i++) {
+        await Bill.findByIdAndUpdate(billid, {
+          $push: {
+            file: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
+          },
+        });
+      }
+      ctx.body = "ok";
+    } catch (err) {
+      ctx.throw(500, err);
+    }
+  }
+);
+
+/**
+ *  @swagger
+ * /bills/delete/file/{bill_id}:
+ *  put :
+ *    summary : delete file from bill
+ *    operationId : deletefilebill
+ *    tags :
+ *        - bill
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: bill_id
+ *       in: path
+ *       required: true
+ *       description: the id of the bill
+ *    requestBody :
+ *     required: true
+ *     content :
+ *       application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              file:
+ *                type: string
+ *                example: file/random-file.pdf
+ *            required:
+ *              - file
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Tenant not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.put("/delete/file/:billid", jwt, adminAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.billid);
+  if (!validate) return ctx.throw(404, "Bill not found");
+  let billid = new ObjectId(ctx.params.billid);
+
+  const bill = await Bill.findById(billid);
+  if (!bill) {
+    ctx.throw(404, "bill not found");
+  }
+
+  try {
+    await Bill.findByIdAndUpdate(billid, {
+      $pull: { file: ctx.request.body.file },
+    });
     ctx.body = "ok";
   } catch (err) {
     ctx.throw(500, err);

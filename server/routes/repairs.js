@@ -7,6 +7,35 @@ const { repairSchema } = require("../helpers/validation");
 const Repairstatus = require("../models/repair_status.model");
 const Task = require("../models/task.model");
 let ObjectId = require("mongodb").ObjectId;
+const multer = require("@koa/multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/repairs");
+  },
+  filename: function (req, file, cb) {
+    let type = file.originalname.split(".")[1];
+    let filename = file.originalname.split(".")[0];
+    cb(null, `${filename}-${Date.now().toString(16)}.${type}`);
+  },
+});
+
+const limits = {
+  fields: 10,
+  fileSize: 500 * 1024,
+};
+
+const upload = multer({
+  storage,
+  fileFilter: function (req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|pdf|doc|docx)$/)) {
+      return cb(new Error("Format not allow!"));
+    }
+    cb(null, true);
+  },
+  limits,
+});
 
 /**
  * @swagger
@@ -285,6 +314,133 @@ router.delete("/delete/:repairid", jwt, adminAccess, async (ctx) => {
   try {
     await Repairstatus.deleteMany({ repairid: repairid });
     await Repair.findByIdAndDelete(repairid);
+    ctx.body = "ok";
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+/**
+ *  @swagger
+ * /repairs/upload/{repair_id}:
+ *  put :
+ *    summary : Add file to repair
+ *    operationId : addfilerepair
+ *    tags :
+ *        - repair
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: repair_id
+ *       in: path
+ *       required: true
+ *       description: the id of the repair
+ *    requestBody :
+ *     required: true
+ *     content :
+ *       multipart/form-data:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              file:
+ *                type: string
+ *                format: binary
+ *            required:
+ *              - file
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Repair not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.put(
+  "/upload/:repairid",
+  jwt,
+  adminAccess,
+  upload.array("file"),
+  async (ctx) => {
+    let validate = ObjectId.isValid(ctx.params.repairid);
+    if (!validate) return ctx.throw(404, "repair not found");
+    let repairid = new ObjectId(ctx.params.repairid);
+
+    const repair = await Repair.findById(repairid);
+    if (!repair) {
+      ctx.throw(404, "repair not found");
+    }
+    try {
+      for (i = 0; i < ctx.files.length; i++) {
+        await Repair.findByIdAndUpdate(repairid, {
+          $push: {
+            file: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
+          },
+        });
+      }
+      ctx.body = "ok";
+    } catch (err) {
+      ctx.throw(500, err);
+    }
+  }
+);
+
+/**
+ *  @swagger
+ * /repairs/delete/file/{repair_id}:
+ *  put :
+ *    summary : delete file from repair
+ *    operationId : deletefilerepair
+ *    tags :
+ *        - repair
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: repair_id
+ *       in: path
+ *       required: true
+ *       description: the id of the repair
+ *    requestBody :
+ *     required: true
+ *     content :
+ *       application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              file:
+ *                type: string
+ *                example: file/random-file.pdf
+ *            required:
+ *              - file
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Repair not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.put("/delete/file/:repairid", jwt, adminAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.repairid);
+  if (!validate) return ctx.throw(404, "repair not found");
+  let repairid = new ObjectId(ctx.params.repairid);
+
+  const repair = await Repair.findById(repairid);
+  if (!repair) {
+    ctx.throw(404, "repair not found");
+  }
+
+  try {
+    await Repair.findByIdAndUpdate(repairid, {
+      $pull: { file: ctx.request.body.file },
+    });
     ctx.body = "ok";
   } catch (err) {
     ctx.throw(500, err);

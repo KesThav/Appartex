@@ -243,29 +243,6 @@ router.post(
  *        description: Server error
  *
  */
-router.put("/upload/:appartid", upload.array("picture"), async (ctx) => {
-  console.log(ctx.files);
-  let validate = ObjectId.isValid(ctx.params.appartid);
-  if (!validate) return ctx.throw(404, "appartment not found");
-  let appartid = new ObjectId(ctx.params.appartid);
-
-  const appart = await Appart.findById(appartid);
-  if (!appart) {
-    ctx.throw(404, "appartment not found");
-  }
-  try {
-    for (i = 0; i < ctx.files.length; i++) {
-      await Appart.findByIdAndUpdate(appartid, {
-        $push: {
-          picture: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
-        },
-      });
-    }
-    ctx.body = "ok";
-  } catch (err) {
-    ctx.throw(500, err);
-  }
-});
 
 router.put(
   "/update/:appartid",
@@ -409,8 +386,116 @@ router.delete("/delete/:appartid", jwt, adminAccess, async (ctx) => {
   }
 });
 
+/**
+ *  @swagger
+ * /appartments/upload/{appart_id}:
+ *  put :
+ *    summary : Add image to appartment
+ *    operationId : addimageappartment
+ *    tags :
+ *        - appartment
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: appart_id
+ *       in: path
+ *       required: true
+ *       description: the id of the appartment
+ *    requestBody :
+ *     required: true
+ *     content :
+ *       multipart/form-data:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              picture:
+ *                type: string
+ *                format: binary
+ *            required:
+ *              - picture
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Appartment not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.put(
+  "/upload/:appartid",
+  jwt,
+  adminAccess,
+  upload.array("picture"),
+  async (ctx) => {
+    let validate = ObjectId.isValid(ctx.params.appartid);
+    if (!validate) return ctx.throw(404, "appartment not found");
+    let appartid = new ObjectId(ctx.params.appartid);
+
+    const appart = await Appart.findById(appartid);
+    if (!appart) {
+      ctx.throw(404, "appartment not found");
+    }
+    try {
+      for (i = 0; i < ctx.files.length; i++) {
+        await Appart.findByIdAndUpdate(appartid, {
+          $push: {
+            picture: ctx.files[i].path
+              .replace(/\\/g, "/")
+              .replace("public/", ""),
+          },
+        });
+      }
+      ctx.body = "ok";
+    } catch (err) {
+      ctx.throw(500, err);
+    }
+  }
+);
+
+/**
+ *  @swagger
+ * /appartments/delete/file/{appart_id}:
+ *  put :
+ *    summary : delete image from appartment
+ *    operationId : deleteimageappartment
+ *    tags :
+ *        - appartment
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: appart_id
+ *       in: path
+ *       required: true
+ *       description: the id of the appartment
+ *    requestBody :
+ *     required: true
+ *     content :
+ *       application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              picture:
+ *                type: string
+ *                example: appartment/random-image.png
+ *            required:
+ *              - picture
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Tenant not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
 router.put("/delete/file/:appartid", jwt, adminAccess, async (ctx) => {
-  console.log(ctx.request.body);
   let validate = ObjectId.isValid(ctx.params.appartid);
   if (!validate) return ctx.throw(404, "appartment not found");
   let appartid = new ObjectId(ctx.params.appartid);

@@ -12,7 +12,7 @@ const path = require("path");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "public/upload");
+    cb(null, "public/contracts");
   },
   filename: function (req, file, cb) {
     let type = file.originalname.split(".")[1];
@@ -26,7 +26,16 @@ const limits = {
   fileSize: 500 * 1024,
 };
 
-const upload = multer({ storage, limits });
+const upload = multer({
+  storage,
+  fileFilter: function (req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|pdf|doc|docx)$/)) {
+      return cb(new Error("Format not allow!"));
+    }
+    cb(null, true);
+  },
+  limits,
+});
 /**
  * @swagger
  *
@@ -391,11 +400,132 @@ router.delete("/delete/:contractid", jwt, adminAccess, async (ctx) => {
   }
 });
 
-router.post("/upload", upload.array("file"), async (ctx) => {
-  ctx.body = {
-    code: 1,
-    data: ctx.files.length,
-  };
+
+/**
+ *  @swagger
+ * /contracts/upload/{contract_id}:
+ *  put :
+ *    summary : Add file to contract
+ *    operationId : addfilecontract
+ *    tags :
+ *        - contract
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: contract_id
+ *       in: path
+ *       required: true
+ *       description: the id of the contract
+ *    requestBody :
+ *     required: true
+ *     content :
+ *       multipart/form-data:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              file:
+ *                type: string
+ *                format: binary
+ *            required:
+ *              - file
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Contract not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.put(
+  "/upload/:contractid",
+  jwt,
+  adminAccess,
+  upload.array("file"),
+  async (ctx) => {
+    let validate = ObjectId.isValid(ctx.params.contractid);
+    if (!validate) return ctx.throw(404, "contract not found");
+    let contractid = new ObjectId(ctx.params.contractid);
+
+    const contract = await Contract.findById(contractid);
+    if (!contract) {
+      ctx.throw(404, "contract not found");
+    }
+    try {
+      for (i = 0; i < ctx.files.length; i++) {
+        await Contract.findByIdAndUpdate(contractid, {
+          $push: {
+            file: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
+          },
+        });
+      }
+      ctx.body = "ok";
+    } catch (err) {
+      ctx.throw(500, err);
+    }
+  }
+);
+
+/**
+ *  @swagger
+ * /contracts/delete/file/{contract_id}:
+ *  put :
+ *    summary : delete file from contract
+ *    operationId : deletefilecontract
+ *    tags :
+ *        - contract
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: contract_id
+ *       in: path
+ *       required: true
+ *       description: the id of the contract
+ *    requestBody :
+ *     required: true
+ *     content :
+ *       application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              file:
+ *                type: string
+ *                example: file/random-file.pdf
+ *            required:
+ *              - file
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Contract not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.put("/delete/file/:contractid", jwt, adminAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.contractid);
+  if (!validate) return ctx.throw(404, "contract not found");
+  let contractid = new ObjectId(ctx.params.contractid);
+
+  const contract = await Contract.findById(contractid);
+  if (!contract) {
+    ctx.throw(404, "contract not found");
+  }
+
+  try {
+    await Contract.findByIdAndUpdate(contractid, {
+      $pull: { file: ctx.request.body.file },
+    });
+    ctx.body = "ok";
+  } catch (err) {
+    ctx.throw(500, err);
+  }
 });
 
 module.exports = router;

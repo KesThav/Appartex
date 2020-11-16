@@ -322,7 +322,6 @@ const Bills = () => {
                             value={statusid}
                             onChange={(e) => setStatusid(e.target.value)}
                             fullWidth
-                            className={classes.form}
                           >
                             {status &&
                               status.map((option) => (
@@ -336,7 +335,15 @@ const Bills = () => {
                         )}
                       </TableCell>
                       <TableCell>
-                        {moment(bill.endDate).diff(moment(), "days") > 30 ? (
+                        {editing && data === bill._id ? (
+                          <TextField
+                            id="endDate"
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            fullWidth
+                          />
+                        ) : moment(bill.endDate).diff(moment(), "days") > 30 ? (
                           <Chip
                             style={{ background: "#29b6f6", color: "#fff" }}
                             label={moment(bill.endDate).format("YYYY-MM-DD")}
@@ -387,7 +394,9 @@ const Bills = () => {
                                   setReason(bill.reason);
                                   setTenantid(bill.tenant._id);
                                   setStatusid(bill.status._id);
-                                  setEndDate(moment(bill.endDate));
+                                  setEndDate(
+                                    moment(bill.endDate).format("YYYY-MM-DD")
+                                  );
                                   setData(bill._id);
                                   setError("");
                                   setSuccess("");

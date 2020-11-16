@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import LoadingScreen from "../LoadingScreen";
 import { Link } from "react-router-dom";
-import DeleteImage from "./DeleteImage";
+import DeleteFile from "./DeleteFile";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -30,42 +30,42 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UploadImage = ({ setSuccess, setError }) => {
+const UploadFile = ({ setSuccess, setError }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const {
-    appart,
+    contract,
     setLoading,
     authAxios,
-    getApparts,
+    getContracts,
     count,
     setCount,
     loading,
   } = useContext(UserContext);
-  const [pic, setPic] = useState([]);
-  const [appartid, setAppartid] = useState("");
+  const [fl, setFl] = useState([]);
+  const [contractid, setContractid] = useState("");
   const [data, setData] = useState([]);
 
   const submit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (pic.length == 0) {
+    if (fl.length == 0) {
       setError("Le champ ne peut pas être vide");
     } else {
       setLoading(true);
-      const picture = new FormData();
-      for (let i = 0; i < pic.length; i++) {
-        picture.append("picture", pic[i]);
+      const file = new FormData();
+      for (let i = 0; i < fl.length; i++) {
+        file.append("file", fl[i]);
       }
       try {
-        await authAxios.put(`/appartments/upload/${appartid}`, picture, {
+        await authAxios.put(`/contracts/upload/${contractid}`, file, {
           headers: {
             "Content-type": "multipart/form-data",
           },
         });
         setLoading(false);
-        setSuccess("Image ajouté avec succès");
+        setSuccess("Document ajouté avec succès");
         setCount((count) => count + 1);
       } catch (err) {
         setLoading(false);
@@ -74,10 +74,10 @@ const UploadImage = ({ setSuccess, setError }) => {
     }
   };
 
-  const getOneAppart = async (dt) => {
+  const getOneContract = async (dt) => {
     try {
-      const res = await authAxios.get(`/appartments/${dt}`);
-      setData(res.data.picture);
+      const res = await authAxios.get(`/contracts/${dt}`);
+      setData(res.data.file);
       setCount((count) => count + 1);
     } catch (err) {
       setError(err.response.data);
@@ -85,7 +85,7 @@ const UploadImage = ({ setSuccess, setError }) => {
   };
 
   useEffect(() => {
-    getApparts();
+    getContracts();
   }, [count]);
 
   return (
@@ -100,26 +100,26 @@ const UploadImage = ({ setSuccess, setError }) => {
           type="file"
           inputProps={{ multiple: true }}
           variant="outlined"
-          onChange={(e) => setPic(e.target.files)}
+          onChange={(e) => setFl(e.target.files)}
           fullWidth
           className={classes.form}
         />
         <TextField
           component={"span"}
           variant="outlined"
-          id="appartid"
+          id="contractid"
           select
-          value={appartid}
-          label="Appartement"
+          value={contractid}
+          label="Contrat"
           onChange={(e) => {
-            setAppartid(e.target.value);
-            getOneAppart(e.target.value);
+            setContractid(e.target.value);
+            getOneContract(e.target.value);
           }}
-          helperText="Selectionner un appartement"
+          helperText="Selectionner un contrat"
           fullWidth
         >
-          {appart &&
-            appart.map((option) => (
+          {contract &&
+            contract.map((option) => (
               <MenuItem key={option._id} value={option._id}>
                 {option._id}
               </MenuItem>
@@ -144,9 +144,9 @@ const UploadImage = ({ setSuccess, setError }) => {
             <Link to={`//localhost:5000/${data}`} target="_blank">
               {data}
             </Link>
-            <DeleteImage
+            <DeleteFile
               data={data}
-              appartid={appartid}
+              contractid={contractid}
               setSuccess={setSuccess}
               setError={setError}
             />
@@ -156,4 +156,4 @@ const UploadImage = ({ setSuccess, setError }) => {
   );
 };
 
-export default UploadImage;
+export default UploadFile;

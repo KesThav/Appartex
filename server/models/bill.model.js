@@ -18,6 +18,7 @@ const billSchema = new Mongoose.Schema(
       type: Number,
       required: true,
     },
+    file: [{ type: String }],
     reason: {
       type: String,
       required: true,

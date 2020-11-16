@@ -20,6 +20,7 @@ const repairSchema = new Mongoose.Schema(
       required: true,
       ref: "Task",
     },
+    file: [{ type: String }],
     createdBy: {
       type: Mongoose.Schema.Types.ObjectId,
       required: true,

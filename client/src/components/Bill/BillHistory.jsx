@@ -67,6 +67,7 @@ const BillHistory = ({ data }) => {
               <TableRow>
                 <TableCell>Date</TableCell>
                 <TableCell>Statut</TableCell>
+                <TableCell>date de fin</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -77,6 +78,11 @@ const BillHistory = ({ data }) => {
                       {moment(bh.createdAt).format("YYYY-MM-DD")}
                     </TableCell>
                     <TableCell>{bh.status.name}</TableCell>
+                    <TableCell>
+                      {bh.endDate
+                        ? moment(bh.endDate).format("YYYY-MM-DD")
+                        : "-"}
+                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>
