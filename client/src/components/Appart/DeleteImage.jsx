@@ -23,7 +23,13 @@ const useStyles = makeStyles({
   },
 });
 
-const DeleteAppart = ({ data, appartid, setSuccess, setError }) => {
+const DeleteAppart = ({
+  data,
+  appartid,
+  setSuccess,
+  setError,
+  getOneAppart,
+}) => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const { setLoading, authAxios, setCount } = useContext(UserContext);
@@ -40,6 +46,7 @@ const DeleteAppart = ({ data, appartid, setSuccess, setError }) => {
       setCount((count) => count + 1);
       setLoading(false);
       setSuccess("Image supprimé avec succès");
+      getOneAppart(appartid);
     } catch (err) {
       setError(err.response.data);
       setLoading(false);

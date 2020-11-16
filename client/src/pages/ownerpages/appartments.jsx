@@ -358,14 +358,7 @@ const Appart = () => {
                           ) : (
                             <Fragment>
                               {appart.picture.length}
-                              <Link
-                                to={`/appartments/${appart._id}`}
-                                className={classes.link}
-                              >
-                                <IconButton>
-                                  <ArrowForwardIcon />
-                                </IconButton>
-                              </Link>
+                              <ShowDocument appart={appart._id} />
                               <IconButton>
                                 <EditIcon
                                   onClick={() => {
@@ -449,14 +442,7 @@ const Appart = () => {
                           ) : (
                             <Fragment>
                               {appart.picture.length}
-                              <Link
-                                to={`/appartments/${appart._id}`}
-                                className={classes.link}
-                              >
-                                <IconButton>
-                                  <ArrowForwardIcon />
-                                </IconButton>
-                              </Link>
+                              <ShowDocument appart={appart._id} />
                               <IconButton>
                                 <EditIcon
                                   onClick={() => {

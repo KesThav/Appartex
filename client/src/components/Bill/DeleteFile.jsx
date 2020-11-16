@@ -23,7 +23,7 @@ const useStyles = makeStyles({
   },
 });
 
-const DeleteFile = ({ data, billid, setSuccess, setError }) => {
+const DeleteFile = ({ data, billid, setSuccess, setError, getOneBill }) => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const { setLoading, authAxios, setCount } = useContext(UserContext);
@@ -40,6 +40,7 @@ const DeleteFile = ({ data, billid, setSuccess, setError }) => {
       setCount((count) => count + 1);
       setLoading(false);
       setSuccess("Document supprimé avec succès");
+      getOneBill(billid);
     } catch (err) {
       setError(err.response.data);
       setLoading(false);

@@ -213,11 +213,7 @@ const App = () => {
                       path="/appartments"
                       component={Appartment}
                     />
-                    <AdminRoute
-                      exact
-                      path="/appartments/:appartid"
-                      component={ShowAppartDocuments}
-                    />
+
                     <AdminRoute exact path="/bills" component={Bill} />
                     <AdminRoute exact path="/contracts" component={Contract} />
                     <AdminRoute exact path="/status" component={Status} />

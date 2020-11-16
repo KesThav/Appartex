@@ -67,6 +67,7 @@ const UploadFile = ({ setSuccess, setError }) => {
         setLoading(false);
         setSuccess("Document ajouté avec succès");
         setCount((count) => count + 1);
+        getOneContract(contractid);
       } catch (err) {
         setLoading(false);
         setError(err.response.data);
@@ -130,8 +131,9 @@ const UploadFile = ({ setSuccess, setError }) => {
         </Button>
       </form>
       {data.length > 0 &&
-        data.map((data) => (
+        data.map((data, i) => (
           <Paper
+            key={i}
             square
             style={{
               margin: "2px",
@@ -149,6 +151,7 @@ const UploadFile = ({ setSuccess, setError }) => {
               contractid={contractid}
               setSuccess={setSuccess}
               setError={setError}
+              getOneContract={getOneContract}
             />
           </Paper>
         ))}

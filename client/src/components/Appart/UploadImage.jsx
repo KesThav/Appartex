@@ -67,6 +67,7 @@ const UploadImage = ({ setSuccess, setError }) => {
         setLoading(false);
         setSuccess("Image ajouté avec succès");
         setCount((count) => count + 1);
+        getOneAppart(appartid);
       } catch (err) {
         setLoading(false);
         setError(err.response.data);
@@ -149,6 +150,7 @@ const UploadImage = ({ setSuccess, setError }) => {
               appartid={appartid}
               setSuccess={setSuccess}
               setError={setError}
+              getOneAppart={getOneAppart}
             />
           </Paper>
         ))}

@@ -23,7 +23,13 @@ const useStyles = makeStyles({
   },
 });
 
-const DeleteFile = ({ data, contractid, setSuccess, setError }) => {
+const DeleteFile = ({
+  data,
+  contractid,
+  setSuccess,
+  setError,
+  getOneContract,
+}) => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const { setLoading, authAxios, setCount } = useContext(UserContext);
@@ -40,6 +46,7 @@ const DeleteFile = ({ data, contractid, setSuccess, setError }) => {
       setCount((count) => count + 1);
       setLoading(false);
       setSuccess("Document supprimé avec succès");
+      getOneContract(contractid);
     } catch (err) {
       setError(err.response.data);
       setLoading(false);
