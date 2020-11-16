@@ -13,7 +13,7 @@ const path = require("path");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "public/bills");
+    cb(null, "public/bill");
   },
   filename: function (req, file, cb) {
     let type = file.originalname.split(".")[1];
@@ -373,34 +373,35 @@ router.delete("/delete/:billid", jwt, adminAccess, async (ctx) => {
  *
  */
 
-router.put(
-  "/upload/:billid",
-  jwt,
-  adminAccess,
-  upload.array("file"),
-  async (ctx) => {
-    let validate = ObjectId.isValid(ctx.params.billid);
-    if (!validate) return ctx.throw(404, "bill not found");
-    let billid = new ObjectId(ctx.params.billid);
+router.put("/upload/:billid", jwt, adminAccess, async (ctx, next) => {
+  let validate = ObjectId.isValid(ctx.params.billid);
+  if (!validate) return ctx.throw(404, "bill not found");
+  let billid = new ObjectId(ctx.params.billid);
 
-    const bill = await Bill.findById(billid);
-    if (!bill) {
-      ctx.throw(404, "bill not found");
-    }
-    try {
-      for (i = 0; i < ctx.files.length; i++) {
-        await Bill.findByIdAndUpdate(billid, {
-          $push: {
-            file: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
-          },
-        });
-      }
-      ctx.body = "ok";
-    } catch (err) {
-      ctx.throw(500, err);
-    }
+  const bill = await Bill.findById(billid);
+  if (!bill) {
+    ctx.throw(404, "bill not found");
   }
-);
+  try {
+    let err = await upload
+      .array("file")(ctx, next)
+      .then((res) => res)
+      .catch((err) => err);
+    if (err) {
+      ctx.throw(400, err.message);
+    }
+    for (i = 0; i < ctx.files.length; i++) {
+      await Bill.findByIdAndUpdate(billid, {
+        $push: {
+          file: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
+        },
+      });
+    }
+    ctx.body = "ok";
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
 
 /**
  *  @swagger

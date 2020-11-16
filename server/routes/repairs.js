@@ -12,7 +12,7 @@ const path = require("path");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "public/repairs");
+    cb(null, "public/repair");
   },
   filename: function (req, file, cb) {
     let type = file.originalname.split(".")[1];
@@ -359,34 +359,35 @@ router.delete("/delete/:repairid", jwt, adminAccess, async (ctx) => {
  *
  */
 
-router.put(
-  "/upload/:repairid",
-  jwt,
-  adminAccess,
-  upload.array("file"),
-  async (ctx) => {
-    let validate = ObjectId.isValid(ctx.params.repairid);
-    if (!validate) return ctx.throw(404, "repair not found");
-    let repairid = new ObjectId(ctx.params.repairid);
+router.put("/upload/:repairid", jwt, adminAccess, async (ctx, next) => {
+  let validate = ObjectId.isValid(ctx.params.repairid);
+  if (!validate) return ctx.throw(404, "repair not found");
+  let repairid = new ObjectId(ctx.params.repairid);
 
-    const repair = await Repair.findById(repairid);
-    if (!repair) {
-      ctx.throw(404, "repair not found");
-    }
-    try {
-      for (i = 0; i < ctx.files.length; i++) {
-        await Repair.findByIdAndUpdate(repairid, {
-          $push: {
-            file: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
-          },
-        });
-      }
-      ctx.body = "ok";
-    } catch (err) {
-      ctx.throw(500, err);
-    }
+  const repair = await Repair.findById(repairid);
+  if (!repair) {
+    ctx.throw(404, "repair not found");
   }
-);
+  try {
+    let err = await upload
+      .array("file")(ctx, next)
+      .then((res) => res)
+      .catch((err) => err);
+    if (err) {
+      ctx.throw(400, err.message);
+    }
+    for (i = 0; i < ctx.files.length; i++) {
+      await Repair.findByIdAndUpdate(repairid, {
+        $push: {
+          file: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
+        },
+      });
+    }
+    ctx.body = "ok";
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
 
 /**
  *  @swagger

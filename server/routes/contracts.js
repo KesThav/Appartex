@@ -12,7 +12,7 @@ const path = require("path");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "public/contracts");
+    cb(null, "public/contract");
   },
   filename: function (req, file, cb) {
     let type = file.originalname.split(".")[1];
@@ -400,7 +400,6 @@ router.delete("/delete/:contractid", jwt, adminAccess, async (ctx) => {
   }
 });
 
-
 /**
  *  @swagger
  * /contracts/upload/{contract_id}:
@@ -440,34 +439,35 @@ router.delete("/delete/:contractid", jwt, adminAccess, async (ctx) => {
  *
  */
 
-router.put(
-  "/upload/:contractid",
-  jwt,
-  adminAccess,
-  upload.array("file"),
-  async (ctx) => {
-    let validate = ObjectId.isValid(ctx.params.contractid);
-    if (!validate) return ctx.throw(404, "contract not found");
-    let contractid = new ObjectId(ctx.params.contractid);
+router.put("/upload/:contractid", jwt, adminAccess, async (ctx, next) => {
+  let validate = ObjectId.isValid(ctx.params.contractid);
+  if (!validate) return ctx.throw(404, "contract not found");
+  let contractid = new ObjectId(ctx.params.contractid);
 
-    const contract = await Contract.findById(contractid);
-    if (!contract) {
-      ctx.throw(404, "contract not found");
-    }
-    try {
-      for (i = 0; i < ctx.files.length; i++) {
-        await Contract.findByIdAndUpdate(contractid, {
-          $push: {
-            file: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
-          },
-        });
-      }
-      ctx.body = "ok";
-    } catch (err) {
-      ctx.throw(500, err);
-    }
+  const contract = await Contract.findById(contractid);
+  if (!contract) {
+    ctx.throw(404, "contract not found");
   }
-);
+  try {
+    let err = await upload
+      .array("file")(ctx, next)
+      .then((res) => res)
+      .catch((err) => err);
+    if (err) {
+      ctx.throw(400, err.message);
+    }
+    for (i = 0; i < ctx.files.length; i++) {
+      await Contract.findByIdAndUpdate(contractid, {
+        $push: {
+          file: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
+        },
+      });
+    }
+    ctx.body = "ok";
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
 
 /**
  *  @swagger

@@ -425,36 +425,35 @@ router.delete("/delete/:appartid", jwt, adminAccess, async (ctx) => {
  *
  */
 
-router.put(
-  "/upload/:appartid",
-  jwt,
-  adminAccess,
-  upload.array("picture"),
-  async (ctx) => {
-    let validate = ObjectId.isValid(ctx.params.appartid);
-    if (!validate) return ctx.throw(404, "appartment not found");
-    let appartid = new ObjectId(ctx.params.appartid);
+router.put("/upload/:appartid", jwt, adminAccess, async (ctx, next) => {
+  let validate = ObjectId.isValid(ctx.params.appartid);
+  if (!validate) return ctx.throw(404, "appartment not found");
+  let appartid = new ObjectId(ctx.params.appartid);
 
-    const appart = await Appart.findById(appartid);
-    if (!appart) {
-      ctx.throw(404, "appartment not found");
-    }
-    try {
-      for (i = 0; i < ctx.files.length; i++) {
-        await Appart.findByIdAndUpdate(appartid, {
-          $push: {
-            picture: ctx.files[i].path
-              .replace(/\\/g, "/")
-              .replace("public/", ""),
-          },
-        });
-      }
-      ctx.body = "ok";
-    } catch (err) {
-      ctx.throw(500, err);
-    }
+  const appart = await Appart.findById(appartid);
+  if (!appart) {
+    ctx.throw(404, "appartment not found");
   }
-);
+  try {
+    let err = await upload
+      .array("picture")(ctx, next)
+      .then((res) => res)
+      .catch((err) => err);
+    if (err) {
+      ctx.throw(400, err.message);
+    }
+    for (i = 0; i < ctx.files.length; i++) {
+      await Appart.findByIdAndUpdate(appartid, {
+        $push: {
+          picture: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
+        },
+      });
+    }
+    ctx.body = "ok";
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
 
 /**
  *  @swagger
