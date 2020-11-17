@@ -26,6 +26,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import DeleteContract from "../../components/Contract/DeleteContract";
 import ArchiveContract from "../../components/Contract/ArchiveContract";
 import { Prompt } from "react-router-dom";
+import ContractDoc from "../../components/Contract/ContractDoc";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -304,6 +305,9 @@ const Contract = () => {
                           </Fragment>
                         ) : (
                           <Fragment>
+                            {contract.file.length > 0 && (
+                              <ContractDoc data={contract._id} />
+                            )}
                             {contract.status !== "Archivé" && (
                               <Fragment>
                                 <IconButton>

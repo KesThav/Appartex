@@ -18,6 +18,7 @@ import {
 import { UserContext } from "../../middlewares/ContextAPI";
 import HistoryIcon from "@material-ui/icons/History";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   box: {
@@ -32,6 +33,7 @@ const RepairHistory = ({ data }) => {
   const classes = useStyles();
   const { authAxios } = useContext(UserContext);
   const [repairhistory, setRepairhistory] = useState("");
+  const [doc, setDoc] = useState("");
 
   const getRepairHistories = async (data) => {
     try {
@@ -42,8 +44,18 @@ const RepairHistory = ({ data }) => {
     }
   };
 
+  const getOneRepair = async (data) => {
+    try {
+      const res = await authAxios.get(`/repairs/${data}`);
+      setDoc(res.data.file);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     getRepairHistories(data);
+    getOneRepair(data);
   }, []);
 
   return (
@@ -82,6 +94,20 @@ const RepairHistory = ({ data }) => {
             </TableBody>
           </Table>
         </DialogContent>
+        {doc.length > 0 && (
+          <Fragment>
+            <DialogTitle>Les documents</DialogTitle>
+            <DialogContent>
+              {doc.map((doc) => (
+                <TableCell>
+                  <Link to={`//localhost:5000/${doc}`} target="_blank">
+                    {doc}
+                  </Link>
+                </TableCell>
+              ))}
+            </DialogContent>
+          </Fragment>
+        )}
         <Divider />
         <Box className={classes.box}>
           <Button

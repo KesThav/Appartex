@@ -9,6 +9,7 @@ const Appart = require("../models/appartment.model");
 const Building = require("../models/building.model");
 const multer = require("@koa/multer");
 const path = require("path");
+const fs = require("fs");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -521,6 +522,9 @@ router.put("/delete/file/:contractid", jwt, adminAccess, async (ctx) => {
   try {
     await Contract.findByIdAndUpdate(contractid, {
       $pull: { file: ctx.request.body.file },
+    });
+    await fs.unlink(`public/${ctx.request.body.file}`, (err) => {
+      if (err) return ctx.throw(400, err);
     });
     ctx.body = "ok";
   } catch (err) {

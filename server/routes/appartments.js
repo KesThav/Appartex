@@ -9,6 +9,7 @@ let ObjectId = require("mongodb").ObjectId;
 const appartValidation = require("../helpers/appartValidation");
 const multer = require("@koa/multer");
 const path = require("path");
+const fs = require("fs");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -507,6 +508,9 @@ router.put("/delete/file/:appartid", jwt, adminAccess, async (ctx) => {
   try {
     await Appart.findByIdAndUpdate(appartid, {
       $pull: { picture: ctx.request.body.picture },
+    });
+    await fs.unlink(`public/${ctx.request.body.picture}`, (err) => {
+      if (err) return ctx.throw(400, err);
     });
     ctx.body = "ok";
   } catch (err) {

@@ -4,11 +4,7 @@ import {
   DialogContent,
   DialogTitle,
   Button,
-  Table,
-  TableHead,
-  TableRow,
   TableCell,
-  TableBody,
   Box,
   makeStyles,
   Divider,
@@ -28,25 +24,15 @@ const useStyles = makeStyles({
   },
 });
 
-const BillHistory = ({ data }) => {
+const ContractDoc = ({ data }) => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const { authAxios } = useContext(UserContext);
-  const [billhistory, setBillhistory] = useState("");
   const [doc, setDoc] = useState("");
 
-  const getBillHistories = async (data) => {
+  const getOneContract = async (data) => {
     try {
-      const res = await authAxios.get(`/history/bills/${data}`);
-      setBillhistory(res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const getOneBill = async (data) => {
-    try {
-      const res = await authAxios.get(`/bills/${data}`);
+      const res = await authAxios.get(`/contracts/${data}`);
       setDoc(res.data.file);
     } catch (err) {
       console.log(err);
@@ -54,8 +40,7 @@ const BillHistory = ({ data }) => {
   };
 
   useEffect(() => {
-    getBillHistories(data);
-    getOneBill(data);
+    getOneContract(data);
   }, []);
 
   return (
@@ -71,34 +56,6 @@ const BillHistory = ({ data }) => {
       </Tooltip>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>Historique de la facture</DialogTitle>
-        <DialogContent>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Date</TableCell>
-                <TableCell>Statut</TableCell>
-                <TableCell>date de fin</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {billhistory &&
-                billhistory.map((bh) => (
-                  <TableRow key={bh._id}>
-                    <TableCell>
-                      {moment(bh.createdAt).format("YYYY-MM-DD")}
-                    </TableCell>
-                    <TableCell>{bh.status.name}</TableCell>
-                    <TableCell>
-                      {bh.endDate
-                        ? moment(bh.endDate).format("YYYY-MM-DD")
-                        : "-"}
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        </DialogContent>
         {doc.length > 0 && (
           <Fragment>
             <DialogTitle>Les documents</DialogTitle>
@@ -128,4 +85,4 @@ const BillHistory = ({ data }) => {
   );
 };
 
-export default BillHistory;
+export default ContractDoc;

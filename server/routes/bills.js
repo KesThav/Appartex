@@ -7,6 +7,7 @@ const billValidation = require("../helpers/billValidation");
 const { billSchema } = require("../helpers/validation");
 const Billstatus = require("../models/bill_status.model");
 let ObjectId = require("mongodb").ObjectId;
+const fs = require("fs");
 
 const multer = require("@koa/multer");
 const path = require("path");
@@ -455,6 +456,9 @@ router.put("/delete/file/:billid", jwt, adminAccess, async (ctx) => {
   try {
     await Bill.findByIdAndUpdate(billid, {
       $pull: { file: ctx.request.body.file },
+    });
+    await fs.unlink(`public/${ctx.request.body.file}`, (err) => {
+      if (err) return ctx.throw(400, err);
     });
     ctx.body = "ok";
   } catch (err) {

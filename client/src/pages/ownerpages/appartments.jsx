@@ -360,8 +360,9 @@ const Appart = () => {
                             </Fragment>
                           ) : (
                             <Fragment>
-                              {appart.picture.length}
-                              <ShowDocument appart={appart._id} />
+                              {appart.picture.length > 0 &&
+                                appart.picture.length +
+                                <ShowDocument appart={appart._id} />}
                               <IconButton>
                                 <EditIcon
                                   onClick={() => {
@@ -444,8 +445,10 @@ const Appart = () => {
                             </Fragment>
                           ) : (
                             <Fragment>
-                              {appart.picture.length}
-                              <ShowDocument appart={appart._id} />
+                              {appart.picture.length > 0 && (
+                                <ShowDocument appart={appart._id} />
+                              )}
+
                               <IconButton>
                                 <EditIcon
                                   onClick={() => {

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { UserContext } from "../../middlewares/ContextAPI";
 import MyTable from "../../components/myTable";
 import Badges from "../../components/badges";
@@ -14,18 +14,9 @@ import BusinessIcon from "@material-ui/icons/Business";
 import HomeIcon from "@material-ui/icons/Home";
 import FolderIcon from "@material-ui/icons/Folder";
 import PeopleIcon from "@material-ui/icons/People";
-import HistoryIcon from "@material-ui/icons/History";
 import TimelineIcon from "@material-ui/icons/Timeline";
-import {
-  Scheduler,
-  WeekView,
-  Appointments,
-  TodayButton,
-  DateNavigator,
-  Toolbar,
-  ViewSwitcher,
-} from "@devexpress/dx-react-scheduler-material-ui";
-import { ViewState } from "@devexpress/dx-react-scheduler";
+import Schedule from "../../components/Schedule";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,6 +47,11 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 75,
     color: "#fff",
   },
+  link: {
+    textDecoration: "none",
+    color: [theme.palette.primary.dark],
+    paddingLeft: 10,
+  },
 }));
 
 const AdminDashboard = (props) => {
@@ -75,6 +71,7 @@ const AdminDashboard = (props) => {
     repair,
     getTasks,
     task,
+    authAxios,
   } = useContext(UserContext);
 
   useEffect(() => {
@@ -178,16 +175,20 @@ const AdminDashboard = (props) => {
           {!task ? (
             <CircularProgress />
           ) : (
-            <Paper>
-              <Scheduler data={task}>
-                <ViewState />
-                <WeekView startDayHour={9} endDayHour={19} />
-                <Toolbar />
-                <DateNavigator />
-                <TodayButton />
-                <ViewSwitcher />
-                <Appointments />
-              </Scheduler>
+            <Paper style={{ paddingTop: 15 }}>
+              <Typography
+                variant="h6"
+                color="primary"
+                style={{ paddingLeft: 10 }}
+              >
+                Les tâches prévues
+              </Typography>
+              <Schedule data={task} />
+              <Typography variant="overline">
+                <Link to={"/tasks"} className={classes.link}>
+                  Voir tous les tâches
+                </Link>
+              </Typography>
             </Paper>
           )}
         </Grid>

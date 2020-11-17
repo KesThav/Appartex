@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
 import Carousel from "react-material-ui-carousel";
-import HistoryIcon from "@material-ui/icons/History";
+import FolderIcon from "@material-ui/icons/Folder";
 
 const useStyles = makeStyles({
   box: {
@@ -47,7 +47,7 @@ const ShowAppartDocuments = ({ appart }) => {
             setOpen(!open);
           }}
         >
-          <HistoryIcon />
+          <FolderIcon />
         </IconButton>
       </Tooltip>
 

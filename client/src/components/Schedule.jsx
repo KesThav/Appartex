@@ -34,7 +34,7 @@ const Schedule = ({ data }) => {
   return (
     <Fragment>
       {data &&
-        data.map((data, i) => (
+        data.slice(0, 4).map((data, i) => (
           <Box className={classes.mainBox} key={i}>
             <Box className={classes.box}>
               <Typography variant="h4" className={classes.typo}>
