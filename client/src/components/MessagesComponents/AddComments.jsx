@@ -22,7 +22,6 @@ const useStyles = makeStyles({
 const AddComments = ({ id, setError, setSuccess }) => {
   const classes = useStyles();
   const [content, setContent] = useState();
-  const [open, setOpen] = useState(false);
   const { authAxios, setCount } = useContext(UserContext);
 
   const submit = async (e) => {

@@ -24,7 +24,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ContractDoc = ({ data }) => {
+const ContractDoc = ({ data, setError }) => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const { authAxios } = useContext(UserContext);
@@ -35,7 +35,7 @@ const ContractDoc = ({ data }) => {
       const res = await authAxios.get(`/contracts/${data}`);
       setDoc(res.data.file);
     } catch (err) {
-      console.log(err);
+      setError(err.response.data);
     }
   };
 

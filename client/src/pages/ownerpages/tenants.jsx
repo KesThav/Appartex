@@ -76,6 +76,7 @@ const Tenant = () => {
     authAxios,
     count,
     setCount,
+    loading,
   } = useContext(UserContext);
   const [data, setData] = useState("");
   const [err, setError] = useState("");
@@ -217,7 +218,8 @@ const Tenant = () => {
             </TableHead>
             <TableBody>
               <Fragment>
-                {tenant.length > 0 ? (
+                {!loading ? (
+                  tenant.length > 0 &&
                   dynamicSearch().map((tenant) => (
                     <TableRow key={tenant._id}>
                       <TableCell component="th" scope="row">

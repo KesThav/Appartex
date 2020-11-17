@@ -31,7 +31,7 @@ const useStyles = makeStyles({
 const EditMessageStatus = ({ id, statustype }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const { authAxios, setLoading, setCount } = useContext(UserContext);
+  const { authAxios, setCount } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [status, setStatus] = useState(statustype);

@@ -42,11 +42,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ExpandMessage = ({ id }) => {
+const ExpandMessage = ({ id, setError }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const { authAxios, loading } = useContext(UserContext);
+  const { authAxios } = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
 
   const getOneMessage = async (id) => {
@@ -54,7 +54,7 @@ const ExpandMessage = ({ id }) => {
       const res = await authAxios.get(`/messages/${id}`);
       setMessage(res.data);
     } catch (err) {
-      console.log(err);
+      setError(err.response.data);
     }
   };
 

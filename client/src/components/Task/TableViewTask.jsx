@@ -202,7 +202,10 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
                     <TableCell>{task.title}</TableCell>
                     <TableCell>{task.content}</TableCell>
                     <TableCell>
-                      <ExpandMessage id={task.messageid._id} />
+                      <ExpandMessage
+                        id={task.messageid._id}
+                        setError={setError}
+                      />
                     </TableCell>
                     <TableCell>{task.status.name}</TableCell>
                     <TableCell>
@@ -213,7 +216,7 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
                     </TableCell>
                     <TableCell>
                       <Fragment>
-                        <TaskHistory data={task._id} />
+                        <TaskHistory data={task._id} setError={setError} />
                         <EditTask
                           setSuccess={setSuccess}
                           setError={setError}

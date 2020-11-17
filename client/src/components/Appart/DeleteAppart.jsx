@@ -37,7 +37,7 @@ const DeleteAppart = ({ data, setSuccess, setError }) => {
       setSuccess("Appartement supprimé avec succès");
       setCount((count) => count + 1);
     } catch (err) {
-      setError(err);
+      setError(err.response.data);
       setLoading(false);
     }
   };

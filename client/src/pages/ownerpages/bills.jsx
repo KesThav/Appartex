@@ -257,7 +257,6 @@ const Bills = () => {
               } else {
                 setUpbound(999999);
               }
-              console.log(e.target.value);
             }}
             className={classes.form}
           >
@@ -427,7 +426,7 @@ const Bills = () => {
                           </Fragment>
                         ) : (
                           <Fragment>
-                            <BillHistory data={bill._id} />
+                            <BillHistory data={bill._id} setError={setError} />
                             <IconButton>
                               <EditIcon
                                 onClick={() => {

@@ -85,7 +85,7 @@ const Login = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { loading, setLoading } = useContext(UserContext);
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -107,7 +107,6 @@ const Login = (props) => {
         const decodedToken = jwtDecode(localStorage.authtoken);
         setUser(decodedToken);
         setLoading(false);
-        console.log(user);
         props.history.push(`/tenant`);
       } catch (err) {
         setLoading(false);

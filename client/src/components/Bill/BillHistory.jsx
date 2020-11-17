@@ -28,7 +28,7 @@ const useStyles = makeStyles({
   },
 });
 
-const BillHistory = ({ data }) => {
+const BillHistory = ({ data, setError }) => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const { authAxios } = useContext(UserContext);
@@ -40,7 +40,7 @@ const BillHistory = ({ data }) => {
       const res = await authAxios.get(`/history/bills/${data}`);
       setBillhistory(res.data);
     } catch (err) {
-      console.log(err);
+      setError(err.response.data);
     }
   };
 
@@ -49,7 +49,7 @@ const BillHistory = ({ data }) => {
       const res = await authAxios.get(`/bills/${data}`);
       setDoc(res.data.file);
     } catch (err) {
-      console.log(err);
+      setError(err.response.data);
     }
   };
 

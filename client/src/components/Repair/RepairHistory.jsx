@@ -28,7 +28,7 @@ const useStyles = makeStyles({
   },
 });
 
-const RepairHistory = ({ data }) => {
+const RepairHistory = ({ data, setError }) => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const { authAxios } = useContext(UserContext);
@@ -40,7 +40,7 @@ const RepairHistory = ({ data }) => {
       const res = await authAxios.get(`/history/repairs/${data}`);
       setRepairhistory(res.data);
     } catch (err) {
-      console.log(err);
+      setError(err.response.data);
     }
   };
 
@@ -49,7 +49,7 @@ const RepairHistory = ({ data }) => {
       const res = await authAxios.get(`/repairs/${data}`);
       setDoc(res.data.file);
     } catch (err) {
-      console.log(err);
+      setError(err.response.data);
     }
   };
 

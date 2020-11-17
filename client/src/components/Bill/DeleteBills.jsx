@@ -35,7 +35,7 @@ const DeleteBill = ({ data, setSuccess, setError }) => {
       setSuccess("Facture supprimé avec succès");
       setCount((count) => count + 1);
     } catch (err) {
-      setError(err);
+      setError(err.response.data);
       setLoading(false);
     }
   };

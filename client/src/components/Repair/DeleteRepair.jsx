@@ -35,7 +35,7 @@ const DeleteRepair = ({ data, setSuccess, setError }) => {
       setSuccess("Réparation supprimé avec succès");
       setCount((count) => count + 1);
     } catch (err) {
-      setError(err);
+      setError(err.response.data);
       setLoading(false);
     }
   };

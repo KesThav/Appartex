@@ -60,12 +60,16 @@ const Drawer = (props) => {
   const [success, setSuccess] = useState("");
 
   const getMessages = async () => {
-    const received = await authAxios.get("/messages/received");
-    setReceivedMessage(received.data);
-    const send = await authAxios.get("/messages/sended");
-    setSendedMessage(send.data);
-    const archived = await authAxios.get("/messages/archived");
-    setArchivedMessage(archived.data);
+    try {
+      const received = await authAxios.get("/messages/received");
+      setReceivedMessage(received.data);
+      const send = await authAxios.get("/messages/sended");
+      setSendedMessage(send.data);
+      const archived = await authAxios.get("/messages/archived");
+      setArchivedMessage(archived.data);
+    } catch (err) {
+      setError(err.response.data);
+    }
   };
 
   useEffect(() => {

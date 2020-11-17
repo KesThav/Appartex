@@ -37,7 +37,7 @@ const DeleteContract = ({ data, setSuccess, setError }) => {
       setCount((count) => count + 1);
       setSuccess("Contrat supprimé avec succès");
     } catch (err) {
-      setError(err);
+      setError(err.response.data);
       setLoading(false);
     }
   };

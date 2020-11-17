@@ -1,27 +1,12 @@
 import React, { useState, useContext, Fragment, useEffect } from "react";
-import {
-  makeStyles,
-  Tooltip,
-  IconButton,
-  Dialog,
-  DialogContent,
-} from "@material-ui/core";
+import { Tooltip, IconButton, Dialog, DialogContent } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
 import Carousel from "react-material-ui-carousel";
 import FolderIcon from "@material-ui/icons/Folder";
 
-const useStyles = makeStyles({
-  box: {
-    display: "flex",
-    flexDirection: "row-reverse",
-    marginRight: 10,
-  },
-});
-
-const ShowAppartDocuments = ({ appart }) => {
+const ShowAppartDocuments = ({ appart, setError }) => {
   const [open, setOpen] = useState(false);
-  const classes = useStyles();
-  const { authAxios, setCount, count } = useContext(UserContext);
+  const { authAxios, setCount } = useContext(UserContext);
   const [picture, setPicture] = useState([]);
 
   const getOneAppart = async (appart) => {
@@ -30,8 +15,7 @@ const ShowAppartDocuments = ({ appart }) => {
       setPicture(res.data.picture);
       setCount((count) => count + 1);
     } catch (err) {
-      /* setError(err); */
-      console.log(err);
+      setError(err.response.data);
     }
   };
 

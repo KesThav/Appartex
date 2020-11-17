@@ -306,7 +306,10 @@ const Contract = () => {
                         ) : (
                           <Fragment>
                             {contract.file.length > 0 && (
-                              <ContractDoc data={contract._id} />
+                              <ContractDoc
+                                data={contract._id}
+                                setError={setError}
+                              />
                             )}
                             {contract.status !== "Archivé" && (
                               <Fragment>

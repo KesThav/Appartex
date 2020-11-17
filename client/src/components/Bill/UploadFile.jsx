@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
 
 const UploadFile = ({ setSuccess, setError }) => {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
   const {
     bill,
     setLoading,

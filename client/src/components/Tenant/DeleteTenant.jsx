@@ -38,7 +38,7 @@ const DeleteTenant = ({ data, setSuccess, setError }) => {
       setCount((count) => count + 1);
     } catch (err) {
       setOpen(!open);
-      setError(err);
+      setError(err.response.data);
       setLoading(false);
     }
   };

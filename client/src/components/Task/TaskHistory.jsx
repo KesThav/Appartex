@@ -13,7 +13,7 @@ import {
   makeStyles,
   Divider,
   Tooltip,
-  IconButton
+  IconButton,
 } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
 import HistoryIcon from "@material-ui/icons/History";
@@ -27,7 +27,7 @@ const useStyles = makeStyles({
   },
 });
 
-const TaskHistory = ({ data }) => {
+const TaskHistory = ({ data, setError }) => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const { authAxios } = useContext(UserContext);
@@ -37,9 +37,8 @@ const TaskHistory = ({ data }) => {
     try {
       const res = await authAxios.get(`/history/tasks/${data}`);
       setTaskHistory(res.data);
-      console.log(res.data);
     } catch (err) {
-      console.log(err);
+      setError(err.response.data);
     }
   };
 

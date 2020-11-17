@@ -32,11 +32,7 @@ const useStyle = makeStyles({
   },
 });
 
-const EditTaks = ({
-  appointmentData,
-  setSuccess,
-  setError,
-}) => {
+const EditTaks = ({ appointmentData, setSuccess, setError }) => {
   const [open, setOpen] = useState(false);
   const classes = useStyle();
   const [statusid, setStatusid] = useState(appointmentData.status._id);
@@ -50,7 +46,7 @@ const EditTaks = ({
   const [title, setTitle] = useState(appointmentData.title);
   const [content, setContent] = useState(appointmentData.content);
   const [taskid, setTaskid] = useState(appointmentData._id);
-  const { authAxios, status, setCount, setLoading } = useContext(UserContext);
+  const { authAxios, status, setCount } = useContext(UserContext);
 
   const submit = async (e) => {
     e.preventDefault();

@@ -71,7 +71,6 @@ const AdminDashboard = (props) => {
     repair,
     getTasks,
     task,
-    authAxios,
   } = useContext(UserContext);
 
   useEffect(() => {

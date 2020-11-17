@@ -51,11 +51,9 @@ const AddAppart = () => {
   const [city, setCity] = useState(null);
   const [size, setSize] = useState("");
   const [build, setBuild] = useState(null);
-  const [picture, setPicture] = useState("");
 
   const submit = async (e) => {
     e.preventDefault();
-    console.log(picture);
     setError("");
     setSuccess("");
     if ((!adress || !postalcode || !city) && !build) {
@@ -70,8 +68,6 @@ const AddAppart = () => {
       setError("La taille ne peut pas être vide");
     } else {
       setLoading(true);
-      const fd = new FormData();
-      fd.append("picture", picture);
       const data = {
         adress,
         postalcode,

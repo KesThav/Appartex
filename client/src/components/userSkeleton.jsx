@@ -110,7 +110,7 @@ const UserSkeleton = (props) => {
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      console.log(err);
+      setError(err.response.data);
     }
   };
 
@@ -124,7 +124,7 @@ const UserSkeleton = (props) => {
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      console.log(err);
+      setError(err.response.data);
     }
   };
 
@@ -138,7 +138,7 @@ const UserSkeleton = (props) => {
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      console.log(err);
+      setError(err.response.data);
     }
   };
 
@@ -151,7 +151,7 @@ const UserSkeleton = (props) => {
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      console.log(err);
+      setError(err.response.data);
     }
   };
 

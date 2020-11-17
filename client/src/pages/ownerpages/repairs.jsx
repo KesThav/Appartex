@@ -322,7 +322,10 @@ const Repair = () => {
                           </Fragment>
                         ) : (
                           <Fragment>
-                            <RepairHistory data={repair._id} />
+                            <RepairHistory
+                              data={repair._id}
+                              setError={setError}
+                            />
                             <IconButton>
                               <EditIcon
                                 onClick={() => {
