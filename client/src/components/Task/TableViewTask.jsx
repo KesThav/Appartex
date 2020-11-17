@@ -12,6 +12,9 @@ import {
   TextField,
   Paper,
   MenuItem,
+  FormControlLabel,
+  FormControl,
+  Checkbox,
 } from "@material-ui/core";
 
 import moment from "moment";
@@ -68,10 +71,16 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
   const { loading, status } = useContext(UserContext);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
+  const [activeFilter, setActiveFilter] = useState([]);
 
   const dynamicSearch = () => {
     if (task)
       return task
+        .filter((data) =>
+          activeFilter.length == 0
+            ? activeFilter
+            : !activeFilter.includes(data.status._id)
+        )
         .filter((data) => data.status.name.includes(filter))
         .filter(
           (name) =>
@@ -84,6 +93,17 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
             name.content.toLowerCase().includes(search.toLowerCase()) ||
             name.title.toLowerCase().includes(search.toLowerCase())
         );
+  };
+
+  const handleChange = (filter) => {
+    if (activeFilter.includes(filter)) {
+      const filterIndex = activeFilter.indexOf(filter);
+      const newFilter = [...activeFilter];
+      newFilter.splice(filterIndex, 1);
+      setActiveFilter(newFilter);
+    } else {
+      setActiveFilter((oldFilter) => [...oldFilter, filter]);
+    }
   };
 
   return (
@@ -128,6 +148,26 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
               ),
             }}
           />
+          <FormControl
+            component="fieldset"
+            className={classes.formControl}
+            style={{ display: "flex", flexDirection: "row", padding: 5 }}
+          >
+            {status &&
+              status.map((data, i) => (
+                <FormControlLabel
+                  key={i}
+                  control={
+                    <Checkbox
+                      checked={activeFilter.includes(data._id)}
+                      name={data._id}
+                      onChange={() => handleChange(data._id)}
+                    />
+                  }
+                  label={data.name}
+                />
+              ))}
+          </FormControl>
         </Box>
         <TableContainer className={classes.table} component={Paper} square>
           <Table stickyHeader>

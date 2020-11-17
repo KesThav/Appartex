@@ -15,6 +15,9 @@ import {
   Typography,
   MenuItem,
   Chip,
+  FormControlLabel,
+  FormControl,
+  Checkbox,
 } from "@material-ui/core";
 import DeleteBills from "../../components/Bill/DeleteBills";
 import EditIcon from "@material-ui/icons/Edit";
@@ -116,6 +119,7 @@ const Bills = () => {
   const [filter, setFilter] = useState("");
   const [upbound, setUpbound] = useState(999999);
   const [lowbound, setLowbound] = useState(-999999);
+  const [activeFilter, setActiveFilter] = useState([]);
 
   const classes = useStyles();
   useEffect(() => {
@@ -158,6 +162,11 @@ const Bills = () => {
   const dynamicSearch = () => {
     if (bill) {
       return bill
+        .filter((data) =>
+          activeFilter.length == 0
+            ? activeFilter
+            : !activeFilter.includes(data.status._id)
+        )
         .filter(
           (data) => moment(data.endDate).diff(moment(), "days") > lowbound
         )
@@ -184,6 +193,16 @@ const Bills = () => {
             name.reason.toLowerCase().includes(search.toLowerCase()) ||
             name.status.name.toLowerCase().includes(search.toLowerCase())
         );
+    }
+  };
+  const handleChange = (filter) => {
+    if (activeFilter.includes(filter)) {
+      const filterIndex = activeFilter.indexOf(filter);
+      const newFilter = [...activeFilter];
+      newFilter.splice(filterIndex, 1);
+      setActiveFilter(newFilter);
+    } else {
+      setActiveFilter((oldFilter) => [...oldFilter, filter]);
     }
   };
   return (
@@ -248,7 +267,6 @@ const Bills = () => {
               </MenuItem>
             ))}
           </TextField>
-
           <TextField
             variant="outlined"
             id="search"
@@ -267,7 +285,26 @@ const Bills = () => {
               ),
             }}
           />
-
+          <FormControl
+            component="fieldset"
+            className={classes.formControl}
+            style={{ display: "flex", flexDirection: "row", padding: 5 }}
+          >
+            {status &&
+              status.map((data, i) => (
+                <FormControlLabel
+                  key={i}
+                  control={
+                    <Checkbox
+                      checked={activeFilter.includes(data._id)}
+                      name={data._id}
+                      onChange={() => handleChange(data._id)}
+                    />
+                  }
+                  label={data.name}
+                />
+              ))}
+          </FormControl>
           <Paper className={classes.paper} square>
             <Box className={classes.Box4}>
               <Typography variant="h4">

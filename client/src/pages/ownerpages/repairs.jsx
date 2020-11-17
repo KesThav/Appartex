@@ -14,7 +14,9 @@ import {
   Paper,
   MenuItem,
   Typography,
-  Divider,
+  FormControlLabel,
+  FormControl,
+  Checkbox,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import moment from "moment";
@@ -87,6 +89,7 @@ const Repair = () => {
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
+  const [activeFilter, setActiveFilter] = useState([]);
 
   const classes = useStyles();
   useEffect(() => {
@@ -117,9 +120,25 @@ const Repair = () => {
     }
   };
 
+  const handleChange = (filter) => {
+    if (activeFilter.includes(filter)) {
+      const filterIndex = activeFilter.indexOf(filter);
+      const newFilter = [...activeFilter];
+      newFilter.splice(filterIndex, 1);
+      setActiveFilter(newFilter);
+    } else {
+      setActiveFilter((oldFilter) => [...oldFilter, filter]);
+    }
+  };
+
   const dynamicSearch = () => {
     if (repair) {
       return repair
+        .filter((data) =>
+          activeFilter.length == 0
+            ? activeFilter
+            : !activeFilter.includes(data.status._id)
+        )
         .filter((data) => data.status._id.includes(filter))
         .filter(
           (name) =>
@@ -144,7 +163,7 @@ const Repair = () => {
         when={editing}
         message="You avez des changements non enregitrés, est-ce sûr de vouloir quitter la page ?"
       />
-      <Typography variant="h3">Les Reparations</Typography>
+      <Typography variant="h3">Les Réparations</Typography>
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}
@@ -188,6 +207,26 @@ const Repair = () => {
               ),
             }}
           />
+          <FormControl
+            component="fieldset"
+            className={classes.formControl}
+            style={{ display: "flex", flexDirection: "row", padding: 5 }}
+          >
+            {status &&
+              status.map((data, i) => (
+                <FormControlLabel
+                  key={i}
+                  control={
+                    <Checkbox
+                      checked={activeFilter.includes(data._id)}
+                      name={data._id}
+                      onChange={() => handleChange(data._id)}
+                    />
+                  }
+                  label={data.name}
+                />
+              ))}
+          </FormControl>
         </Box>
         <TableContainer className={classes.table} component={Paper} square>
           <Table stickyHeader>

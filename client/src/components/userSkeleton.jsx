@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect, Fragment } from "react";
+import Schedule from "./Schedule";
 import { Link } from "react-router-dom";
 import {
   makeStyles,
@@ -95,6 +96,7 @@ const UserSkeleton = (props) => {
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [count, setCount] = useState(0);
+  const [task, setTasks] = useState("");
 
   const getTenants = async () => {
     setLoading(true);
@@ -133,6 +135,19 @@ const UserSkeleton = (props) => {
         `tenants/contracts/${props.match.params.tenantid}`
       );
       setContracts(res.data);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+    }
+  };
+
+  const getTasks = async () => {
+    try {
+      const res = await authAxios.get(
+        `tenants/tasks/${props.match.params.tenantid}`
+      );
+      setTasks(res.data);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -186,6 +201,7 @@ const UserSkeleton = (props) => {
     getBills();
     getContracts();
     getTenants();
+    getTasks();
   }, [count]);
 
   return (
@@ -402,6 +418,22 @@ const UserSkeleton = (props) => {
                       </TableBody>
                     </Table>
                   </TableContainer>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel2a-content"
+                  id="panel2a-header"
+                >
+                  <Typography className={classes.heading}>
+                    Les Tâches prévus
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails
+                  style={{ display: "flex", flexDirection: "column" }}
+                >
+                  <Schedule data={task} />
                 </AccordionDetails>
               </Accordion>
             </div>
