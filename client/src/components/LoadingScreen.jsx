@@ -18,7 +18,7 @@ const LoadingScreen = () => {
   return (
     <Fragment>
       <Backdrop component={"span"} className={classes.backdrop} open={true}>
-        <img src={loadingImg} />
+        <CircularProgress color="inherit" />
       </Backdrop>
     </Fragment>
   );

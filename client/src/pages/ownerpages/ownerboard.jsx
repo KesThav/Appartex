@@ -17,6 +17,7 @@ import PeopleIcon from "@material-ui/icons/People";
 import TimelineIcon from "@material-ui/icons/Timeline";
 import Schedule from "../../components/Schedule";
 import { Link } from "react-router-dom";
+import LoadingScreen from "../../components/LoadingScreen";
 
 const useStyles = makeStyles((theme) => ({
   root: {
