@@ -121,6 +121,7 @@ const AddMessage = () => {
             {" "}
             {user && user.role == "Admin" ? (
               <TextField
+                required
                 variant="outlined"
                 id="Tenant"
                 select
@@ -139,15 +140,17 @@ const AddMessage = () => {
               </TextField>
             ) : null}
             <TextField
+              required
               id="reference"
               type="text"
               variant="outlined"
               onChange={(e) => setTitle(e.target.value)}
               fullWidth
-              placeholder="Titre"
+              placeholder="Titre*"
               className={classes.form}
             />
             <TextField
+              required
               id="amount"
               variant="outlined"
               type="text"
@@ -156,7 +159,7 @@ const AddMessage = () => {
               rowsMax={4}
               onChange={(e) => setContent(e.target.value)}
               fullWidth
-              placeholder="Message"
+              placeholder="Message*"
               className={classes.form}
             />
             <Box className={classes.box2}>

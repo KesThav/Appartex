@@ -360,14 +360,12 @@ const Appart = () => {
                             </Fragment>
                           ) : (
                             <Fragment>
-                              {appart.picture.length > 0 &&
-                                appart.picture.length +
-                                (
-                                  <ShowDocument
-                                    appart={appart._id}
-                                    setError={setError}
-                                  />
-                                )}
+                              {appart.picture.length > 0 && (
+                                <ShowDocument
+                                  appart={appart._id}
+                                  setError={setError}
+                                />
+                              )}
                               <IconButton>
                                 <EditIcon
                                   onClick={() => {

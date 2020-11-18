@@ -96,30 +96,33 @@ const AddBuilding = () => {
           </div>
           <form onSubmit={submit}>
             <TextField
+              required
               id="adress"
               type="text"
               variant="outlined"
               onChange={(e) => setAdress(e.target.value)}
               fullWidth
-              placeholder="Adresse"
+              placeholder="Adresse*"
               className={classes.form}
             />
             <TextField
+              required
               id="codepostal"
               variant="outlined"
               type="number"
               onChange={(e) => setPostalcode(e.target.value)}
               fullWidth
-              placeholder="Code postal"
+              placeholder="Code postal*"
               className={classes.form}
             />
             <TextField
+              required
               id="city"
               type="text"
               variant="outlined"
               onChange={(e) => setCity(e.target.value)}
               fullWidth
-              placeholder="Ville"
+              placeholder="Ville*"
               className={classes.form}
             />
             <Box className={classes.box2}>

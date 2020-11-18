@@ -17,6 +17,7 @@ import {
   FormControlLabel,
   FormControl,
   Checkbox,
+  FormLabel,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import moment from "moment";
@@ -212,6 +213,7 @@ const Repair = () => {
             className={classes.formControl}
             style={{ display: "flex", flexDirection: "row", padding: 5 }}
           >
+            <FormLabel component="legend">Cochez pour exclure</FormLabel>
             {status &&
               status.map((data, i) => (
                 <FormControlLabel

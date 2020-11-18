@@ -116,6 +116,7 @@ const AddContract = () => {
           </div>
           <form onSubmit={submit}>
             <TextField
+              required
               variant="outlined"
               id="Tenant"
               select
@@ -135,6 +136,7 @@ const AddContract = () => {
                   ))}
             </TextField>
             <TextField
+              required
               variant="outlined"
               id="Appartment"
               select
@@ -164,21 +166,23 @@ const AddContract = () => {
                   ))}
             </TextField>
             <TextField
+              required
               id="rent"
               type="number"
               variant="outlined"
               onChange={(e) => setRent(e.target.value)}
               fullWidth
-              placeholder="Loyer"
+              placeholder="Loyer*"
               className={classes.form}
             />
             <TextField
+              required
               id="codepostal"
               variant="outlined"
               type="number"
               onChange={(e) => setCharge(e.target.value)}
               fullWidth
-              placeholder="Charge"
+              placeholder="Charge*"
               className={classes.form}
             />
 
@@ -188,7 +192,7 @@ const AddContract = () => {
               variant="outlined"
               onChange={(e) => setOther(e.target.value)}
               fullWidth
-              placeholder="Autre"
+              placeholder="Autres informations"
               className={classes.form}
             />
 

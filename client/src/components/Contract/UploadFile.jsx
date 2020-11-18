@@ -3,7 +3,7 @@ import { UserContext } from "../../middlewares/ContextAPI";
 import {
   Paper,
   makeStyles,
-  Card,
+  Typography,
   Button,
   TextField,
   MenuItem,
@@ -91,8 +91,12 @@ const UploadFile = ({ setSuccess, setError }) => {
   return (
     <Fragment>
       {loading && <LoadingScreen />}
+      <Typography variant="caption" color="secondary">
+        Les formats acceptés sont .jpg .jpeg .png .pdf .doc .docx .gif .svg
+      </Typography>
       <form onSubmit={submit}>
         <OutlinedInput
+          required
           component={"span"}
           variant="outlined"
           id="assets"
@@ -105,6 +109,7 @@ const UploadFile = ({ setSuccess, setError }) => {
           className={classes.form}
         />
         <TextField
+          required
           component={"span"}
           variant="outlined"
           id="contractid"
@@ -115,7 +120,7 @@ const UploadFile = ({ setSuccess, setError }) => {
             setContractid(e.target.value);
             getOneContract(e.target.value);
           }}
-          helperText="Selectionner un contrat"
+          helperText="Selectionner un contrat*"
           fullWidth
         >
           {contract &&

@@ -114,7 +114,13 @@ const AddAppart = () => {
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
         <DialogTitle>{"Créer un Appartment"}</DialogTitle>
+
         <DialogContent>
+          <Typography variant="caption">
+            Une appartement peut soit être créé en renseignant une adresse
+            (appartement solitaire) soit en choisissant un immeuble. Les deux ne
+            peuvent pas être renseignés en même temps !
+          </Typography>
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}
             {success && <Alert severity="success">{success}</Alert>}

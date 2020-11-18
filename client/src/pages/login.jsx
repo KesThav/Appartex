@@ -151,6 +151,7 @@ const Login = (props) => {
             <Box className={classes.box3}>
               <form onSubmit={submit}>
                 <TextField
+                  required
                   id="email"
                   type="email"
                   onChange={(e) => setEmail(e.target.value)}
@@ -162,10 +163,11 @@ const Login = (props) => {
                       </InputAdornment>
                     ),
                   }}
-                  placeholder="Email"
+                  placeholder="Email*"
                   className={classes.form}
                 />
                 <TextField
+                  required
                   id="password"
                   type="password"
                   onChange={(e) => setPassword(e.target.value)}
@@ -177,7 +179,7 @@ const Login = (props) => {
                       </InputAdornment>
                     ),
                   }}
-                  placeholder="Mot de passe"
+                  placeholder="Mot de passe*"
                   className={classes.form}
                 />
                 <Button

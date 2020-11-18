@@ -94,16 +94,18 @@ const EditTaks = ({ appointmentData, setSuccess, setError }) => {
         <DialogContent>
           <form onSubmit={submit}>
             <TextField
+              required
               id="messageid"
               type="string"
               variant="outlined"
               value={messageid}
               fullWidth
               disabled
-              placeholder="messageid"
+              placeholder="messageid*"
               className={classes.form}
             />
             <TextField
+              required
               id="title"
               variant="outlined"
               type="string"
@@ -112,21 +114,23 @@ const EditTaks = ({ appointmentData, setSuccess, setError }) => {
                 setTitle(e.target.value);
               }}
               fullWidth
-              placeholder="Titre"
+              placeholder="Titre*"
               className={classes.form}
             />
 
             <TextField
+              required
               id="content"
               type="text"
               variant="outlined"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               fullWidth
-              placeholder="Description"
+              placeholder="Description*"
               className={classes.form}
             />
             <TextField
+              required
               variant="outlined"
               id="Status"
               select
@@ -135,6 +139,7 @@ const EditTaks = ({ appointmentData, setSuccess, setError }) => {
               onChange={(e) => setStatusid(e.target.value)}
               fullWidth
               className={classes.form}
+              helperText="Sélectionnez un statut*"
             >
               {status &&
                 status.map((option) => (
@@ -144,6 +149,7 @@ const EditTaks = ({ appointmentData, setSuccess, setError }) => {
                 ))}
             </TextField>
             <TextField
+              required
               id="date du début"
               type="datetime-local"
               variant="outlined"
@@ -151,10 +157,11 @@ const EditTaks = ({ appointmentData, setSuccess, setError }) => {
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
               fullWidth
-              placeholder="Description"
+              placeholder="Date de début*"
               className={classes.form}
             />
             <TextField
+              required
               id="date de fin"
               type="datetime-local"
               variant="outlined"
@@ -164,7 +171,7 @@ const EditTaks = ({ appointmentData, setSuccess, setError }) => {
                 setEndDate(e.target.value);
               }}
               fullWidth
-              placeholder="Description"
+              placeholder="Date de fin*"
               className={classes.form}
             />
 

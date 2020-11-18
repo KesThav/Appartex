@@ -117,16 +117,18 @@ const AddTask = ({ id }) => {
           </div>
           <form onSubmit={submit}>
             <TextField
+              required
               id="messageid"
               type="string"
               variant="outlined"
               value={messageid}
               fullWidth
               disabled
-              placeholder="messageid"
+              placeholder="messageid*"
               className={classes.form}
             />
             <TextField
+              required
               id="title"
               variant="outlined"
               type="string"
@@ -135,21 +137,23 @@ const AddTask = ({ id }) => {
                 setTitle(e.target.value);
               }}
               fullWidth
-              placeholder="Titre"
+              placeholder="Titre*"
               className={classes.form}
             />
 
             <TextField
+              required
               id="content"
               type="text"
               variant="outlined"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               fullWidth
-              placeholder="Description"
+              placeholder="Description*"
               className={classes.form}
             />
             <TextField
+              required
               variant="outlined"
               id="Status"
               select
@@ -167,6 +171,7 @@ const AddTask = ({ id }) => {
                 ))}
             </TextField>
             <TextField
+              required
               id="date du début"
               type="datetime-local"
               variant="outlined"
@@ -174,10 +179,11 @@ const AddTask = ({ id }) => {
               defaultValue={moment().format("YYYY-MM-DDTHH:MM")}
               onChange={(e) => setStartDate(e.target.value)}
               fullWidth
-              placeholder="Description"
+              placeholder="Date de début"
               className={classes.form}
             />
             <TextField
+              required
               id="date de fin"
               type="datetime-local"
               variant="outlined"
@@ -187,7 +193,7 @@ const AddTask = ({ id }) => {
                 setEndDate(e.target.value);
               }}
               fullWidth
-              placeholder="Description"
+              placeholder="Date de fin"
               className={classes.form}
             />
 

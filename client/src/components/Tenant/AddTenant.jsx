@@ -119,6 +119,7 @@ const AddTenant = () => {
           </div>
           <form onSubmit={submit}>
             <TextField
+              required
               variant="outlined"
               id="name"
               type="text"
@@ -131,10 +132,11 @@ const AddTenant = () => {
                   </InputAdornment>
                 ),
               }}
-              placeholder="Prénom"
+              placeholder="Prénom*"
               className={classes.form}
             />
             <TextField
+              required
               variant="outlined"
               id="lastname"
               type="text"
@@ -147,10 +149,11 @@ const AddTenant = () => {
                   </InputAdornment>
                 ),
               }}
-              placeholder="Nom"
+              placeholder="Nom*"
               className={classes.form}
             />
             <TextField
+              required
               variant="outlined"
               id="email"
               type="email"
@@ -163,10 +166,11 @@ const AddTenant = () => {
                   </InputAdornment>
                 ),
               }}
-              placeholder="Email"
+              placeholder="Email*"
               className={classes.form}
             />
             <TextField
+              required
               variant="outlined"
               id="password"
               type="password"
@@ -179,10 +183,11 @@ const AddTenant = () => {
                   </InputAdornment>
                 ),
               }}
-              placeholder="Mot de passe"
+              placeholder="Mot de passe*"
               className={classes.form}
             />
             <TextField
+              required
               variant="outlined"
               id="confirm"
               type="password"
@@ -196,15 +201,16 @@ const AddTenant = () => {
                   </InputAdornment>
                 ),
               }}
-              placeholder="Confirmer le mot de passe"
+              placeholder="Confirmer le mot de passe*"
               className={classes.form}
             />
             <TextField
+              required
               variant="outlined"
               id="date"
               type="date"
               defaultValue={moment().format("YYYY-MM-DD")}
-              placeholder="Date de naissance"
+              placeholder="Date de naissance*"
               onChange={(e) => {
                 setDate(moment(e.target.value).format("YYYY-MM-DD"));
               }}
@@ -217,6 +223,7 @@ const AddTenant = () => {
                 ),
               }}
               fullWidth
+              helperText="Sélectionner la date de naissance"
             />
             <Box className={classes.box2}>
               <Button

@@ -108,6 +108,7 @@ const AddRepair = () => {
           </div>
           <form onSubmit={submit}>
             <TextField
+              required
               variant="outlined"
               id="Task"
               select
@@ -125,6 +126,7 @@ const AddRepair = () => {
                 ))}
             </TextField>
             <TextField
+              required
               variant="outlined"
               id="Status"
               select
@@ -142,22 +144,24 @@ const AddRepair = () => {
                 ))}
             </TextField>
             <TextField
+              required
               id="amount"
               variant="outlined"
               type="number"
               onChange={(e) => setAmount(e.target.value)}
               fullWidth
-              placeholder="Montant"
+              placeholder="Montant*"
               className={classes.form}
             />
 
             <TextField
+              required
               id="reason"
               type="text"
               variant="outlined"
               onChange={(e) => setReason(e.target.value)}
               fullWidth
-              placeholder="Raison"
+              placeholder="Raison*"
               className={classes.form}
             />
 

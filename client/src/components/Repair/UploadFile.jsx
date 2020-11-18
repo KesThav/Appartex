@@ -8,6 +8,7 @@ import {
   TextField,
   MenuItem,
   OutlinedInput,
+  Typography,
 } from "@material-ui/core";
 import LoadingScreen from "../LoadingScreen";
 import { Link } from "react-router-dom";
@@ -91,8 +92,12 @@ const UploadFile = ({ setSuccess, setError }) => {
   return (
     <Fragment>
       {loading && <LoadingScreen />}
+      <Typography variant="caption" color="secondary">
+        Les formats acceptés sont .jpg .jpeg .png .pdf .doc .docx .gif .svg
+      </Typography>
       <form onSubmit={submit}>
         <OutlinedInput
+          required
           component={"span"}
           variant="outlined"
           id="assets"
@@ -105,6 +110,7 @@ const UploadFile = ({ setSuccess, setError }) => {
           className={classes.form}
         />
         <TextField
+          required
           component={"span"}
           variant="outlined"
           id="repairid"
@@ -115,7 +121,7 @@ const UploadFile = ({ setSuccess, setError }) => {
             setRepairid(e.target.value);
             getOneRepair(e.target.value);
           }}
-          helperText="Selectionner une réparation"
+          helperText="Selectionner une réparation*"
           fullWidth
         >
           {repair &&

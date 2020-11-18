@@ -81,7 +81,7 @@ const AddStatus = () => {
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>{"Créer un Contrat"}</DialogTitle>
+        <DialogTitle>{"Créer un statut"}</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}
@@ -89,12 +89,13 @@ const AddStatus = () => {
           </div>
           <form onSubmit={submit}>
             <TextField
+              required
               id="name"
               variant="outlined"
               type="string"
               onChange={(e) => setName(e.target.value)}
               fullWidth
-              placeholder="Nom du statut"
+              placeholder="Nom du statut*"
               className={classes.form}
             />
 

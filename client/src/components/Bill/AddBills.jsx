@@ -121,6 +121,7 @@ const AddBills = () => {
           </div>
           <form onSubmit={submit}>
             <TextField
+              required
               variant="outlined"
               id="Tenant"
               select
@@ -138,6 +139,7 @@ const AddBills = () => {
                 ))}
             </TextField>
             <TextField
+              required
               variant="outlined"
               id="Status"
               select
@@ -155,36 +157,40 @@ const AddBills = () => {
                 ))}
             </TextField>
             <TextField
+              required
               id="reference"
               type="string"
               variant="outlined"
               onChange={(e) => setReference(e.target.value)}
               fullWidth
-              placeholder="Réference"
+              placeholder="Référence*"
               className={classes.form}
             />
             <TextField
+              required
               id="amount"
               variant="outlined"
               type="number"
               onChange={(e) => setAmount(e.target.value)}
               fullWidth
-              placeholder="Montant"
+              placeholder="Montant*"
               className={classes.form}
             />
 
             <TextField
+              required
               id="reason"
               type="text"
               variant="outlined"
               onChange={(e) => setReason(e.target.value)}
               fullWidth
-              placeholder="Raison"
+              placeholder="Raison*"
               className={classes.form}
             />
 
             <TextField
-              id="reason"
+              required
+              id="date"
               type="date"
               variant="outlined"
               defaultValue={moment().format("YYYY-MM-DD")}
@@ -192,7 +198,8 @@ const AddBills = () => {
                 setEndDate(moment(e.target.value).format("YYYY-MM-DD"))
               }
               fullWidth
-              placeholder="Raison"
+              placeholder="Date"
+              helperText="Sélectionnez une date*"
               className={classes.form}
             />
 

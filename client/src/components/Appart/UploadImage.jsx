@@ -3,7 +3,7 @@ import { UserContext } from "../../middlewares/ContextAPI";
 import {
   Paper,
   makeStyles,
-  Card,
+  Typography,
   Button,
   TextField,
   MenuItem,
@@ -92,8 +92,12 @@ const UploadImage = ({ setSuccess, setError }) => {
   return (
     <Fragment>
       {loading && <LoadingScreen />}
+      <Typography variant="caption" color="secondary">
+        Les formats acceptés sont .jpg .jpeg .png .gif .svg
+      </Typography>
       <form onSubmit={submit}>
         <OutlinedInput
+          required
           component={"span"}
           variant="outlined"
           id="assets"
@@ -106,6 +110,7 @@ const UploadImage = ({ setSuccess, setError }) => {
           className={classes.form}
         />
         <TextField
+          required
           component={"span"}
           variant="outlined"
           id="appartid"
@@ -116,7 +121,7 @@ const UploadImage = ({ setSuccess, setError }) => {
             setAppartid(e.target.value);
             getOneAppart(e.target.value);
           }}
-          helperText="Selectionner un appartement"
+          helperText="Selectionner un appartement*"
           fullWidth
         >
           {appart &&

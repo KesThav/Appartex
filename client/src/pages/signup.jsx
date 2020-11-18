@@ -157,6 +157,7 @@ const Signup = (props) => {
             <Box className={classes.box3}>
               <form onSubmit={submit}>
                 <TextField
+                  required
                   id="name"
                   type="text"
                   onChange={(e) => setName(e.target.value)}
@@ -168,10 +169,11 @@ const Signup = (props) => {
                       </InputAdornment>
                     ),
                   }}
-                  placeholder="Prénom"
+                  placeholder="Prénom*"
                   className={classes.form}
                 />
                 <TextField
+                  required
                   id="lastname"
                   type="text"
                   onChange={(e) => setLastname(e.target.value)}
@@ -183,10 +185,11 @@ const Signup = (props) => {
                       </InputAdornment>
                     ),
                   }}
-                  placeholder="Nom"
+                  placeholder="Nom*"
                   className={classes.form}
                 />
                 <TextField
+                  required
                   id="email"
                   type="email"
                   onChange={(e) => setEmail(e.target.value)}
@@ -198,10 +201,11 @@ const Signup = (props) => {
                       </InputAdornment>
                     ),
                   }}
-                  placeholder="Email"
+                  placeholder="Email*"
                   className={classes.form}
                 />
                 <TextField
+                  required
                   id="password"
                   type="password"
                   onChange={(e) => setPassword(e.target.value)}
@@ -213,10 +217,11 @@ const Signup = (props) => {
                       </InputAdornment>
                     ),
                   }}
-                  placeholder="Mot de passe"
+                  placeholder="Mot de passe*"
                   className={classes.form}
                 />
                 <TextField
+                  required
                   id="confirm"
                   type="password"
                   onChange={(e) => setConfirm(e.target.value)}
@@ -229,7 +234,7 @@ const Signup = (props) => {
                       </InputAdornment>
                     ),
                   }}
-                  placeholder="Confirmer le mot de passe"
+                  placeholder="Confirmer le mot de passe*"
                   className={classes.form}
                 />
                 <Button

@@ -18,6 +18,7 @@ import {
   FormControlLabel,
   FormControl,
   Checkbox,
+  FormLabel,
 } from "@material-ui/core";
 import DeleteBills from "../../components/Bill/DeleteBills";
 import EditIcon from "@material-ui/icons/Edit";
@@ -284,26 +285,7 @@ const Bills = () => {
               ),
             }}
           />
-          <FormControl
-            component="fieldset"
-            className={classes.formControl}
-            style={{ display: "flex", flexDirection: "row", padding: 5 }}
-          >
-            {status &&
-              status.map((data, i) => (
-                <FormControlLabel
-                  key={i}
-                  control={
-                    <Checkbox
-                      checked={activeFilter.includes(data._id)}
-                      name={data._id}
-                      onChange={() => handleChange(data._id)}
-                    />
-                  }
-                  label={data.name}
-                />
-              ))}
-          </FormControl>
+
           <Paper className={classes.paper} square>
             <Box className={classes.Box4}>
               <Typography variant="h4">
@@ -319,7 +301,29 @@ const Bills = () => {
             </Box>
           </Paper>
         </Box>
-
+        <Box>
+          <FormControl
+            component="fieldset"
+            className={classes.formControl}
+            style={{ display: "flex", flexDirection: "row", padding: 5 }}
+          >
+            <FormLabel component="legend">Cochez pour exclure</FormLabel>
+            {status &&
+              status.map((data, i) => (
+                <FormControlLabel
+                  key={i}
+                  control={
+                    <Checkbox
+                      checked={activeFilter.includes(data._id)}
+                      name={data._id}
+                      onChange={() => handleChange(data._id)}
+                    />
+                  }
+                  label={data.name}
+                />
+              ))}
+          </FormControl>
+        </Box>
         <TableContainer className={classes.table} component={Paper} square>
           <Table stickyHeader>
             <TableHead style={{ background: "#fff" }}>

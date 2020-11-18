@@ -163,7 +163,8 @@ const Login = (props) => {
                       </InputAdornment>
                     ),
                   }}
-                  placeholder="Email"
+                  required
+                  placeholder="Email*"
                   className={classes.form}
                 />
                 <TextField
@@ -178,7 +179,9 @@ const Login = (props) => {
                       </InputAdornment>
                     ),
                   }}
-                  placeholder="Mot de passe"
+                  required
+                  InputLabelProps={{ required: true }}
+                  placeholder="Mot de passe*"
                   className={classes.form}
                 />
                 <Button

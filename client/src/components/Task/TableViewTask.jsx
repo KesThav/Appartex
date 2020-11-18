@@ -15,6 +15,7 @@ import {
   FormControlLabel,
   FormControl,
   Checkbox,
+  FormLabel,
 } from "@material-ui/core";
 
 import moment from "moment";
@@ -153,6 +154,7 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
             className={classes.formControl}
             style={{ display: "flex", flexDirection: "row", padding: 5 }}
           >
+            <FormLabel component="legend">Cochez pour exclure</FormLabel>
             {status &&
               status.map((data, i) => (
                 <FormControlLabel
@@ -169,6 +171,7 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
               ))}
           </FormControl>
         </Box>
+
         <TableContainer className={classes.table} component={Paper} square>
           <Table stickyHeader>
             <TableHead>
