@@ -30,7 +30,7 @@ const limits = {
 const upload = multer({
   storage,
   fileFilter: function (req, file, cb) {
-    if (!file.originalname.match(/\.(jpg|jpeg|png|pdf|doc|docx)$/)) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|pdf|doc|docx|gif|svg)$/)) {
       return cb(new Error("Format not allow!"));
     }
     cb(null, true);

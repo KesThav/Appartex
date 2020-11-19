@@ -196,6 +196,12 @@ const Layout = (props) => {
       {[
         {
           id: 0,
+          name: "Vue Général",
+          icon: <DashboardIcon />,
+          link: "/tenant",
+        },
+        {
+          id: 1,
           name: "Mes messages",
           icon: <StorageIcon />,
           link: "/messages",

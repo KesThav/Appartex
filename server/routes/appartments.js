@@ -30,7 +30,7 @@ const limits = {
 const upload = multer({
   storage,
   fileFilter: function (req, file, cb) {
-    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif|svg)$/)) {
       return cb(new Error("Only image files are allowed!"));
     }
     cb(null, true);
