@@ -12,11 +12,49 @@ import {
   Typography,
   Fab,
   Tooltip,
+  Tabs,
+  Tab,
+  AppBar,
 } from "@material-ui/core";
 
 import Alert from "@material-ui/lab/Alert";
 
+const TabPanel = (props) => {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`scrollable-auto-tabpanel-${index}`}
+      aria-labelledby={`scrollable-auto-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+};
+
+const a11yProps = (index) => {
+  return {
+    id: `scrollable-auto-tab-${index}`,
+    "aria-controls": `scrollable-auto-tabpanel-${index}`,
+  };
+};
+
 const useStyles = makeStyles((theme) => ({
+  appbar: {
+    background: "#fff",
+  },
+  root: {
+    flexGrow: 1,
+    width: "100%",
+    backgroundColor: theme.palette.background.paper,
+  },
   table: {
     minWidth: 650,
     maxWidth: "100%",
@@ -51,6 +89,18 @@ const AddAppart = () => {
   const [city, setCity] = useState(null);
   const [size, setSize] = useState("");
   const [build, setBuild] = useState(null);
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    setError("");
+    setSuccess("");
+    setPostalcode("");
+    setCity("");
+    setAdress("");
+    setBuild("");
+    setSize("");
+  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -113,86 +163,139 @@ const AddAppart = () => {
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>{"Créer un Appartment"}</DialogTitle>
+        <DialogTitle>{"Créer un appartment"}</DialogTitle>
 
         <DialogContent>
-          <Typography variant="caption">
-            Une appartement peut soit être créé en renseignant une adresse
-            (appartement solitaire) soit en choisissant un immeuble. Les deux ne
-            peuvent pas être renseignés en même temps !
-          </Typography>
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}
             {success && <Alert severity="success">{success}</Alert>}
           </div>
-          <form onSubmit={submit}>
-            <TextField
-              id="adress"
-              type="text"
-              variant="outlined"
-              onChange={(e) => setAdress(e.target.value)}
-              fullWidth
-              placeholder="Adresse"
-              className={classes.form}
-            />
-            <TextField
-              id="codepostal"
-              variant="outlined"
-              type="number"
-              onChange={(e) => setPostalcode(e.target.value)}
-              fullWidth
-              placeholder="Code postal"
-              className={classes.form}
-            />
-            <TextField
-              id="city"
-              type="text"
-              variant="outlined"
-              onChange={(e) => setCity(e.target.value)}
-              fullWidth
-              placeholder="Ville"
-              className={classes.form}
-            />
-            <TextField
-              id="size"
-              type="number"
-              variant="outlined"
-              onChange={(e) => setSize(e.target.value)}
-              fullWidth
-              placeholder="taille"
-              className={classes.form}
-            />
-            <TextField
-              variant="outlined"
-              id="building"
-              select
-              value={build}
-              label="Immeuble"
-              onChange={(e) => setBuild(e.target.value)}
-              helperText="Selectionner un immeuble"
-              fullWidth
-            >
-              {building &&
-                building.map((option) => (
-                  <MenuItem key={option._id} value={option._id}>
-                    {option.adress} {option.postalcode} {option.city}
-                  </MenuItem>
-                ))}
-            </TextField>
-            <Box className={classes.box2}>
-              <Button
-                className={classes.button}
-                color="inherit"
-                onClick={() => setOpen(!open)}
+          <div className={classes.root}>
+            <AppBar position="static" className={classes.appbar}>
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                indicatorColor="primary"
+                textColor="primary"
+                variant="scrollable"
+                scrollButtons="auto"
+                aria-label="scrollable auto tabs example"
               >
-                Retour
-              </Button>
+                <Tab label="Appartement solitaire" {...a11yProps(0)} />
+                <Tab label="Appartement dans un immeuble" {...a11yProps(1)} />
+              </Tabs>
+            </AppBar>
+            <TabPanel value={value} index={0}>
+              <form onSubmit={submit}>
+                <TextField
+                  required
+                  id="adress"
+                  type="text"
+                  variant="outlined"
+                  onChange={(e) => setAdress(e.target.value)}
+                  fullWidth
+                  placeholder="Adresse*"
+                  className={classes.form}
+                />
+                <TextField
+                  required
+                  id="codepostal"
+                  variant="outlined"
+                  type="number"
+                  onChange={(e) => setPostalcode(e.target.value)}
+                  fullWidth
+                  placeholder="Code postal*"
+                  className={classes.form}
+                />
+                <TextField
+                  required
+                  id="city"
+                  type="text"
+                  variant="outlined"
+                  onChange={(e) => setCity(e.target.value)}
+                  fullWidth
+                  placeholder="Ville*"
+                  className={classes.form}
+                />
+                <TextField
+                  required
+                  id="size"
+                  type="number"
+                  variant="outlined"
+                  onChange={(e) => setSize(e.target.value)}
+                  fullWidth
+                  placeholder="taille*"
+                  className={classes.form}
+                />
+                <Box className={classes.box2}>
+                  <Button
+                    className={classes.button}
+                    color="inherit"
+                    onClick={() => setOpen(!open)}
+                  >
+                    Retour
+                  </Button>
 
-              <Button type="submit" color="primary" className={classes.button}>
-                Valider
-              </Button>
-            </Box>
-          </form>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    className={classes.button}
+                  >
+                    Valider
+                  </Button>
+                </Box>
+              </form>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <form onSubmit={submit}>
+                <TextField
+                  required
+                  id="size"
+                  type="number"
+                  variant="outlined"
+                  onChange={(e) => setSize(e.target.value)}
+                  fullWidth
+                  placeholder="taille*"
+                  className={classes.form}
+                />
+                <TextField
+                  required
+                  variant="outlined"
+                  id="building"
+                  select
+                  value={build}
+                  label="Immeuble"
+                  onChange={(e) => setBuild(e.target.value)}
+                  helperText="Selectionner un immeuble"
+                  fullWidth
+                >
+                  {building &&
+                    building.map((option) => (
+                      <MenuItem key={option._id} value={option._id}>
+                        {option.adress} {option.postalcode} {option.city}
+                      </MenuItem>
+                    ))}
+                </TextField>
+                <Box className={classes.box2}>
+                  <Button
+                    className={classes.button}
+                    color="inherit"
+                    onClick={() => setOpen(!open)}
+                  >
+                    Retour
+                  </Button>
+
+                  <Button
+                    type="submit"
+                    color="primary"
+                    className={classes.button}
+                  >
+                    Valider
+                  </Button>
+                </Box>
+              </form>
+            </TabPanel>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

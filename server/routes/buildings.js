@@ -7,6 +7,7 @@ const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
 let ObjectId = require("mongodb").ObjectId;
 const { buildingSchema } = require("../helpers/validation");
+const Tenant = require("../models/tenant.model");
 
 /**
  * @swagger
@@ -110,6 +111,36 @@ router.get("/:buildingid", jwt, adminAccess, async (ctx) => {
     } else {
       ctx.body = onebuilding;
     }
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+router.get("/tenants/:buildingid", jwt, adminAccess, async (ctx) => {
+  let tenantlist = [];
+  let tenants = [];
+  let validate = ObjectId.isValid(ctx.params.buildingid);
+  if (!validate) return ctx.throw(404, "building not found");
+  let buildingid = new ObjectId(ctx.params.buildingid);
+  try {
+    const appartofbuilding = await Appart.find({
+      building: buildingid,
+    }).select({ _id: 1 });
+
+    for (i = 0; i < appartofbuilding.length; i++) {
+      tenants.push(
+        await Contract.findOne({
+          appartmentid: appartofbuilding[i]._id,
+        }).select({ tenant: 1, _id: 0 })
+      );
+    }
+    tenants = tenants.filter((tenants) => tenants !== null);
+    for (i = 0; i < tenants.length; i++) {
+      if (tenants[i].tenant) {
+        tenantlist.push(await Tenant.findOne({ _id: tenants[i].tenant }));
+      }
+    }
+    ctx.body = tenantlist;
   } catch (err) {
     ctx.throw(500, err);
   }

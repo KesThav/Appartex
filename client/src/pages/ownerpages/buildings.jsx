@@ -164,7 +164,6 @@ const Building = (props) => {
               <TableRow>
                 <Fragment>
                   {[
-                    "Immeuble n°",
                     "Adresse",
                     "Code postale",
                     "Ville",
@@ -186,9 +185,6 @@ const Building = (props) => {
                 building.length > 0 &&
                 dynamicSearch().map((building) => (
                   <TableRow key={building._id}>
-                    <TableCell component="th" scope="row">
-                      {building._id}
-                    </TableCell>
                     <TableCell>
                       {editing && data === building._id ? (
                         <TextField

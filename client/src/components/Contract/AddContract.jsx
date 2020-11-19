@@ -156,12 +156,16 @@ const AddContract = () => {
                           " " +
                           option.postalcode +
                           " " +
-                          option.city
+                          option.city +
+                          ", " +
+                          option.size
                         : option.building.adress +
                           " " +
                           option.building.postalcode +
                           " " +
-                          option.building.city}
+                          option.building.city +
+                          ", " +
+                          option.size}
                     </MenuItem>
                   ))}
             </TextField>

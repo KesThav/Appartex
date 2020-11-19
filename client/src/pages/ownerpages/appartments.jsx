@@ -245,8 +245,7 @@ const Appart = () => {
             <TableHead>
               <TableRow>
                 {[
-                  "Immeuble ?",
-                  "Appartment n°",
+                  "Appartient à un immeuble ?",
                   "Adresse",
                   "Code postale",
                   "Ville",
@@ -272,7 +271,6 @@ const Appart = () => {
                         <TableCell component="th" scope="row">
                           Non
                         </TableCell>
-                        <TableCell>{appart._id}</TableCell>
                         <TableCell>
                           {editing && data === appart._id ? (
                             <TextField
@@ -392,10 +390,7 @@ const Appart = () => {
                       </TableRow>
                     ) : (
                       <TableRow key={appart._id}>
-                        <TableCell component="th" scope="row">
-                          {appart.building._id}
-                        </TableCell>
-                        <TableCell>{appart._id}</TableCell>
+                        <TableCell>Oui</TableCell>
                         <TableCell>{appart.building.adress}</TableCell>
                         <TableCell>{appart.building.postalcode}</TableCell>
                         <TableCell>{appart.building.city}</TableCell>

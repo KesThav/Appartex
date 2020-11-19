@@ -199,7 +199,6 @@ const Tenant = () => {
               <TableRow>
                 <Fragment>
                   {[
-                    "Locataire n°",
                     "Nom",
                     "Prénom",
                     "Email",
@@ -222,9 +221,6 @@ const Tenant = () => {
                   tenant.length > 0 &&
                   dynamicSearch().map((tenant) => (
                     <TableRow key={tenant._id}>
-                      <TableCell component="th" scope="row">
-                        {tenant._id}
-                      </TableCell>
                       <TableCell>
                         {editing && data === tenant._id ? (
                           <TextField
