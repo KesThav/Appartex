@@ -23,11 +23,7 @@ export default {
     fontFamily: "'Lato', sans-serif",
     textTransform: "none",
   },
-  props: {
-    MuiButton: {
-      disableElevation: true,
-    },
-  },
+  props: {},
   /*   shape: {
     borderRadius: 0,
   }, */
@@ -62,6 +58,13 @@ export default {
         body: {
           backgroundColor: "#f4f6f8",
         },
+      },
+    },
+    MuiButton: {
+      disableElevation: true,
+      containedPrimary: {
+        background:
+          "linear-gradient(90deg, rgba(154,0,255,1) 4%, rgba(11,71,129,1) 100%)",
       },
     },
   },

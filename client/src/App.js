@@ -1,6 +1,6 @@
-import React, { useState, useMemo, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Landing from "./pages/landing";
+import Landing from "./pages/newlanding";
 import Layout from "./Layout/Layout";
 import Ownerboard from "./pages/ownerpages/ownerboard";
 import "./App.css";
@@ -14,9 +14,6 @@ import NotFound from "./pages/notFound";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import themeSheet from "./util/theme";
-import Login from "./pages/login";
-import Signup from "./pages/signup";
-import Tenantlogin from "./pages/tenantlogin";
 import Axios from "axios";
 import Tenant from "./pages/ownerpages/tenants";
 import Building from "./pages/ownerpages/buildings";
@@ -30,7 +27,6 @@ import Tasks from "./pages/ownerpages/tasks";
 import Repair from "./pages/ownerpages/repairs";
 import AuthRoute from "./middlewares/AuthRoutes";
 import Document from "./pages/ownerpages/documents";
-import ShowAppartDocuments from "./components/Appart/AppartDocumentSkeleton";
 
 const theme = createMuiTheme(themeSheet);
 
@@ -199,9 +195,6 @@ const App = () => {
           <Router>
             <Switch>
               <AuthRoute exact path="/" component={Landing} />
-              <AuthRoute exact path="/login" component={Login} />
-              <AuthRoute exact path="/signup" component={Signup} />
-              <AuthRoute exact path="/tenant/login" component={Tenantlogin} />
               <Route>
                 <Layout>
                   <Switch>
