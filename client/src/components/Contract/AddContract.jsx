@@ -45,6 +45,7 @@ const AddContract = () => {
     getTenants,
     setCount,
     count,
+    loading,
   } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -73,6 +74,7 @@ const AddContract = () => {
         await authAxios.post("/contracts/add", data);
         setLoading(false);
         setSuccess("Contrat créé avec succès");
+        setAppartid("");
         setCount((count) => count + 1);
       } catch (err) {
         setLoading(false);
@@ -108,13 +110,26 @@ const AddContract = () => {
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
-        <DialogTitle>{"Créer un Contrat"}</DialogTitle>
+        <DialogTitle>{"Créer un contrat"}</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}
             {success && <Alert severity="success">{success}</Alert>}
+            {tenant && tenant.length == 0 && (
+              <Alert severity="info">
+                Aucun locataire trouvé. Merci de créer un ou des locataires
+                avant de créer un contrat
+              </Alert>
+            )}
+            <br />
+            {appart && appart.length == 0 && (
+              <Alert severity="info">
+                Aucun appartement trouvé. Merci de créer un ou des appartements
+                avant de créer un contrat
+              </Alert>
+            )}
           </div>
-          <form onSubmit={submit}>
+          <form onSubmit={submit} autoComplete="off">
             <TextField
               required
               variant="outlined"
@@ -202,6 +217,7 @@ const AddContract = () => {
 
             <Box className={classes.box2}>
               <Button
+                disabled={loading}
                 className={classes.button}
                 color="inherit"
                 onClick={() => setOpen(!open)}
@@ -209,7 +225,12 @@ const AddContract = () => {
                 Retour
               </Button>
 
-              <Button type="submit" color="primary" className={classes.button}>
+              <Button
+                type="submit"
+                color="primary"
+                className={classes.button}
+                disabled={loading}
+              >
                 Valider
               </Button>
             </Box>

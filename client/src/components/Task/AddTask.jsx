@@ -10,13 +10,10 @@ import {
   TextField,
   MenuItem,
   Tooltip,
-  IconButton,
 } from "@material-ui/core";
 import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import LoadingScreen from "../LoadingScreen";
-import AddOutlinedIcon from "@material-ui/icons/AddOutlined";
-
 const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 650,
@@ -44,6 +41,7 @@ const AddTask = ({ id }) => {
     getStatus,
     loading,
     count,
+    setCount,
   } = useContext(UserContext);
   const [err, setError] = useState("");
   const [statusid, setStatusid] = useState("");
@@ -58,13 +56,16 @@ const AddTask = ({ id }) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (!startDate || !endDate || !messageid || !title || !content) {
+    if (!startDate || !endDate || !title || !content) {
       setError("Complétez tous les champs");
     } else if (startDate > endDate) {
       setError(
         "La date de fin ne peut pas être plus petit que la date de début"
       );
     } else {
+      {
+        !messageid && setLoading(true);
+      }
       const data = {
         startDate,
         endDate,
@@ -77,6 +78,7 @@ const AddTask = ({ id }) => {
         const res = await authAxios.post("/tasks/add", data);
         setLoading(false);
         setSuccess("Tâche créé avec succès");
+        setCount((count) => count + 1);
       } catch (err) {
         setLoading(false);
         setError(err.response.data);
@@ -101,12 +103,7 @@ const AddTask = ({ id }) => {
 
   return (
     <Fragment>
-      <Tooltip title="Créer une tâche">
-        <IconButton onClick={() => OnOpen()}>
-          <AddOutlinedIcon />
-        </IconButton>
-      </Tooltip>
-
+      <Button onClick={() => OnOpen()}>Créer une tâche</Button>
       {loading && <LoadingScreen />}
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
         <DialogTitle>Créer une tâche</DialogTitle>
@@ -115,18 +112,20 @@ const AddTask = ({ id }) => {
             {err && <Alert severity="error">{err}</Alert>}
             {success && <Alert severity="success">{success}</Alert>}
           </div>
-          <form onSubmit={submit}>
-            <TextField
-              required
-              id="messageid"
-              type="string"
-              variant="outlined"
-              value={messageid}
-              fullWidth
-              disabled
-              placeholder="messageid*"
-              className={classes.form}
-            />
+          <form onSubmit={submit} autoComplete="off">
+            {id && (
+              <TextField
+                required
+                id="messageid"
+                type="string"
+                variant="outlined"
+                value={messageid}
+                fullWidth
+                disabled
+                placeholder="messageid*"
+                className={classes.form}
+              />
+            )}
             <TextField
               required
               id="title"
@@ -199,6 +198,7 @@ const AddTask = ({ id }) => {
 
             <Box className={classes.box2}>
               <Button
+                disabled={loading}
                 className={classes.button}
                 color="inherit"
                 onClick={() => {
@@ -209,7 +209,12 @@ const AddTask = ({ id }) => {
                 Retour
               </Button>
 
-              <Button type="submit" color="primary" className={classes.button}>
+              <Button
+                type="submit"
+                color="primary"
+                className={classes.button}
+                disabled={loading}
+              >
                 Valider
               </Button>
             </Box>

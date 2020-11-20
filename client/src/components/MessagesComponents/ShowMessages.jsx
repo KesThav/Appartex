@@ -171,9 +171,13 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
                             className={classes.avatar}
                           ></Avatar>
                         }
-                        title={
-                          data.createdBy.name + " " + data.createdBy.lastname
-                        }
+                        title={`${
+                          data.createdBy
+                            ? data.createdBy.name +
+                              " " +
+                              data.createdBy.lastname
+                            : "Compte supprimé"
+                        }`}
                         subheader={moment(data.createdAt).fromNow()}
                       />
                       <CardContent>

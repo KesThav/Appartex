@@ -212,7 +212,7 @@ const Bills = () => {
         when={editing}
         message="You avez des changements non enregitrés, est-ce sûr de vouloir quitter la page ?"
       />
-      <Typography variant="h3">Les Factures</Typography>
+      <Typography variant="h3">Les factures</Typography>
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}

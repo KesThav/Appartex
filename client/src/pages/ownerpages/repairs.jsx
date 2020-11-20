@@ -29,6 +29,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteRepair from "../../components/Repair/DeleteRepair";
 import RepairHistory from "../../components/Repair/RepairHistory";
+import AddRepair from "../../components/Repair/AddRepair";
 import { Prompt } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -164,7 +165,7 @@ const Repair = () => {
         when={editing}
         message="You avez des changements non enregitrés, est-ce sûr de vouloir quitter la page ?"
       />
-      <Typography variant="h3">Les Réparations</Typography>
+      <Typography variant="h3">Les réparations</Typography>
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}
@@ -362,7 +363,10 @@ const Repair = () => {
           </Table>
         </TableContainer>
       </Paper>
-      <div style={{ marginTop: "13px" }}></div>
+
+      <div style={{ marginTop: "13px" }}>
+        <AddRepair />
+      </div>
     </div>
   );
 };

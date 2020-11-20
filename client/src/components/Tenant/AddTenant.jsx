@@ -39,7 +39,9 @@ const useStyles = makeStyles((theme) => ({
 const AddTenant = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const { setLoading, authAxios, getTenants } = useContext(UserContext);
+  const { setLoading, authAxios, getTenants, loading } = useContext(
+    UserContext
+  );
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [name, setName] = useState("");
@@ -117,7 +119,7 @@ const AddTenant = () => {
             {err && <Alert severity="error">{err}</Alert>}
             {success && <Alert severity="success">{success}</Alert>}
           </div>
-          <form onSubmit={submit}>
+          <form onSubmit={submit} autoComplete="off">
             <TextField
               required
               variant="outlined"
@@ -227,6 +229,7 @@ const AddTenant = () => {
             />
             <Box className={classes.box2}>
               <Button
+                disabled={loading}
                 className={classes.button}
                 color="inherit"
                 onClick={() => setOpen(!open)}
@@ -234,7 +237,12 @@ const AddTenant = () => {
                 Retour
               </Button>
 
-              <Button type="submit" color="primary" className={classes.button}>
+              <Button
+                type="submit"
+                color="primary"
+                className={classes.button}
+                disabled={loading}
+              >
                 Valider
               </Button>
             </Box>

@@ -94,7 +94,7 @@ const AddBuilding = () => {
             {success && <Alert severity="success">{success}</Alert>}
             {loading && <CircularProgress />}
           </div>
-          <form onSubmit={submit}>
+          <form onSubmit={submit} autoComplete="off">
             <TextField
               required
               id="adress"
@@ -127,6 +127,7 @@ const AddBuilding = () => {
             />
             <Box className={classes.box2}>
               <Button
+                disabled={loading}
                 className={classes.button}
                 color="inherit"
                 onClick={() => setOpen(!open)}
@@ -134,7 +135,12 @@ const AddBuilding = () => {
                 Retour
               </Button>
 
-              <Button type="submit" color="primary" className={classes.button}>
+              <Button
+                type="submit"
+                color="primary"
+                disabled={loading}
+                className={classes.button}
+              >
                 Valider
               </Button>
             </Box>

@@ -46,7 +46,7 @@ const AddComments = ({ id, setError, setSuccess }) => {
   };
   return (
     <Fragment>
-      <form onSubmit={submit} className={classes.form}>
+      <form onSubmit={submit} className={classes.form} autoComplete="off">
         <Avatar className={classes.avatar} />
         <TextField
           id="amount"

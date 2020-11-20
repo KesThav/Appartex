@@ -36,7 +36,9 @@ const EditTaks = ({ appointmentData, setSuccess, setError }) => {
   const [open, setOpen] = useState(false);
   const classes = useStyle();
   const [statusid, setStatusid] = useState(appointmentData.status._id);
-  const [messageid, setMessageid] = useState(appointmentData.messageid._id);
+  const [messageid, setMessageid] = useState(
+    appointmentData.messageid ? appointmentData.messageid._id : ""
+  );
   const [startDate, setStartDate] = useState(
     moment(appointmentData.startDate).format("YYYY-MM-DDTHH:MM")
   );
@@ -52,7 +54,7 @@ const EditTaks = ({ appointmentData, setSuccess, setError }) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (!startDate || !endDate || !messageid || !title || !content) {
+    if (!startDate || !endDate || !title || !content) {
       setError("Complétez tous les champs");
     } else if (startDate > endDate) {
       setError(
@@ -62,7 +64,6 @@ const EditTaks = ({ appointmentData, setSuccess, setError }) => {
       const data = {
         startDate,
         endDate,
-        messageid,
         title,
         content,
         status: statusid,
@@ -92,18 +93,7 @@ const EditTaks = ({ appointmentData, setSuccess, setError }) => {
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
         <DialogTitle>Editer une tâche</DialogTitle>
         <DialogContent>
-          <form onSubmit={submit}>
-            <TextField
-              required
-              id="messageid"
-              type="string"
-              variant="outlined"
-              value={messageid}
-              fullWidth
-              disabled
-              placeholder="messageid*"
-              className={classes.form}
-            />
+          <form onSubmit={submit} autoComplete="off">
             <TextField
               required
               id="title"

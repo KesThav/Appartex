@@ -31,7 +31,7 @@ const useStyles = makeStyles({
 const BillHistory = ({ data, setError }) => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
-  const { authAxios } = useContext(UserContext);
+  const { authAxios, count } = useContext(UserContext);
   const [billhistory, setBillhistory] = useState("");
   const [doc, setDoc] = useState("");
 
@@ -54,23 +54,31 @@ const BillHistory = ({ data, setError }) => {
   };
 
   useEffect(() => {
-    getBillHistories(data);
-    getOneBill(data);
-  }, []);
+    if (open == true) {
+      getBillHistories(data);
+      getOneBill(data);
+    }
+  }, [open]);
 
   return (
     <Fragment>
       <Tooltip title="Détails">
         <IconButton
           onClick={() => {
-            setOpen(!open);
+            setOpen(true);
           }}
         >
           <HistoryIcon />
         </IconButton>
       </Tooltip>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => {
+          setOpen(false);
+        }}
+        disableBackdropClick
+      >
         <DialogTitle>Historique de la facture</DialogTitle>
         <DialogContent>
           <Table>

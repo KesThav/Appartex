@@ -96,7 +96,7 @@ const AddRepair = () => {
   return (
     <div>
       <Button color="primary" variant="contained" onClick={OnOpen}>
-        Créer une réparation
+        Enregistrer une facture de réparation
       </Button>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
@@ -106,7 +106,7 @@ const AddRepair = () => {
             {err && <Alert severity="error">{err}</Alert>}
             {success && <Alert severity="success">{success}</Alert>}
           </div>
-          <form onSubmit={submit}>
+          <form onSubmit={submit} autoComplete="off">
             <TextField
               required
               variant="outlined"
@@ -121,7 +121,7 @@ const AddRepair = () => {
               {task &&
                 task.map((option) => (
                   <MenuItem key={option._id} value={option._id}>
-                    {option._id}
+                    {option.title} - {option.content}
                   </MenuItem>
                 ))}
             </TextField>

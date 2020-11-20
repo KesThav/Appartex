@@ -54,9 +54,11 @@ const RepairHistory = ({ data, setError }) => {
   };
 
   useEffect(() => {
-    getRepairHistories(data);
-    getOneRepair(data);
-  }, []);
+    if (open) {
+      getRepairHistories(data);
+      getOneRepair(data);
+    }
+  }, [open]);
 
   return (
     <Fragment>

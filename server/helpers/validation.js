@@ -67,7 +67,7 @@ const taskSchema = Joi.object({
   startDate: Joi.date().required(),
   endDate: Joi.date().required(),
   status: Joi.objectId().required(),
-  messageid: Joi.objectId().required(),
+  messageid: Joi.objectId(),
 });
 
 const repairSchema = Joi.object({

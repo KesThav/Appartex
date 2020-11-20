@@ -34,28 +34,32 @@ const Schedule = ({ data }) => {
   return (
     <Fragment>
       {data &&
-        data.slice(0, 4).map((data, i) => (
-          <Box className={classes.mainBox} key={i}>
-            <Box className={classes.box}>
-              <Typography variant="h4" className={classes.typo}>
-                {moment(data.startDate).format("DD")}
-              </Typography>
-              <Typography variant="overline" className={classes.typo}>
-                {moment(data.startDate).format("MMMM")}
-              </Typography>
-            </Box>
+        data
+          .slice(0, 4)
+          .filter((data) => moment(data.endDate) > moment())
+          .sort((a, b) => new Date(b.endDate) - new Date(a.endDate))
+          .map((data, i) => (
+            <Box className={classes.mainBox} key={i}>
+              <Box className={classes.box}>
+                <Typography variant="h4" className={classes.typo}>
+                  {moment(data.startDate).format("DD")}
+                </Typography>
+                <Typography variant="overline" className={classes.typo}>
+                  {moment(data.startDate).format("MMMM")}
+                </Typography>
+              </Box>
 
-            <Paper className={classes.style}>
-              <Typography variant="button">
-                {data.title} | {moment(data.startDate).format("HH:MM")}
-              </Typography>
-              <Typography variant="overline">
-                {data.content} - {moment(data.endDate).format("DD MMMM")} à{" "}
-                {moment(data.endDate).format("HH:MM")}
-              </Typography>
-            </Paper>
-          </Box>
-        ))}
+              <Paper className={classes.style}>
+                <Typography variant="button">
+                  {data.title} | {moment(data.startDate).format("HH:MM")}
+                </Typography>
+                <Typography variant="overline">
+                  {data.content} - {moment(data.endDate).format("DD MMMM")} à{" "}
+                  {moment(data.endDate).format("HH:MM")}
+                </Typography>
+              </Paper>
+            </Box>
+          ))}
     </Fragment>
   );
 };

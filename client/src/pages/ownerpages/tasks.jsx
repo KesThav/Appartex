@@ -8,7 +8,7 @@ import TabPanel from "@material-ui/lab/TabPanel";
 import CalendarViewTask from "../../components/Task/CalendarViewTask";
 import TableViewTask from "../../components/Task/TableViewTask";
 import LoadingScreen from "../../components/LoadingScreen";
-import AddRepair from "../../components/Repair/AddRepair";
+import AddTask from "../../components/Task/AddTask";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,8 +40,8 @@ const Tasks = () => {
 
   return (
     <Fragment>
+      <AddTask />
       <div style={{ marginBottom: "10px" }}>
-        <AddRepair />
         {loading && <LoadingScreen />}
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}

@@ -24,6 +24,7 @@ import LoadingScreen from "../../components/LoadingScreen";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteBuilding from "../../components/Building/DeleteBuilding";
+import BuildingTenants from "../../components/Building/BuildingTenants";
 import { Prompt } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -244,6 +245,10 @@ const Building = (props) => {
                         </Fragment>
                       ) : (
                         <Fragment>
+                          <BuildingTenants
+                            data={building._id}
+                            setError={setError}
+                          />
                           <IconButton>
                             <EditIcon
                               onClick={() => {

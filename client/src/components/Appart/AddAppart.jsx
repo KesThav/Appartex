@@ -81,6 +81,7 @@ const AddAppart = () => {
     getBuildings,
     count,
     setCount,
+    loading,
   } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -186,7 +187,7 @@ const AddAppart = () => {
               </Tabs>
             </AppBar>
             <TabPanel value={value} index={0}>
-              <form onSubmit={submit}>
+              <form onSubmit={submit} autoComplete="off">
                 <TextField
                   required
                   id="adress"
@@ -229,6 +230,7 @@ const AddAppart = () => {
                 />
                 <Box className={classes.box2}>
                   <Button
+                    disabled={loading}
                     className={classes.button}
                     color="inherit"
                     onClick={() => setOpen(!open)}
@@ -237,6 +239,7 @@ const AddAppart = () => {
                   </Button>
 
                   <Button
+                    disabled={loading}
                     type="submit"
                     color="primary"
                     className={classes.button}
@@ -247,6 +250,13 @@ const AddAppart = () => {
               </form>
             </TabPanel>
             <TabPanel value={value} index={1}>
+              {building && building.length == 0 && (
+                <Alert severity="info">
+                  Aucun immeuble trouvé. Merci de créer un ou des immeubles
+                  avant de créer un appartement
+                </Alert>
+              )}
+              <br />
               <form onSubmit={submit}>
                 <TextField
                   required
@@ -278,6 +288,7 @@ const AddAppart = () => {
                 </TextField>
                 <Box className={classes.box2}>
                   <Button
+                    disabled={loading}
                     className={classes.button}
                     color="inherit"
                     onClick={() => setOpen(!open)}
@@ -286,6 +297,7 @@ const AddAppart = () => {
                   </Button>
 
                   <Button
+                    disabled={loading}
                     type="submit"
                     color="primary"
                     className={classes.button}

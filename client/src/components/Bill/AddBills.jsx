@@ -44,6 +44,7 @@ const AddBills = () => {
     getStatus,
     status,
     count,
+    loading,
     setCount,
   } = useContext(UserContext);
   const [err, setError] = useState("");
@@ -119,7 +120,20 @@ const AddBills = () => {
             {err && <Alert severity="error">{err}</Alert>}
             {success && <Alert severity="success">{success}</Alert>}
           </div>
-          <form onSubmit={submit}>
+          {tenant && tenant.length == 0 && (
+            <Alert severity="info">
+              Aucun locataire trouvé. Merci de créer un ou des locataires avant
+              de créer une facture
+            </Alert>
+          )}
+          <br />
+          {status && status.length == 0 && (
+            <Alert severity="info">
+              Aucun état trouvé. Merci de créer un ou des états avant de créer
+              une facture
+            </Alert>
+          )}
+          <form onSubmit={submit} autoComplete="off">
             <TextField
               required
               variant="outlined"
@@ -205,6 +219,7 @@ const AddBills = () => {
 
             <Box className={classes.box2}>
               <Button
+                disabled={loading}
                 className={classes.button}
                 color="inherit"
                 onClick={() => setOpen(!open)}
@@ -212,7 +227,12 @@ const AddBills = () => {
                 Retour
               </Button>
 
-              <Button type="submit" color="primary" className={classes.button}>
+              <Button
+                type="submit"
+                color="primary"
+                className={classes.button}
+                disabled={loading}
+              >
                 Valider
               </Button>
             </Box>

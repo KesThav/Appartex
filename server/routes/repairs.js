@@ -306,10 +306,10 @@ router.put("/update/:repairid", jwt, adminAccess, async (ctx) => {
 router.delete("/delete/:repairid", jwt, adminAccess, async (ctx) => {
   let validate = ObjectId.isValid(ctx.params.repairid);
   if (!validate) return ctx.throw(404, "Repair not found");
-  const repairid = new ObjectId(ctx.params.repairid);
+  let repairid = new ObjectId(ctx.params.repairid);
 
   const repair = await Repair.findById(repairid);
-  if (!repair) {
+  if (repair.length == 0) {
     ctx.throw(400, "repair not found");
   }
   try {

@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 const AddStatus = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const { setCount, setLoading, authAxios } = useContext(UserContext);
+  const { setCount, setLoading, authAxios, loading } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [name, setName] = useState("");
@@ -87,7 +87,7 @@ const AddStatus = () => {
             {err && <Alert severity="error">{err}</Alert>}
             {success && <Alert severity="success">{success}</Alert>}
           </div>
-          <form onSubmit={submit}>
+          <form onSubmit={submit} autoComplete="off">
             <TextField
               required
               id="name"
@@ -104,11 +104,17 @@ const AddStatus = () => {
                 className={classes.button}
                 color="inherit"
                 onClick={() => setOpen(!open)}
+                disabled={loading}
               >
                 Retour
               </Button>
 
-              <Button type="submit" color="primary" className={classes.button}>
+              <Button
+                type="submit"
+                color="primary"
+                className={classes.button}
+                disabled={loading}
+              >
                 Valider
               </Button>
             </Box>

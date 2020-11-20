@@ -147,7 +147,7 @@ const Layout = (props) => {
         },
         {
           id: 6,
-          name: "Les Statuts",
+          name: "Les Etats",
           icon: <TrendingUpIcon />,
           link: "/status",
         },

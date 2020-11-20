@@ -43,8 +43,10 @@ const TaskHistory = ({ data, setError }) => {
   };
 
   useEffect(() => {
-    getTaskHistories(data);
-  }, []);
+    if (open) {
+      getTaskHistories(data);
+    }
+  }, [open]);
 
   return (
     <Fragment>
@@ -88,7 +90,9 @@ const TaskHistory = ({ data, setError }) => {
                     <TableCell>
                       {moment(ts.endDate).format("YYYY-MM-DD")}
                     </TableCell>
-                    <TableCell>{ts.status.name}</TableCell>
+                    <TableCell>
+                      {ts.status ? ts.status.name : "état supprimé"}
+                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>

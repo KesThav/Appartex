@@ -155,7 +155,7 @@ const Signup = (props) => {
             </Typography>{" "}
             {loading && <CircularProgress />}
             <Box className={classes.box3}>
-              <form onSubmit={submit}>
+              <form onSubmit={submit} autoComplete="off">
                 <TextField
                   required
                   id="name"

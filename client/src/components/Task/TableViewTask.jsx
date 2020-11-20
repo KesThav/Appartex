@@ -205,10 +205,14 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
                     <TableCell>{task.title}</TableCell>
                     <TableCell>{task.content}</TableCell>
                     <TableCell>
-                      <ExpandMessage
-                        id={task.messageid._id}
-                        setError={setError}
-                      />
+                      {task.messageid ? (
+                        <ExpandMessage
+                          id={task.messageid._id}
+                          setError={setError}
+                        />
+                      ) : (
+                        ""
+                      )}
                     </TableCell>
                     <TableCell>{task.status.name}</TableCell>
                     <TableCell>

@@ -150,7 +150,7 @@ const Login = (props) => {
             </Typography>{" "}
             {loading && <CircularProgress />}
             <Box className={classes.box3}>
-              <form onSubmit={submit}>
+              <form onSubmit={submit} autoComplete="off">
                 <TextField
                   id="email"
                   type="email"

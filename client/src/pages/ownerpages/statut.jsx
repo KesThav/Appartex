@@ -130,7 +130,7 @@ const Status = () => {
         when={editing}
         message="You avez des changements non enregitrés, est-ce sûr de vouloir quitter la page ?"
       />
-      <Typography variant="h3">Les statuts</Typography>
+      <Typography variant="h3">Les états</Typography>
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}

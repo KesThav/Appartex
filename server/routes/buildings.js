@@ -116,6 +116,37 @@ router.get("/:buildingid", jwt, adminAccess, async (ctx) => {
   }
 });
 
+/**
+ *  @swagger
+ * /buildings/tenants/{building_id}:
+ *  get :
+ *    summary : Return tenants from one building
+ *    operationId : gettenantsonebuilding
+ *    tags :
+ *        - building
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: building_id
+ *       in: path
+ *       required: true
+ *       description: the id of the building
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Tenant'
+ *      '403':
+ *         description: Forbidden
+ *      '404':
+ *         description : Building not found
+ *      '500':
+ *         description: Server error
+ *
+ */
+
 router.get("/tenants/:buildingid", jwt, adminAccess, async (ctx) => {
   let tenantlist = [];
   let tenants = [];
