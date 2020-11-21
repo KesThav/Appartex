@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     height: 70,
     width: 70,
-    backgroundColor: [theme.palette.primary.light],
+    background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
   },
   link: {
     textDecoration: "none",

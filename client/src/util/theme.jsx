@@ -63,8 +63,13 @@ export default {
     MuiButton: {
       disableElevation: true,
       containedPrimary: {
-        background:
-          "linear-gradient(90deg, rgba(154,0,255,1) 4%, rgba(11,71,129,1) 100%)",
+        background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
+      },
+      root: {
+        borderRadius: 0,
+      },
+      contained: {
+        boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
       },
     },
   },
