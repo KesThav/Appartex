@@ -98,8 +98,10 @@ const AddTask = ({ id }) => {
   };
 
   useEffect(() => {
-    getStatus();
-  }, [count]);
+    if (open == true) {
+      getStatus();
+    }
+  }, [count, open]);
 
   return (
     <Fragment>

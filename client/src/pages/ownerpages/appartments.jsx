@@ -16,6 +16,9 @@ import {
   Typography,
   IconButton,
   MenuItem,
+  FormControl,
+  FormControlLabel,
+  Checkbox,
 } from "@material-ui/core";
 import { Prompt } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
@@ -90,6 +93,7 @@ const Appart = () => {
   const [build, setBuild] = useState(null);
   const [status, setStatus] = useState("");
   const [filter, setFilter] = useState("");
+  const [check, setCheck] = useState(false);
 
   const classes = useStyles();
   useEffect(() => {
@@ -129,6 +133,7 @@ const Appart = () => {
   const dynamicSearch = () => {
     if (appart) {
       return appart
+        .filter((data) => (check == true ? !data.building : data))
         .filter((data) =>
           data.building
             ? data.building._id.includes(filter)
@@ -230,7 +235,7 @@ const Appart = () => {
             onChange={(e) => {
               setSearch(e.target.value);
             }}
-            style={{ width: "30%" }}
+            style={{ width: "30%", marginRight: "20px" }}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -239,7 +244,24 @@ const Appart = () => {
               ),
             }}
           />
+          <FormControl
+            component="fieldset"
+            className={classes.formControl}
+            style={{ display: "flex", flexDirection: "row", padding: 5 }}
+          >
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={check}
+                  name={check}
+                  onChange={() => setCheck(!check)}
+                />
+              }
+              label={"Afficher que les appartements solitaires"}
+            />
+          </FormControl>
         </Box>
+
         <TableContainer className={classes.table} component={Paper} square>
           <Table stickyHeader>
             <TableHead>
@@ -269,7 +291,7 @@ const Appart = () => {
                     return !appart.building ? (
                       <TableRow key={appart._id}>
                         <TableCell component="th" scope="row">
-                          Non
+                          {appart.building ? "Oui" : "Non"}
                         </TableCell>
                         <TableCell>
                           {editing && data === appart._id ? (
@@ -390,7 +412,7 @@ const Appart = () => {
                       </TableRow>
                     ) : (
                       <TableRow key={appart._id}>
-                        <TableCell>Oui</TableCell>
+                        <TableCell>{appart.building ? "Oui" : "Non"}</TableCell>
                         <TableCell>{appart.building.adress}</TableCell>
                         <TableCell>{appart.building.postalcode}</TableCell>
                         <TableCell>{appart.building.city}</TableCell>

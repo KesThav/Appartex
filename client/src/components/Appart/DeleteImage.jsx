@@ -4,8 +4,6 @@ import {
   DialogContent,
   DialogTitle,
   Button,
-  List,
-  ListItem,
   Box,
   makeStyles,
   Divider,

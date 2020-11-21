@@ -1,10 +1,17 @@
 import React, { useState, Fragment, useContext, useEffect } from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
+import {
+  makeStyles,
+  FormControl,
+  FormLabel,
+  FormControlLabel,
+  Checkbox,
+  Tabs,
+  Tab,
+  Typography,
+  Box,
+} from "@material-ui/core";
+
 import ShowMessages from "../../components/MessagesComponents/ShowMessages";
 import AddMessage from "../../components/MessagesComponents/AddMessage";
 import { UserContext } from "../../middlewares/ContextAPI";
@@ -58,6 +65,7 @@ const Drawer = (props) => {
   const [archivedmessage, setArchivedMessage] = useState("");
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [activeFilter, setActiveFilter] = useState([]);
 
   const getMessages = async () => {
     try {
@@ -72,6 +80,17 @@ const Drawer = (props) => {
     }
   };
 
+  const handleChangefilter = (filter) => {
+    if (activeFilter.includes(filter)) {
+      const filterIndex = activeFilter.indexOf(filter);
+      const newFilter = [...activeFilter];
+      newFilter.splice(filterIndex, 1);
+      setActiveFilter(newFilter);
+    } else {
+      setActiveFilter((oldFilter) => [...oldFilter, filter]);
+    }
+  };
+
   useEffect(() => {
     getMessages();
   }, [count]);
@@ -80,9 +99,36 @@ const Drawer = (props) => {
     setValue(newValue);
   };
 
+  const statut = [
+    { value: "envoyé", label: "envoyé" },
+    { value: "En cours", label: "En cours" },
+    { value: "Tâche créé", label: "Tâche créé" },
+    { value: "Terminé", label: "Terminé" },
+  ];
+
   return (
     <Fragment>
       <AddMessage getMessages={getMessages} />
+      <FormControl
+        component="fieldset"
+        className={classes.formControl}
+        style={{ display: "flex", flexDirection: "row", padding: 5 }}
+      >
+        <FormLabel component="legend">Cochez pour filtrer</FormLabel>
+        {statut.map((data, i) => (
+          <FormControlLabel
+            key={i}
+            control={
+              <Checkbox
+                checked={activeFilter.includes(data.value)}
+                name={data._id}
+                onChange={() => handleChangefilter(data.value)}
+              />
+            }
+            label={data.label}
+          />
+        ))}
+      </FormControl>
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}
@@ -110,7 +156,11 @@ const Drawer = (props) => {
                 getMessages={getMessages}
                 setError={setError}
                 setSuccess={setSuccess}
-                message={sendedmessage}
+                message={sendedmessage.filter((data) =>
+                  activeFilter.length == 0
+                    ? data
+                    : activeFilter.includes(data.status)
+                )}
               />
             )}
           </Fragment>
@@ -121,7 +171,11 @@ const Drawer = (props) => {
               getMessages={getMessages}
               setError={setError}
               setSuccess={setSuccess}
-              message={receivedmessage}
+              message={receivedmessage.filter((data) =>
+                activeFilter.length == 0
+                  ? data
+                  : activeFilter.includes(data.status)
+              )}
             />
           )}
         </TabPanel>
@@ -131,7 +185,11 @@ const Drawer = (props) => {
               getMessages={getMessages}
               setError={setError}
               setSuccess={setSuccess}
-              message={archivedmessage}
+              message={archivedmessage.filter((data) =>
+                activeFilter.length == 0
+                  ? data
+                  : activeFilter.includes(data.status)
+              )}
             />
           )}
         </TabPanel>

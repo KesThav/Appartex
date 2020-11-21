@@ -98,8 +98,10 @@ const AddMessage = () => {
   };
 
   useEffect(() => {
-    getTenants();
-  }, [count]);
+    if (open == true) {
+      getTenants();
+    }
+  }, [count, open]);
 
   return (
     <div>

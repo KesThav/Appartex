@@ -10,7 +10,6 @@ import {
   TextField,
   InputAdornment,
   Typography,
-  Fab,
   Tooltip,
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
@@ -39,9 +38,7 @@ const useStyles = makeStyles((theme) => ({
 const AddTenant = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const { setLoading, authAxios, getTenants, loading } = useContext(
-    UserContext
-  );
+  const { setLoading, authAxios, loading, setCount } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [name, setName] = useState("");
@@ -50,7 +47,6 @@ const AddTenant = () => {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [dateofbirth, setDate] = useState();
-  const [count, setCount] = useState(0);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -98,18 +94,12 @@ const AddTenant = () => {
     setDate();
   };
 
-  useEffect(() => {
-    getTenants();
-  }, [count]);
-
   return (
     <div>
       <Box className={classes.box}>
-        <Tooltip title="Créer un locataire">
-          <Fab color="primary" onClick={OnOpen}>
-            <Typography variant="h5">+</Typography>
-          </Fab>
-        </Tooltip>
+        <Button color="primary" variant="contained" onClick={() => OnOpen()}>
+          Ajouter
+        </Button>
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>

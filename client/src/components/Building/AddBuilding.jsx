@@ -8,12 +8,9 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
-  Fab,
-  Typography,
-  CircularProgress,
-  Tooltip,
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
+import LoadingScreen from "../LoadingScreen";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -79,11 +76,9 @@ const AddBuilding = () => {
   return (
     <div>
       <Box className={classes.box}>
-        <Tooltip title="Créer un immeuble">
-          <Fab color="primary" onClick={OnOpen}>
-            <Typography variant="h5">+</Typography>
-          </Fab>
-        </Tooltip>
+        <Button color="primary" variant="contained" onClick={() => OnOpen()}>
+          Ajouter
+        </Button>
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
@@ -92,7 +87,7 @@ const AddBuilding = () => {
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}
             {success && <Alert severity="success">{success}</Alert>}
-            {loading && <CircularProgress />}
+            {loading && <LoadingScreen />}
           </div>
           <form onSubmit={submit} autoComplete="off">
             <TextField

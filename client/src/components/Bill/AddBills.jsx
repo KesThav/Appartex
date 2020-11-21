@@ -9,9 +9,6 @@ import {
   DialogContent,
   TextField,
   MenuItem,
-  Typography,
-  Fab,
-  Tooltip,
 } from "@material-ui/core";
 import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
@@ -99,18 +96,18 @@ const AddBills = () => {
   };
 
   useEffect(() => {
-    getTenants();
-    getStatus();
-  }, [count]);
+    if (open == true) {
+      getTenants();
+      getStatus();
+    }
+  }, [count, open]);
 
   return (
     <div>
       <Box className={classes.box}>
-        <Tooltip title="Créer une facture">
-          <Fab color="primary" onClick={OnOpen}>
-            <Typography variant="h5">+</Typography>
-          </Fab>
-        </Tooltip>
+        <Button color="primary" variant="contained" onClick={() => OnOpen()}>
+          Ajouter
+        </Button>
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>

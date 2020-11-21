@@ -89,13 +89,15 @@ const AddRepair = () => {
   };
 
   useEffect(() => {
-    getTasks();
-    getStatus();
-  }, [count]);
+    if (open == true) {
+      getTasks();
+      getStatus();
+    }
+  }, [count, open]);
 
   return (
     <div>
-      <Button color="primary" variant="contained" onClick={OnOpen}>
+      <Button color="primary" variant="contained" onClick={() => OnOpen()}>
         Enregistrer une facture de réparation
       </Button>
 

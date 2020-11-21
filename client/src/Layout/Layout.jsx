@@ -14,11 +14,10 @@ import ListItemText from "@material-ui/core/ListItemText";
 
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import { UserContext } from "../middlewares/ContextAPI";
-
+import { FormControlLabel } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
 import Switch from "@material-ui/core/switch";
@@ -69,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
-    backgroundColor: /* [theme.palette.primary.main] */ "#1A1A1D",
+    backgroundColor: "#1A1A1D",
     color: "#ffff",
     height: "100vh",
     overflowX: "hidden",
@@ -86,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
   },
   link: {
     textDecoration: "none",
-    color: [theme.palette.primary.dark],
+    color: "black",
   },
   linkmap: {
     textDecoration: "none",
@@ -257,19 +256,22 @@ const Layout = (props) => {
             label={user && user.name + " " + user.lastname}
             clickable
             onClick={() => console.log("hello")}
-            color="primary"
             variant="outlined"
           />
           <Button onClick={logout}>
             <Link to="/" className={classes.link}>
-              Log out
-            </Link>{" "}
-            <Switch
-              checked={checked}
-              onChange={() => setChecked(!checked)}
-              name="checked"
-              color="primary"
-            />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={checked}
+                    onChange={() => setChecked(!checked)}
+                    name="checked"
+                    color="default"
+                  />
+                }
+                label="déconnexion"
+              />
+            </Link>
           </Button>
         </Toolbar>
       </AppBar>

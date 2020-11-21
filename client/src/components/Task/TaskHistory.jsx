@@ -43,7 +43,7 @@ const TaskHistory = ({ data, setError }) => {
   };
 
   useEffect(() => {
-    if (open) {
+    if (open == true) {
       getTaskHistories(data);
     }
   }, [open]);

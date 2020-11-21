@@ -102,11 +102,9 @@ const AddContract = () => {
   return (
     <div>
       <Box className={classes.box}>
-        <Tooltip title="Créer un contrat">
-          <Fab color="primary" onClick={OnOpen}>
-            <Typography variant="h5">+</Typography>
-          </Fab>
-        </Tooltip>
+        <Button color="primary" variant="contained" onClick={() => OnOpen()}>
+          Ajouter
+        </Button>
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>

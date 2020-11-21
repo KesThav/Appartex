@@ -180,7 +180,6 @@ router.post(
     const { size, adress, city } = ctx.request.body;
     let { building, postalcode } = ctx.request.body;
 
-    console.log(ctx.request.body);
     if (building == "") {
       building = undefined;
     }

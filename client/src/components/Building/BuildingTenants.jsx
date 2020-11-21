@@ -67,8 +67,8 @@ const BuildingTenants = ({ data, setError }) => {
         <DialogTitle>Liste des locataires</DialogTitle>
         <DialogContent>
           {doc
-            ? doc.map((doc) => (
-                <TableRow>
+            ? doc.map((doc, i) => (
+                <TableRow key={i}>
                   <TableCell>
                     <Avatar />
                   </TableCell>

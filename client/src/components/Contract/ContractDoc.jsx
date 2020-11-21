@@ -40,8 +40,10 @@ const ContractDoc = ({ data, setError }) => {
   };
 
   useEffect(() => {
-    getOneContract(data);
-  }, []);
+    if (open == true) {
+      getOneContract(data);
+    }
+  }, [open]);
 
   return (
     <Fragment>

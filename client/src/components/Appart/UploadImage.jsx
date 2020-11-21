@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
 
 const UploadImage = ({ setSuccess, setError }) => {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
   const {
     appart,
     setLoading,
@@ -127,7 +126,21 @@ const UploadImage = ({ setSuccess, setError }) => {
           {appart &&
             appart.map((option) => (
               <MenuItem key={option._id} value={option._id}>
-                {option._id}
+                {!option.building
+                  ? option.adress +
+                    " " +
+                    option.postalcode +
+                    " " +
+                    option.city +
+                    ", " +
+                    option.size
+                  : option.building.adress +
+                    " " +
+                    option.building.postalcode +
+                    " " +
+                    option.building.city +
+                    ", " +
+                    option.size}
               </MenuItem>
             ))}
         </TextField>

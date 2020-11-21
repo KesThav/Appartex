@@ -10,8 +10,6 @@ import {
   TextField,
   MenuItem,
   Typography,
-  Fab,
-  Tooltip,
   Tabs,
   Tab,
   AppBar,
@@ -32,7 +30,7 @@ const TabPanel = (props) => {
     >
       {value === index && (
         <Box p={3}>
-          <Typography>{children}</Typography>
+          <Typography component={"span"}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -150,17 +148,17 @@ const AddAppart = () => {
   };
 
   useEffect(() => {
-    getBuildings();
-  }, [count]);
+    if (open == true) {
+      getBuildings();
+    }
+  }, [count, open]);
 
   return (
     <div>
       <Box className={classes.box}>
-        <Tooltip title="Créer un appartement">
-          <Fab color="primary" onClick={OnOpen}>
-            <Typography variant="h5">+</Typography>
-          </Fab>
-        </Tooltip>
+        <Button color="primary" variant="contained" onClick={() => OnOpen()}>
+          Ajouter
+        </Button>
       </Box>
 
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
@@ -172,8 +170,13 @@ const AddAppart = () => {
             {success && <Alert severity="success">{success}</Alert>}
           </div>
           <div className={classes.root}>
-            <AppBar position="static" className={classes.appbar}>
+            <AppBar
+              position="static"
+              className={classes.appbar}
+              component={"span"}
+            >
               <Tabs
+                component={"span"}
                 value={value}
                 onChange={handleChange}
                 indicatorColor="primary"

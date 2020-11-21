@@ -58,12 +58,17 @@ const ExpandMessage = ({ id, setError }) => {
     }
   };
 
+  useEffect(() => {
+    if (open == true) {
+      getOneMessage(id);
+    }
+  }, [open]);
+
   return (
     <div>
       <Tooltip title="Détails">
         <Button
           onClick={() => {
-            getOneMessage(id);
             setOpen(!open);
           }}
         >

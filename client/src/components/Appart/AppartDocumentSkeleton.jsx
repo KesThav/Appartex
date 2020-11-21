@@ -20,8 +20,10 @@ const ShowAppartDocuments = ({ appart, setError }) => {
   };
 
   useEffect(() => {
-    getOneAppart(appart);
-  }, []);
+    if (open == true) {
+      getOneAppart(appart);
+    }
+  }, [open]);
 
   return (
     <Fragment>

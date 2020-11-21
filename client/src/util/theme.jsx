@@ -3,9 +3,7 @@ import green from "@material-ui/core/colors/green";
 export default {
   palette: {
     primary: {
-      light: "#116ec7",
-      main: "#0b4781 ",
-      dark: "#072C50",
+      main: "#1A1A1D",
       contrastText: "#fff",
     },
     secondary: {
@@ -72,7 +70,12 @@ export default {
         boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
       },
     },
+    MuiFab: {
+      root: {
+        background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
+      },
+    },
   },
 };
 
-/**.MuiPaper-elevation4 */
+/**.MuiPaper-elevation4 MuiChip-root .MuiChip-avatarColorPrimary*/
