@@ -72,6 +72,7 @@ const AdminDashboard = (props) => {
     repair,
     getTasks,
     task,
+    getStatus,
   } = useContext(UserContext);
 
   useEffect(() => {
@@ -82,6 +83,7 @@ const AdminDashboard = (props) => {
     getBills();
     getRepairs();
     getTasks();
+    getStatus();
     if (!window.location.hash) {
       window.location = window.location + "#loaded";
       window.location.reload();

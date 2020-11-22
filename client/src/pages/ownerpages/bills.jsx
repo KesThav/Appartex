@@ -15,10 +15,7 @@ import {
   Typography,
   MenuItem,
   Chip,
-  FormControlLabel,
-  FormControl,
   Checkbox,
-  FormLabel,
 } from "@material-ui/core";
 import DeleteBills from "../../components/Bill/DeleteBills";
 import EditIcon from "@material-ui/icons/Edit";
@@ -33,6 +30,9 @@ import SearchIcon from "@material-ui/icons/Search";
 import BillHistory from "../../components/Bill/BillHistory";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import { Prompt } from "react-router-dom";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -105,6 +105,7 @@ const Bills = () => {
     loading,
     count,
     setCount,
+    getStatus,
   } = useContext(UserContext);
   const [data, setData] = useState("");
   const [err, setError] = useState("");
@@ -124,6 +125,7 @@ const Bills = () => {
 
   const classes = useStyles();
   useEffect(() => {
+    getStatus();
     getBills();
   }, [count]);
 
@@ -165,8 +167,8 @@ const Bills = () => {
       return bill
         .filter((data) =>
           activeFilter.length == 0
-            ? activeFilter
-            : !activeFilter.includes(data.status._id)
+            ? bill
+            : activeFilter.includes(data.status._id)
         )
         .filter(
           (data) => moment(data.endDate).diff(moment(), "days") > lowbound
@@ -196,16 +198,13 @@ const Bills = () => {
         );
     }
   };
-  const handleChange = (filter) => {
-    if (activeFilter.includes(filter)) {
-      const filterIndex = activeFilter.indexOf(filter);
-      const newFilter = [...activeFilter];
-      newFilter.splice(filterIndex, 1);
-      setActiveFilter(newFilter);
-    } else {
-      setActiveFilter((oldFilter) => [...oldFilter, filter]);
-    }
+  const handleChange = (event, filter) => {
+    let newData = filter.map((data) => data._id);
+    setActiveFilter(newData);
   };
+
+  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+  const checkedIcon = <CheckBoxIcon fontSize="small" />;
   return (
     <div>
       <Prompt
@@ -220,24 +219,34 @@ const Bills = () => {
 
       <Paper>
         <Box className={classes.box3}>
-          <TextField
-            style={{ width: "10%", marginRight: "20px" }}
-            variant="outlined"
-            id="Status"
-            select
-            value={filter}
-            label="Statut"
-            onChange={(e) => setFilter(e.target.value)}
-            className={classes.form}
-          >
-            <MenuItem value="">Tout</MenuItem>
-            {status &&
-              status.map((option) => (
-                <MenuItem key={option._id} value={option._id}>
+          {status && (
+            <Autocomplete
+              multiple
+              options={status}
+              disableCloseOnSelect
+              getOptionLabel={(option) => option.name}
+              onChange={handleChange}
+              renderOption={(option, { selected }) => (
+                <React.Fragment>
+                  <Checkbox
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    style={{ marginRight: 8 }}
+                    checked={selected}
+                  />
                   {option.name}
-                </MenuItem>
-              ))}
-          </TextField>
+                </React.Fragment>
+              )}
+              style={{ width: "30%", marginRight: "20px" }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label="Filter par statut"
+                />
+              )}
+            />
+          )}
           <TextField
             style={{ width: "10%", marginRight: "20px" }}
             variant="outlined"
@@ -272,7 +281,7 @@ const Bills = () => {
             id="search"
             type="text"
             value={search}
-            placeholder="Filter"
+            placeholder="Chercher"
             onChange={(e) => {
               setSearch(e.target.value);
             }}
@@ -301,29 +310,8 @@ const Bills = () => {
             </Box>
           </Paper>
         </Box>
-        <Box>
-          <FormControl
-            component="fieldset"
-            className={classes.formControl}
-            style={{ display: "flex", flexDirection: "row", padding: 5 }}
-          >
-            <FormLabel component="legend">Cochez pour exclure</FormLabel>
-            {status &&
-              status.map((data, i) => (
-                <FormControlLabel
-                  key={i}
-                  control={
-                    <Checkbox
-                      checked={activeFilter.includes(data._id)}
-                      name={data._id}
-                      onChange={() => handleChange(data._id)}
-                    />
-                  }
-                  label={data.name}
-                />
-              ))}
-          </FormControl>
-        </Box>
+        <Box></Box>
+
         <TableContainer className={classes.table} component={Paper} square>
           <Table stickyHeader>
             <TableHead style={{ background: "#fff" }}>

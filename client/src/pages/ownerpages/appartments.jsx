@@ -32,6 +32,9 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteAppart from "../../components/Appart/DeleteAppart";
 import ShowDocument from "../../components/Appart/AppartDocumentSkeleton";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -80,6 +83,7 @@ const Appart = () => {
     count,
     setCount,
     building,
+    getBuildings,
   } = useContext(UserContext);
   const [data, setData] = useState("");
   const [err, setError] = useState("");
@@ -94,9 +98,12 @@ const Appart = () => {
   const [status, setStatus] = useState("");
   const [filter, setFilter] = useState("");
   const [check, setCheck] = useState(false);
+  const [activeFilter, setActiveFilter] = useState([]);
+  const [optionValue, setOptionValue] = useState();
 
   const classes = useStyles();
   useEffect(() => {
+    getBuildings();
     getApparts();
   }, [count]);
 
@@ -130,10 +137,33 @@ const Appart = () => {
     { value: "Occupé", label: "Occupé" },
   ];
 
+  const handleChange = (event, filter) => {
+    let newData = filter.map((data) => data._id);
+    setActiveFilter(newData);
+  };
+
+  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+  const checkedIcon = <CheckBoxIcon fontSize="small" />;
+
   const dynamicSearch = () => {
     if (appart) {
       return appart
         .filter((data) => (check == true ? !data.building : data))
+        .filter((data) => {
+          if (data.building) {
+            if (activeFilter.length == 0) {
+              return appart;
+            } else {
+              return activeFilter.includes(data.building._id);
+            }
+          } else {
+            if (activeFilter.length == 0) {
+              return appart;
+            } else {
+              return activeFilter.includes(data.building);
+            }
+          }
+        })
         .filter((data) =>
           data.building
             ? data.building._id.includes(filter)
@@ -194,6 +224,36 @@ const Appart = () => {
       </div>
       <Paper>
         <Box className={classes.box3}>
+          {building && (
+            <Autocomplete
+              multiple
+              options={building}
+              disableCloseOnSelect
+              getOptionLabel={(option) =>
+                option.adress + " " + option.postalcode + " " + option.city
+              }
+              onChange={handleChange}
+              renderOption={(option, { selected }) => (
+                <React.Fragment>
+                  <Checkbox
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    style={{ marginRight: 8 }}
+                    checked={selected}
+                  />
+                  {option.adress + " " + option.postalcode + " " + option.city}
+                </React.Fragment>
+              )}
+              style={{ width: "30%", marginRight: "20px" }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label="Filter par immeuble"
+                />
+              )}
+            />
+          )}
           <TextField
             style={{ width: "10%", marginRight: "20px" }}
             label="Statut"
@@ -209,29 +269,11 @@ const Appart = () => {
             ))}
           </TextField>
           <TextField
-            style={{ width: "10%", marginRight: "20px" }}
-            variant="outlined"
-            id="Building"
-            select
-            value={filter}
-            label="Immeuble"
-            onChange={(e) => setFilter(e.target.value)}
-            className={classes.form}
-          >
-            <MenuItem value="">Tout</MenuItem>
-            {building &&
-              building.map((option) => (
-                <MenuItem key={option._id} value={option._id}>
-                  {option.adress} {option.postalcode} {option.city}
-                </MenuItem>
-              ))}
-          </TextField>
-          <TextField
             variant="outlined"
             id="search"
             type="text"
             value={search}
-            placeholder="Filter"
+            placeholder="Chercher"
             onChange={(e) => {
               setSearch(e.target.value);
             }}

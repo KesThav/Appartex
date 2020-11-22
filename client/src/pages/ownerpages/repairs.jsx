@@ -14,10 +14,7 @@ import {
   Paper,
   MenuItem,
   Typography,
-  FormControlLabel,
-  FormControl,
   Checkbox,
-  FormLabel,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import moment from "moment";
@@ -31,6 +28,9 @@ import DeleteRepair from "../../components/Repair/DeleteRepair";
 import RepairHistory from "../../components/Repair/RepairHistory";
 import AddRepair from "../../components/Repair/AddRepair";
 import { Prompt } from "react-router-dom";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -93,6 +93,9 @@ const Repair = () => {
   const [filter, setFilter] = useState("");
   const [activeFilter, setActiveFilter] = useState([]);
 
+  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+  const checkedIcon = <CheckBoxIcon fontSize="small" />;
+
   const classes = useStyles();
   useEffect(() => {
     getRepairs();
@@ -122,15 +125,9 @@ const Repair = () => {
     }
   };
 
-  const handleChange = (filter) => {
-    if (activeFilter.includes(filter)) {
-      const filterIndex = activeFilter.indexOf(filter);
-      const newFilter = [...activeFilter];
-      newFilter.splice(filterIndex, 1);
-      setActiveFilter(newFilter);
-    } else {
-      setActiveFilter((oldFilter) => [...oldFilter, filter]);
-    }
+  const handleChange = (event, filter) => {
+    let newData = filter.map((data) => data._id);
+    setActiveFilter(newData);
   };
 
   const dynamicSearch = () => {
@@ -138,8 +135,8 @@ const Repair = () => {
       return repair
         .filter((data) =>
           activeFilter.length == 0
-            ? activeFilter
-            : !activeFilter.includes(data.status._id)
+            ? repair
+            : activeFilter.includes(data.status._id)
         )
         .filter((data) => data.status._id.includes(filter))
         .filter(
@@ -173,30 +170,40 @@ const Repair = () => {
 
       <Paper>
         <Box className={classes.box3}>
-          <TextField
-            style={{ width: "10%", marginRight: "20px" }}
-            variant="outlined"
-            id="Status"
-            select
-            value={filter}
-            label="Statut"
-            onChange={(e) => setFilter(e.target.value)}
-            className={classes.form}
-          >
-            <MenuItem value="">Tout</MenuItem>
-            {status &&
-              status.map((option) => (
-                <MenuItem key={option._id} value={option._id}>
+          {status && (
+            <Autocomplete
+              multiple
+              options={status}
+              disableCloseOnSelect
+              getOptionLabel={(option) => option.name}
+              onChange={handleChange}
+              renderOption={(option, { selected }) => (
+                <React.Fragment>
+                  <Checkbox
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    style={{ marginRight: 8 }}
+                    checked={selected}
+                  />
                   {option.name}
-                </MenuItem>
-              ))}
-          </TextField>
+                </React.Fragment>
+              )}
+              style={{ width: "30%", marginRight: "20px" }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label="Filter par statut"
+                />
+              )}
+            />
+          )}
           <TextField
             variant="outlined"
             id="search"
             type="text"
             value={search}
-            placeholder="Filter"
+            placeholder="Chercher"
             onChange={(e) => {
               setSearch(e.target.value);
             }}
@@ -209,27 +216,6 @@ const Repair = () => {
               ),
             }}
           />
-          <FormControl
-            component="fieldset"
-            className={classes.formControl}
-            style={{ display: "flex", flexDirection: "row", padding: 5 }}
-          >
-            <FormLabel component="legend">Cochez pour exclure</FormLabel>
-            {status &&
-              status.map((data, i) => (
-                <FormControlLabel
-                  key={i}
-                  control={
-                    <Checkbox
-                      checked={activeFilter.includes(data._id)}
-                      name={data._id}
-                      onChange={() => handleChange(data._id)}
-                    />
-                  }
-                  label={data.name}
-                />
-              ))}
-          </FormControl>
         </Box>
         <TableContainer className={classes.table} component={Paper} square>
           <Table stickyHeader>

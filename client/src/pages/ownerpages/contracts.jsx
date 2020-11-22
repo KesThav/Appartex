@@ -13,6 +13,7 @@ import {
   TextField,
   Paper,
   Typography,
+  MenuItem,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import AddContract from "../../components/Contract/AddContract";
@@ -88,11 +89,29 @@ const Contract = () => {
   const [other, setOther] = useState(null);
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
+  const [activeFilter, setActiveFilter] = useState([]);
 
   const classes = useStyles();
   useEffect(() => {
     getContracts();
   }, [count]);
+
+  const statut = [
+    { value: "", label: "Tout" },
+    { value: "Actif", label: "Actif" },
+    { value: "Archivé", label: "Archivé" },
+  ];
+
+  const handleChangefilter = (filter) => {
+    if (activeFilter.includes(filter)) {
+      const filterIndex = activeFilter.indexOf(filter);
+      const newFilter = [...activeFilter];
+      newFilter.splice(filterIndex, 1);
+      setActiveFilter(newFilter);
+    } else {
+      setActiveFilter((oldFilter) => [...oldFilter, filter]);
+    }
+  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -120,57 +139,75 @@ const Contract = () => {
 
   const dynamicSearch = () => {
     if (contract)
-      return contract.filter((name) =>
-        !name.appartmentid.building
-          ? name._id
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.charge.toString().includes(search.toString()) ||
-            name.rent.toString().toLowerCase().includes(search.toLowerCase()) ||
-            name.tenant
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.appartmentid
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.other
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.tenant.name.toLowerCase().includes(search.toLowerCase()) ||
-            name.tenant.lastname.toLowerCase().includes(search.toLowerCase()) ||
-            name.appartmentid.adress
-              .toLowerCase()
-              .includes(search.toLowerCase()) ||
-            name.status.toLowerCase().includes(search.toString().toLowerCase())
-          : name._id
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.charge.toString().includes(search.toString()) ||
-            name.rent.toString().toLowerCase().includes(search.toLowerCase()) ||
-            name.tenant
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.appartmentid
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.other
-              .toString()
-              .toLowerCase()
-              .includes(search.toString().toLowerCase()) ||
-            name.tenant.name.toLowerCase().includes(search.toLowerCase()) ||
-            name.tenant.lastname.toLowerCase().includes(search.toLowerCase()) ||
-            name.appartmentid.building.adress
-              .toLowerCase()
-              .includes(search.toLowerCase()) ||
-            name.status.toLowerCase().includes(search.toString().toLowerCase())
-      );
+      return contract
+        .filter((data) =>
+          activeFilter.length == 0 ? data : activeFilter.includes(data.status)
+        )
+        .filter((name) =>
+          !name.appartmentid.building
+            ? name._id
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.charge.toString().includes(search.toString()) ||
+              name.rent
+                .toString()
+                .toLowerCase()
+                .includes(search.toLowerCase()) ||
+              name.tenant
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.appartmentid
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.other
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.tenant.name.toLowerCase().includes(search.toLowerCase()) ||
+              name.tenant.lastname
+                .toLowerCase()
+                .includes(search.toLowerCase()) ||
+              name.appartmentid.adress
+                .toLowerCase()
+                .includes(search.toLowerCase()) ||
+              name.status
+                .toLowerCase()
+                .includes(search.toString().toLowerCase())
+            : name._id
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.charge.toString().includes(search.toString()) ||
+              name.rent
+                .toString()
+                .toLowerCase()
+                .includes(search.toLowerCase()) ||
+              name.tenant
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.appartmentid
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.other
+                .toString()
+                .toLowerCase()
+                .includes(search.toString().toLowerCase()) ||
+              name.tenant.name.toLowerCase().includes(search.toLowerCase()) ||
+              name.tenant.lastname
+                .toLowerCase()
+                .includes(search.toLowerCase()) ||
+              name.appartmentid.building.adress
+                .toLowerCase()
+                .includes(search.toLowerCase()) ||
+              name.status
+                .toLowerCase()
+                .includes(search.toString().toLowerCase())
+        );
   };
 
   return (
@@ -188,15 +225,29 @@ const Contract = () => {
       <Paper>
         <Box className={classes.box3}>
           <TextField
+            style={{ width: "10%", marginRight: "20px" }}
+            label="Statut"
+            id="statut"
+            select
+            variant="outlined"
+            onChange={(e) => setActiveFilter(e.target.value)}
+          >
+            {statut.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
             variant="outlined"
             id="search"
             type="text"
             value={search}
-            placeholder="Filter"
+            placeholder="Chercher"
             onChange={(e) => {
               setSearch(e.target.value);
             }}
-            style={{ width: "30%" }}
+            style={{ width: "30%", marginRight: "20px" }}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">

@@ -179,7 +179,7 @@ const Tenant = () => {
             id="search"
             type="text"
             value={search}
-            placeholder="Filter"
+            placeholder="Chercher"
             onChange={(e) => {
               setSearch(e.target.value);
             }}

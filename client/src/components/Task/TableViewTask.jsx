@@ -11,11 +11,7 @@ import {
   Box,
   TextField,
   Paper,
-  MenuItem,
-  FormControlLabel,
-  FormControl,
   Checkbox,
-  FormLabel,
 } from "@material-ui/core";
 
 import moment from "moment";
@@ -26,6 +22,9 @@ import EditTask from "./EditTask";
 import DeleteTask from "./DeleteTask";
 import ExpandMessage from "./ExpandMessage";
 import TaskHistory from "./TaskHistory";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -74,13 +73,21 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
   const [filter, setFilter] = useState("");
   const [activeFilter, setActiveFilter] = useState([]);
 
+  const handleChange = (event, filter) => {
+    let newData = filter.map((data) => data._id);
+    setActiveFilter(newData);
+  };
+
+  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+  const checkedIcon = <CheckBoxIcon fontSize="small" />;
+
   const dynamicSearch = () => {
     if (task)
       return task
         .filter((data) =>
           activeFilter.length == 0
-            ? activeFilter
-            : !activeFilter.includes(data.status._id)
+            ? data
+            : activeFilter.includes(data.status._id)
         )
         .filter((data) => data.status.name.includes(filter))
         .filter(
@@ -96,47 +103,44 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
         );
   };
 
-  const handleChange = (filter) => {
-    if (activeFilter.includes(filter)) {
-      const filterIndex = activeFilter.indexOf(filter);
-      const newFilter = [...activeFilter];
-      newFilter.splice(filterIndex, 1);
-      setActiveFilter(newFilter);
-    } else {
-      setActiveFilter((oldFilter) => [...oldFilter, filter]);
-    }
-  };
-
   return (
     <div>
       <Paper>
         <Box className={classes.box3}>
-          <TextField
-            style={{ width: "10%", marginRight: "20px" }}
-            id="Status"
-            label="Statut"
-            variant="outlined"
-            select
-            value={filter}
-            onChange={(e) => {
-              setFilter(e.target.value);
-            }}
-            className={classes.form}
-          >
-            <MenuItem value="">Tout</MenuItem>
-            {status &&
-              status.map((option) => (
-                <MenuItem key={option._id} value={option.name}>
+          {status && (
+            <Autocomplete
+              multiple
+              options={status}
+              disableCloseOnSelect
+              getOptionLabel={(option) => option.name}
+              onChange={handleChange}
+              renderOption={(option, { selected }) => (
+                <React.Fragment>
+                  <Checkbox
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    style={{ marginRight: 8 }}
+                    checked={selected}
+                  />
                   {option.name}
-                </MenuItem>
-              ))}
-          </TextField>
+                </React.Fragment>
+              )}
+              style={{ width: "30%", marginRight: "20px" }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label="Filter par statut"
+                />
+              )}
+            />
+          )}
           <TextField
             variant="outlined"
             id="search"
             type="text"
             value={search}
-            placeholder="Filter"
+            placeholder="Chercher"
             onChange={(e) => {
               setSearch(e.target.value);
             }}
@@ -149,27 +153,6 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
               ),
             }}
           />
-          <FormControl
-            component="fieldset"
-            className={classes.formControl}
-            style={{ display: "flex", flexDirection: "row", padding: 5 }}
-          >
-            <FormLabel component="legend">Cochez pour exclure</FormLabel>
-            {status &&
-              status.map((data, i) => (
-                <FormControlLabel
-                  key={i}
-                  control={
-                    <Checkbox
-                      checked={activeFilter.includes(data._id)}
-                      name={data._id}
-                      onChange={() => handleChange(data._id)}
-                    />
-                  }
-                  label={data.name}
-                />
-              ))}
-          </FormControl>
         </Box>
 
         <TableContainer className={classes.table} component={Paper} square>
