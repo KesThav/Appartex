@@ -130,6 +130,7 @@ const AddBills = () => {
               une facture
             </Alert>
           )}
+          <br />
           <form onSubmit={submit} autoComplete="off">
             <TextField
               required
@@ -168,13 +169,12 @@ const AddBills = () => {
                 ))}
             </TextField>
             <TextField
-              required
               id="reference"
               type="string"
               variant="outlined"
               onChange={(e) => setReference(e.target.value)}
               fullWidth
-              placeholder="Référence*"
+              placeholder="Référence"
               className={classes.form}
             />
             <TextField

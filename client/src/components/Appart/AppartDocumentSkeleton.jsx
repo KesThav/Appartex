@@ -42,7 +42,11 @@ const ShowAppartDocuments = ({ appart, setError }) => {
           <Carousel>
             {picture.length > 0 &&
               picture.map((data, i) => (
-                <img key={i} src={`http://localhost:5000/${data}`} />
+                <img
+                  key={i}
+                  style={{ maxWidth: "100%" }}
+                  src={`http://localhost:5000/${data}`}
+                />
               ))}
           </Carousel>
         </DialogContent>

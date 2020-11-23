@@ -295,8 +295,16 @@ const Contract = () => {
                       </TableCell>
                       <TableCell>
                         {!contract.appartmentid.building
-                          ? contract.appartmentid.adress
-                          : contract.appartmentid.building.adress}
+                          ? contract.appartmentid.adress +
+                            " " +
+                            contract.appartmentid.postalcode +
+                            " " +
+                            contract.appartmentid.city
+                          : contract.appartmentid.building.adress +
+                            " " +
+                            contract.appartmentid.building.postalcode +
+                            " " +
+                            contract.appartmentid.building.city}
                       </TableCell>
                       <TableCell>
                         {editing && data === contract._id ? (

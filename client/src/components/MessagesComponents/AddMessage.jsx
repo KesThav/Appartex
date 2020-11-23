@@ -7,10 +7,14 @@ import {
   DialogContent,
   TextField,
   MenuItem,
+  Checkbox,
   Box,
 } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
 import Alert from "@material-ui/lab/Alert";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
 
 const useStyles = makeStyles({
   button: {
@@ -43,7 +47,7 @@ const AddMessage = () => {
   } = useContext(UserContext);
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [tenantid, setTenantid] = useState("");
+  const [tenantid, setTenantid] = useState([]);
   const [content, setContent] = useState("");
 
   const submit = async (e) => {
@@ -51,25 +55,27 @@ const AddMessage = () => {
     setError("");
     setSuccess("");
     if (user.role == "Admin") {
-      if (!tenantid || !content || !title) {
+      if (tenantid.length == 0 || !content || !title) {
         setError("Complétez tous les champs");
       } else {
         setLoading(true);
-        const data = {
-          sendedTo: tenantid,
-          sendedToType: "Tenant",
-          content,
-          title,
-          createdByType: "Owner",
-        };
-        try {
-          const res = await authAxios.post("/messages/add", data);
-          setLoading(false);
-          setSuccess("Message envoyé");
-          setCount((count) => count + 1);
-        } catch (err) {
-          setLoading(false);
-          setError(err.response.data);
+        for (let i = 0; i < tenantid.length; i++) {
+          const data = {
+            sendedTo: tenantid[i],
+            sendedToType: "Tenant",
+            content,
+            title,
+            createdByType: "Owner",
+          };
+          try {
+            const res = await authAxios.post("/messages/add", data);
+            setLoading(false);
+            setSuccess("Message envoyé");
+            setCount((count) => count + 1);
+          } catch (err) {
+            setLoading(false);
+            setError(err.response.data);
+          }
         }
       }
     } else {
@@ -103,6 +109,14 @@ const AddMessage = () => {
     }
   }, [count, open]);
 
+  const handleChange = (event, filter) => {
+    let newData = filter.map((data) => data._id);
+    setTenantid(newData);
+  };
+
+  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+  const checkedIcon = <CheckBoxIcon fontSize="small" />;
+
   return (
     <div>
       <Button
@@ -120,27 +134,38 @@ const AddMessage = () => {
             {success && <Alert severity="success">{success}</Alert>}
           </div>
           <form onSubmit={submit}>
-            {" "}
-            {user && user.role == "Admin" ? (
-              <TextField
-                required
-                variant="outlined"
-                id="Tenant"
-                select
-                value={tenantid}
-                label="Locataire"
-                onChange={(e) => setTenantid(e.target.value)}
-                fullWidth
-                className={classes.form}
-              >
-                {tenant &&
-                  tenant.map((option) => (
-                    <MenuItem key={option._id} value={option._id}>
-                      {option.name} {option.lastname}
-                    </MenuItem>
-                  ))}
-              </TextField>
-            ) : null}
+            {user && user.role == "Admin"
+              ? tenant && (
+                  <Autocomplete
+                    multiple
+                    options={tenant}
+                    disableCloseOnSelect
+                    getOptionLabel={(option) =>
+                      option.name + " " + option.lastname
+                    }
+                    onChange={handleChange}
+                    renderOption={(option, { selected }) => (
+                      <React.Fragment>
+                        <Checkbox
+                          icon={icon}
+                          checkedIcon={checkedIcon}
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        {option.name + " " + option.lastname}
+                      </React.Fragment>
+                    )}
+                    style={{ width: "100%", marginBottom: 17 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        label="Sélectionner un ou des locataires"
+                      />
+                    )}
+                  />
+                )
+              : null}
             <TextField
               required
               id="reference"
