@@ -2,11 +2,13 @@ const Mongoose = require("mongoose");
 
 const messageSchema = new Mongoose.Schema(
   {
-    sendedTo: {
-      type: Mongoose.Schema.Types.ObjectId,
-      required: true,
-      refPath: "sendedToType",
-    },
+    sendedTo: [
+      {
+        type: Mongoose.Schema.Types.ObjectId,
+        required: true,
+        refPath: "sendedToType",
+      },
+    ],
     sendedToType: {
       type: String,
       required: true,

@@ -18,7 +18,8 @@ const Task = require("../models/task.model");
  *     Message:
  *       properties:
  *         sendedTo:
- *           type: id
+ *           type: Array
+ *           items : id
  *           example: 507f1f77bcf86cd799439011
  *         sendedToType:
  *           type: String

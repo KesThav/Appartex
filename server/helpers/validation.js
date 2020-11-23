@@ -53,7 +53,7 @@ const statusSchema = Joi.object({
 });
 
 const messageSchema = Joi.object({
-  sendedTo: Joi.objectId().required(),
+  sendedTo: Joi.array().items(Joi.objectId()).required(),
   content: Joi.string().required(),
   status: Joi.string(),
   title: Joi.string().required(),
