@@ -77,11 +77,9 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
                     data.createdBy
                       ? data.createdBy.name + " " + data.createdBy.lastname
                       : "Compte supprimé"
-                  }  -> ${
-                    data.sendedTo
-                      ? data.sendedTo.name + " " + data.sendedTo.lastname
-                      : "Compte supprimé"
-                  } `}
+                  }  -> ${data.sendedTo.map((data) =>
+                    data ? data.name + " " + data.lastname : "Compte supprimé"
+                  )} `}
                   subheader={moment(data.createdAt).fromNow()}
                   action={<Chip label={data.status} color="primary" />}
                 />

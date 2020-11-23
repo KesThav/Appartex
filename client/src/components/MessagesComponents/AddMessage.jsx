@@ -59,23 +59,21 @@ const AddMessage = () => {
         setError("Complétez tous les champs");
       } else {
         setLoading(true);
-        for (let i = 0; i < tenantid.length; i++) {
-          const data = {
-            sendedTo: tenantid[i],
-            sendedToType: "Tenant",
-            content,
-            title,
-            createdByType: "Owner",
-          };
-          try {
-            const res = await authAxios.post("/messages/add", data);
-            setLoading(false);
-            setSuccess("Message envoyé");
-            setCount((count) => count + 1);
-          } catch (err) {
-            setLoading(false);
-            setError(err.response.data);
-          }
+        const data = {
+          sendedTo: tenantid,
+          sendedToType: "Tenant",
+          content,
+          title,
+          createdByType: "Owner",
+        };
+        try {
+          const res = await authAxios.post("/messages/add", data);
+          setLoading(false);
+          setSuccess("Message envoyé");
+          setCount((count) => count + 1);
+        } catch (err) {
+          setLoading(false);
+          setError(err.response.data);
         }
       }
     } else {
@@ -84,7 +82,7 @@ const AddMessage = () => {
       } else {
         setLoading(true);
         const data = {
-          sendedTo: user.createdBy,
+          sendedTo: [user.createdBy],
           sendedToType: "Owner",
           content,
           title,

@@ -110,13 +110,9 @@ const ExpandMessage = ({ id, setError }) => {
                           " " +
                           message.createdBy.lastname
                         : "Compte supprimé"
-                    }  -> ${
-                      message.sendedTo
-                        ? message.sendedTo.name +
-                          " " +
-                          message.sendedTo.lastname
-                        : "Compte supprimé"
-                    } `}
+                    }  -> ${message.sendedTo.map((data) =>
+                      data ? data.name + " " + data.lastname : "Compte supprimé"
+                    )} `}
                     subheader={moment(message.createdAt).format("YYYY-MM-DD")}
                     action={<Chip label={message.status} color="primary" />}
                   />
