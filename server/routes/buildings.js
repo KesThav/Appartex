@@ -162,6 +162,7 @@ router.get("/tenants/:buildingid", jwt, adminAccess, async (ctx) => {
       tenants.push(
         await Contract.findOne({
           appartmentid: appartofbuilding[i]._id,
+          status: { $ne: "Archivé" },
         }).select({ tenant: 1, _id: 0 })
       );
     }

@@ -32,6 +32,7 @@ const tenantSchema = new Mongoose.Schema(
       required: true,
       ref: "Owner",
     },
+    file: [{ type: String }],
   },
   { timestamps: true }
 );

@@ -488,7 +488,7 @@ router.put("/upload/:appartid", jwt, adminAccess, async (ctx, next) => {
  *      '403':
  *        description: Forbidden
  *      '404':
- *        description: Tenant not found
+ *        description: Appartment not found
  *      '500':
  *        description: Server error
  *

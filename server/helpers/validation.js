@@ -22,7 +22,7 @@ const buildingSchema = Joi.object({
 });
 
 const appartSchema = Joi.object({
-  size: Joi.number().required(),
+  size: Joi.number().min(1).max(10).precision(1).required(),
   adress: Joi.string().allow(null, "").default(null),
   postalcode: Joi.number().min(1000).max(9999).allow("").default(-1),
   city: Joi.string().allow(null, "").default(null),
@@ -31,8 +31,8 @@ const appartSchema = Joi.object({
 });
 
 const contractSchema = Joi.object({
-  charge: Joi.number().required(),
-  rent: Joi.number().required(),
+  charge: Joi.number().min(0).precision(2).required(),
+  rent: Joi.number().min(0).precision(2).required(),
   tenant: Joi.objectId().required(),
   appartmentid: Joi.objectId().required(),
   other: Joi.string().allow("", null),
@@ -43,7 +43,7 @@ const billSchema = Joi.object({
   tenant: Joi.objectId().required(),
   reference: Joi.string().allow(null, ""),
   endDate: Joi.date().required(),
-  amount: Joi.number().required(),
+  amount: Joi.number().min(0).precision(2).required(),
   reason: Joi.string().required(),
   status: Joi.objectId().required(),
 });
@@ -71,7 +71,7 @@ const taskSchema = Joi.object({
 });
 
 const repairSchema = Joi.object({
-  amount: Joi.number().min(0).required(),
+  amount: Joi.number().min(0).precision(2).required(),
   status: Joi.objectId().required(),
   reason: Joi.string().required(),
   taskid: Joi.objectId().required(),

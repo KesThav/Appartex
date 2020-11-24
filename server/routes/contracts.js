@@ -10,6 +10,7 @@ const Building = require("../models/building.model");
 const multer = require("@koa/multer");
 const path = require("path");
 const fs = require("fs");
+const { contractSchema } = require("../helpers/validation");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -185,6 +186,11 @@ router.get("/:contractid", jwt, adminAccess, async (ctx) => {
 
 router.post("/add", jwt, adminAccess, async (ctx) => {
   const { charge, rent, tenant, appartmentid, other } = ctx.request.body;
+
+  const { error } = contractSchema.validate(ctx.request.body);
+  if (error) {
+    ctx.throw(400, error);
+  }
   try {
     let newcontract = new Contract({
       charge,

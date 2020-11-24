@@ -14,6 +14,36 @@ const bcrypt = require("bcrypt");
 const { userSchema } = require("../helpers/validation");
 const Task = require("../models/task.model");
 const Message = require("../models/message.model");
+const multer = require("@koa/multer");
+const path = require("path");
+const fs = require("fs");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/tenant");
+  },
+  filename: function (req, file, cb) {
+    let type = file.originalname.split(".")[1];
+    let filename = file.originalname.split(".")[0];
+    cb(null, `${filename}-${Date.now().toString(16)}.${type}`);
+  },
+});
+
+const limits = {
+  fields: 10,
+  fileSize: 500 * 1024,
+};
+
+const upload = multer({
+  storage,
+  fileFilter: function (req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|pdf|doc|docx)$/)) {
+      return cb(new Error("Only image files are allowed!"));
+    }
+    cb(null, true);
+  },
+  limits,
+});
 
 /**
  * @swagger
@@ -542,6 +572,137 @@ router.get("/tasks/:tenantid", jwt, filterAccess, async (ctx) => {
     ctx.body = tasks.sort((a, b) => {
       return new Date(b.startDate) - new Date(a.startDate);
     });
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+/**
+ *  @swagger
+ * /tenants/upload/{tenant_id}:
+ *  put :
+ *    summary : Add file to tenant
+ *    operationId : addfiletenant
+ *    tags :
+ *        - tenant
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: tenant_id
+ *       in: path
+ *       required: true
+ *       description: the id of the tenant
+ *    requestBody :
+ *     required: true
+ *     content :
+ *       multipart/form-data:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              file:
+ *                type: string
+ *                format: binary
+ *            required:
+ *              - file
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Tenant not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.put("/upload/:tenantid", jwt, adminAccess, async (ctx, next) => {
+  let validate = ObjectId.isValid(ctx.params.tenantid);
+  if (!validate) return ctx.throw(404, "tenant not found");
+  let tenantid = new ObjectId(ctx.params.tenantid);
+
+  const tenant = await Tenant.findById(tenantid);
+  if (!tenant) {
+    ctx.throw(404, "tenant not found");
+  }
+  try {
+    let err = await upload
+      .array("file")(ctx, next)
+      .then((res) => res)
+      .catch((err) => err);
+    if (err) {
+      ctx.throw(400, err.message);
+    }
+    for (i = 0; i < ctx.files.length; i++) {
+      await Tenant.findByIdAndUpdate(tenantid, {
+        $push: {
+          file: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
+        },
+      });
+    }
+    ctx.body = "ok";
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
+/**
+ *  @swagger
+ * /tenants/delete/file/{tenant_id}:
+ *  put :
+ *    summary : delete file from tenant
+ *    operationId : deletefiletenant
+ *    tags :
+ *        - tenant
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: tenant_id
+ *       in: path
+ *       required: true
+ *       description: the id of the tenant
+ *    requestBody :
+ *     required: true
+ *     content :
+ *       application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              file:
+ *                type: string
+ *                example: tenant/random-file.pdf
+ *            required:
+ *              - file
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *      '403':
+ *        description: Forbidden
+ *      '404':
+ *        description: Tenant not found
+ *      '500':
+ *        description: Server error
+ *
+ */
+
+router.put("/delete/file/:tenantid", jwt, adminAccess, async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.tenantid);
+  if (!validate) return ctx.throw(404, "tenant not found");
+  let tenantid = new ObjectId(ctx.params.tenantid);
+
+  const tenant = await Tenant.findById(tenantid);
+  if (!tenant) {
+    ctx.throw(404, "tenant not found");
+  }
+
+  try {
+    await Tenant.findByIdAndUpdate(tenantid, {
+      $pull: { file: ctx.request.body.file },
+    });
+    await fs.unlink(`public/${ctx.request.body.file}`, (err) => {
+      if (err) return ctx.throw(400, err);
+    });
+    ctx.body = "ok";
   } catch (err) {
     ctx.throw(500, err);
   }
