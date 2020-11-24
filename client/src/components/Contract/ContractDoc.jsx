@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogTitle,
   Button,
+  TableRow,
   TableCell,
   Box,
   makeStyles,
@@ -63,11 +64,11 @@ const ContractDoc = ({ data, setError }) => {
             <DialogTitle>Les documents</DialogTitle>
             <DialogContent>
               {doc.map((doc) => (
-                <TableCell>
+                <TableRow>
                   <Link to={`//localhost:5000/${doc}`} target="_blank">
                     {doc}
                   </Link>
-                </TableCell>
+                </TableRow>
               ))}
             </DialogContent>
           </Fragment>

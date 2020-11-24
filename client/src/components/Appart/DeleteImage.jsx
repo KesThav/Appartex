@@ -1,4 +1,4 @@
-import React, { useState, useContext, Fragment } from "react";
+import React, { useState, useContext, Fragment, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -31,6 +31,7 @@ const DeleteAppart = ({
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const { setLoading, authAxios, setCount } = useContext(UserContext);
+  const [doc, setDoc] = useState("");
 
   const deletePicture = async (dt) => {
     setError("");
@@ -51,6 +52,22 @@ const DeleteAppart = ({
     }
   };
 
+  const getAppart = async (tenantid) => {
+    try {
+      const res = await authAxios.get(`/appartments/${appartid}`);
+      setDoc(res.data);
+      setCount((count) => count + 1);
+    } catch (err) {
+      setError(err.response.data);
+    }
+  };
+
+  useEffect(() => {
+    if (open == true) {
+      getAppart(appartid);
+    }
+  }, [open]);
+
   return (
     <Fragment>
       <Tooltip title="Supprimer">
@@ -67,10 +84,29 @@ const DeleteAppart = ({
         <DialogTitle>Supprimer une image</DialogTitle>
         <Divider />
         <DialogContent>
-          Êtez-vous sûr de vouloir supprimer l'appartement <br />
+          Êtez-vous sûr de vouloir supprimer le document
+          <strong>{data + " "}</strong> de l'appartement
           <strong>
-            {data} du document {appartid}
-          </strong>{" "}
+            {doc.building
+              ? " " +
+                doc.building.adress +
+                " " +
+                doc.building.postalcode +
+                " " +
+                doc.building.city +
+                ", " +
+                doc.size +
+                " pièces"
+              : " " +
+                doc.adress +
+                " " +
+                doc.postalcode +
+                " " +
+                doc.city +
+                ", " +
+                doc.size +
+                " pièces"}
+          </strong>
           ? <br />
           Une fois validé, il n'est plus possible de revenir en arrière.
         </DialogContent>

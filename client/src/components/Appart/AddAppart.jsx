@@ -228,7 +228,10 @@ const AddAppart = () => {
                   variant="outlined"
                   onChange={(e) => setSize(e.target.value)}
                   fullWidth
-                  placeholder="taille*"
+                  placeholder="Pièces*"
+                  inputProps={{
+                    step: 0.5,
+                  }}
                   className={classes.form}
                 />
                 <Box className={classes.box2}>
@@ -268,7 +271,10 @@ const AddAppart = () => {
                   variant="outlined"
                   onChange={(e) => setSize(e.target.value)}
                   fullWidth
-                  placeholder="taille*"
+                  placeholder="Pièces*"
+                  inputProps={{
+                    step: 0.5,
+                  }}
                   className={classes.form}
                 />
                 <TextField

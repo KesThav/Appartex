@@ -189,6 +189,9 @@ const AddContract = () => {
               variant="outlined"
               onChange={(e) => setRent(e.target.value)}
               fullWidth
+              inputProps={{
+                step: 0.05,
+              }}
               placeholder="Loyer*"
               className={classes.form}
             />
@@ -197,6 +200,9 @@ const AddContract = () => {
               id="codepostal"
               variant="outlined"
               type="number"
+              inputProps={{
+                step: 0.05,
+              }}
               onChange={(e) => setCharge(e.target.value)}
               fullWidth
               placeholder="Charge*"

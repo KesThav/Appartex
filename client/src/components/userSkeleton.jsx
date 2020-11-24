@@ -7,7 +7,6 @@ import {
   Box,
   Typography,
   Container,
-  Grid,
   Avatar,
   Accordion,
   AccordionSummary,
@@ -98,6 +97,7 @@ const UserSkeleton = (props) => {
   const [success, setSuccess] = useState("");
   const [count, setCount] = useState(0);
   const [task, setTasks] = useState("");
+  const [doc, setDoc] = useState("");
 
   const getTenants = async () => {
     setLoading(true);
@@ -108,6 +108,7 @@ const UserSkeleton = (props) => {
       setLastname(res.data.lastname);
       setEmail(res.data.email);
       setDate(res.data.dateofbirth);
+      setDoc(res.data.file);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -435,6 +436,29 @@ const UserSkeleton = (props) => {
                   style={{ display: "flex", flexDirection: "column" }}
                 >
                   <Schedule data={task} />
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel2a-content"
+                  id="panel2a-header"
+                >
+                  <Typography className={classes.heading}>
+                    Les documents personnels
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails
+                  style={{ display: "flex", flexDirection: "column" }}
+                >
+                  {doc &&
+                    doc.map((data) => (
+                      <TableCell>
+                        <Link to={`//localhost:5000/${data}`} target="_blank">
+                          {data}
+                        </Link>
+                      </TableCell>
+                    ))}
                 </AccordionDetails>
               </Accordion>
             </div>

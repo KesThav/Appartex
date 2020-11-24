@@ -50,6 +50,7 @@ const BuildingTenants = ({ data, setError }) => {
       <Tooltip title="Détails">
         <IconButton
           onClick={() => {
+            setDoc("");
             setOpen(true);
           }}
         >
@@ -66,7 +67,7 @@ const BuildingTenants = ({ data, setError }) => {
       >
         <DialogTitle>Liste des locataires</DialogTitle>
         <DialogContent>
-          {doc
+          {doc.length > 0
             ? doc.map((doc, i) => (
                 <TableRow key={i}>
                   <TableCell>

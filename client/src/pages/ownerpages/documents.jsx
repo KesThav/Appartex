@@ -8,9 +8,11 @@ import UploadImage from "../../components/Appart/UploadImage";
 import UploadBillFile from "../../components/Bill/UploadFile";
 import UploadContractFile from "../../components/Contract/UploadFile";
 import UploadRepairFile from "../../components/Repair/UploadFile";
+import UploadTenantFile from "../../components/Tenant/UploadFile";
 import Alert from "@material-ui/lab/Alert";
 import LoadingScreen from "../../components/LoadingScreen";
 import { UserContext } from "../../middlewares/ContextAPI";
+import { Typography } from "@material-ui/core";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -43,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: "transparent",
     display: "flex",
-    height: 224,
+    height: 333,
   },
   tabs: {
     borderRight: `1px solid ${theme.palette.divider}`,
@@ -63,6 +65,7 @@ export default function VerticalTabs() {
 
   return (
     <Fragment>
+      <Typography variant="h3">Gérer les documents</Typography>
       <div style={{ marginBottom: "10px" }}>
         {loading && <LoadingScreen />}
         {err && <Alert severity="error">{err}</Alert>}
@@ -76,21 +79,25 @@ export default function VerticalTabs() {
           onChange={handleChange}
           className={classes.tabs}
         >
-          <Tab label="Appartements" {...a11yProps(0)} />
-          <Tab label="Contrats" {...a11yProps(1)} />
-          <Tab label="Factures" {...a11yProps(2)} />
-          <Tab label="Réparations" {...a11yProps(3)} />
+          <Tab label="Locataires" {...a11yProps(0)} />
+          <Tab label="Appartements" {...a11yProps(1)} />
+          <Tab label="Contrats" {...a11yProps(2)} />
+          <Tab label="Factures" {...a11yProps(3)} />
+          <Tab label="Réparations" {...a11yProps(4)} />
         </Tabs>
         <TabPanel value={value} index={0}>
-          <UploadImage setSuccess={setSuccess} setError={setError} />
+          <UploadTenantFile setSuccess={setSuccess} setError={setError} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <UploadContractFile setSuccess={setSuccess} setError={setError} />
+          <UploadImage setSuccess={setSuccess} setError={setError} />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <UploadBillFile setSuccess={setSuccess} setError={setError} />
+          <UploadContractFile setSuccess={setSuccess} setError={setError} />
         </TabPanel>
         <TabPanel value={value} index={3}>
+          <UploadBillFile setSuccess={setSuccess} setError={setError} />
+        </TabPanel>
+        <TabPanel value={value} index={4}>
           <UploadRepairFile setSuccess={setSuccess} setError={setError} />
         </TabPanel>
       </div>

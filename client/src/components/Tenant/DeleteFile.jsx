@@ -1,4 +1,4 @@
-import React, { useState, useContext, Fragment } from "react";
+import React, { useState, useContext, Fragment, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -23,10 +23,11 @@ const useStyles = makeStyles({
   },
 });
 
-const DeleteFile = ({ data, repairid, setSuccess, setError, getOneRepair }) => {
+const DeleteFile = ({ data, tenantid, setSuccess, setError, getOneTenant }) => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const { setLoading, authAxios, setCount } = useContext(UserContext);
+  const [doc, setDoc] = useState("");
 
   const deleteFile = async (dt) => {
     setError("");
@@ -34,18 +35,34 @@ const DeleteFile = ({ data, repairid, setSuccess, setError, getOneRepair }) => {
     setOpen(!open);
     setLoading(true);
     try {
-      await authAxios.put(`/repairs/delete/file/${repairid}`, {
+      await authAxios.put(`/tenants/delete/file/${tenantid}`, {
         file: dt,
       });
       setCount((count) => count + 1);
       setLoading(false);
       setSuccess("Document supprimé avec succès");
-      getOneRepair(repairid);
+      getOneTenant(tenantid);
     } catch (err) {
       setError(err.response.data);
       setLoading(false);
     }
   };
+
+  const getTenant = async (tenantid) => {
+    try {
+      const res = await authAxios.get(`/tenants/${tenantid}`);
+      setDoc(res.data);
+      setCount((count) => count + 1);
+    } catch (err) {
+      setError(err.response.data);
+    }
+  };
+
+  useEffect(() => {
+    if (open == true) {
+      getTenant(tenantid);
+    }
+  }, [open]);
 
   return (
     <Fragment>
@@ -64,7 +81,8 @@ const DeleteFile = ({ data, repairid, setSuccess, setError, getOneRepair }) => {
         <Divider />
         <DialogContent>
           Êtez-vous sûr de vouloir supprimer le document <br />
-          <strong>{data}</strong> de la réparation <strong>{repairid}</strong>
+          <strong>{data + " "}</strong> du locataire
+          <strong>{" " + doc.name + " " + doc.lastname}</strong>
           ? <br />
           Une fois validé, il n'est plus possible de revenir en arrière.
         </DialogContent>

@@ -2,7 +2,7 @@ import React, { useState, useContext, Fragment, useEffect } from "react";
 import { Tooltip, IconButton, Dialog, DialogContent } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
 import Carousel from "react-material-ui-carousel";
-import FolderIcon from "@material-ui/icons/Folder";
+import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 
 const ShowAppartDocuments = ({ appart, setError }) => {
   const [open, setOpen] = useState(false);
@@ -33,7 +33,7 @@ const ShowAppartDocuments = ({ appart, setError }) => {
             setOpen(!open);
           }}
         >
-          <FolderIcon />
+          <PhotoCameraIcon />
         </IconButton>
       </Tooltip>
 

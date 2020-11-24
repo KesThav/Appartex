@@ -178,6 +178,9 @@ const AddBills = () => {
               className={classes.form}
             />
             <TextField
+              inputProps={{
+                step: 0.05,
+              }}
               required
               id="amount"
               variant="outlined"

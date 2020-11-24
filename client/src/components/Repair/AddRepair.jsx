@@ -152,6 +152,9 @@ const AddRepair = () => {
               type="number"
               onChange={(e) => setAmount(e.target.value)}
               fullWidth
+              inputProps={{
+                step: 0.05,
+              }}
               placeholder="Montant*"
               className={classes.form}
             />

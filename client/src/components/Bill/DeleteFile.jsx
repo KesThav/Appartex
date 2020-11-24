@@ -26,7 +26,7 @@ const DeleteFile = ({ data, billid, setSuccess, setError, getOneBill }) => {
   const classes = useStyles();
   const { setLoading, authAxios, setCount } = useContext(UserContext);
 
-  const deletePicture = async (dt) => {
+  const deleteFile = async (dt) => {
     setError("");
     setSuccess("");
     setOpen(!open);
@@ -61,10 +61,8 @@ const DeleteFile = ({ data, billid, setSuccess, setError, getOneBill }) => {
         <DialogTitle>Supprimer un document</DialogTitle>
         <Divider />
         <DialogContent>
-          Êtez-vous sûr de vouloir supprimer l'appartement <br />
-          <strong>
-            {data} du document {billid}
-          </strong>{" "}
+          Êtez-vous sûr de vouloir supprimer le document <br />
+          <strong>{data}</strong> de la facture <strong>{billid}</strong>
           ? <br />
           Une fois validé, il n'est plus possible de revenir en arrière.
         </DialogContent>
@@ -79,7 +77,7 @@ const DeleteFile = ({ data, billid, setSuccess, setError, getOneBill }) => {
           </Button>
 
           <Button
-            onClick={() => deletePicture(data)}
+            onClick={() => deleteFile(data)}
             color="primary"
             className={classes.button}
           >

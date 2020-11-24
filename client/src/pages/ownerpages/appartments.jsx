@@ -313,7 +313,7 @@ const Appart = () => {
                   "Adresse",
                   "Code postale",
                   "Ville",
-                  "Taille",
+                  "Pièces",
                   "Statut",
                   "Créé le",
                   "Dernière modification",
@@ -381,7 +381,7 @@ const Appart = () => {
                               type="number"
                               value={size}
                               onChange={(e) => setSize(e.target.value)}
-                              placeholder="Ville"
+                              placeholder="Pièces"
                             />
                           ) : (
                             appart.size
@@ -465,7 +465,7 @@ const Appart = () => {
                               type="number"
                               value={size}
                               onChange={(e) => setSize(e.target.value)}
-                              placeholder="Ville"
+                              placeholder="Pièces"
                             />
                           ) : (
                             appart.size

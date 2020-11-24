@@ -100,7 +100,7 @@ const Drawer = (props) => {
   };
 
   const statut = [
-    { value: "envoyé", label: "envoyé" },
+    { value: "Envoyé", label: "envoyé" },
     { value: "En cours", label: "En cours" },
     { value: "Tâche créé", label: "Tâche créé" },
     { value: "Terminé", label: "Terminé" },

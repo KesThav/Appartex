@@ -32,9 +32,10 @@ import Chip from "@material-ui/core/Chip";
 import PersonIcon from "@material-ui/icons/Person";
 import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 import ForumIcon from "@material-ui/icons/Forum";
-import TrendingUpIcon from "@material-ui/icons/TrendingUp";
+import InfoIcon from "@material-ui/icons/Info";
 import TimelineIcon from "@material-ui/icons/Timeline";
 import AssignmentIcon from "@material-ui/icons/Assignment";
+import Divider from "@material-ui/core/Divider";
 
 const drawerWidth = 250;
 
@@ -91,6 +92,9 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: "none",
     color: "#fff",
   },
+  divider: {
+    color: "#fff",
+  },
 }));
 
 const Layout = (props) => {
@@ -116,7 +120,7 @@ const Layout = (props) => {
         },
         {
           id: 1,
-          name: "Les immeubles",
+          name: "Les Immeubles",
           icon: <BusinessIcon />,
           link: "/buildings",
         },
@@ -146,27 +150,27 @@ const Layout = (props) => {
         },
         {
           id: 6,
-          name: "Les Etats",
-          icon: <TrendingUpIcon />,
-          link: "/status",
-        },
-        {
-          id: 7,
           name: "Les Messages",
           icon: <ForumIcon />,
           link: "/messages",
         },
         {
-          id: 8,
+          id: 7,
           name: "Les Tâches",
           icon: <FormatListBulletedIcon />,
           link: "/tasks",
         },
         {
-          id: 9,
+          id: 8,
           name: "Les Réparations",
           icon: <TimelineIcon />,
           link: "/repairs",
+        },
+        {
+          id: 9,
+          name: "Les Statuts",
+          icon: <InfoIcon />,
+          link: "/status",
         },
         {
           id: 10,

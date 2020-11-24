@@ -95,11 +95,12 @@ const Tenantboard = (props) => {
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [count, setCount] = useState(0);
+  const [doc, setDoc] = useState("");
 
   const getBills = async () => {
     setLoading(true);
     try {
-      const res = await authAxios.get(`tenants/bills/${user._id}`);
+      const res = await authAxios.get(`/tenants/bills/${user._id}`);
       setBills(res.data);
       setLoading(false);
     } catch (err) {
@@ -111,7 +112,7 @@ const Tenantboard = (props) => {
   const getContracts = async () => {
     setLoading(true);
     try {
-      const res = await authAxios.get(`tenants/contracts/${user._id}`);
+      const res = await authAxios.get(`/tenants/contracts/${user._id}`);
       setContracts(res.data);
       setLoading(false);
     } catch (err) {
@@ -121,13 +122,25 @@ const Tenantboard = (props) => {
   };
 
   const getTasks = async () => {
+    setLoading(true);
     try {
-      const res = await authAxios.get(`tenants/tasks/${user._id}`);
+      const res = await authAxios.get(`/tenants/tasks/${user._id}`);
       setTasks(res.data);
       setLoading(false);
     } catch (err) {
       setLoading(false);
       console.log(err);
+    }
+  };
+
+  const getTenantFile = async () => {
+    setLoading(true);
+    try {
+      const res = await authAxios.get(`/tenants/${user._id}`);
+      setDoc(res.data.file);
+      setLoading(false);
+    } catch (err) {
+      setError(err.response.data);
     }
   };
 
@@ -171,6 +184,7 @@ const Tenantboard = (props) => {
     getBills();
     getContracts();
     getTasks();
+    getTenantFile();
     if (!window.location.hash) {
       window.location = window.location + "#loaded";
       window.location.reload();
@@ -400,6 +414,29 @@ const Tenantboard = (props) => {
                   style={{ display: "flex", flexDirection: "column" }}
                 >
                   <Schedule data={task} />
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel2a-content"
+                  id="panel2a-header"
+                >
+                  <Typography className={classes.heading}>
+                    Les documents personnels
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails
+                  style={{ display: "flex", flexDirection: "column" }}
+                >
+                  {doc &&
+                    doc.map((data) => (
+                      <TableCell>
+                        <Link to={`//localhost:5000/${data}`} target="_blank">
+                          {data}
+                        </Link>
+                      </TableCell>
+                    ))}
                 </AccordionDetails>
               </Accordion>
             </div>
