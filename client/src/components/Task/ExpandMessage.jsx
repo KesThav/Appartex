@@ -122,7 +122,7 @@ const ExpandMessage = ({ id, setError }) => {
                     </Typography>
                     <Typography
                       variant="body2"
-                      color="textSecondary"
+                      color="textPrimary"
                       component="p"
                     >
                       {message.content}
@@ -153,7 +153,7 @@ const ExpandMessage = ({ id, setError }) => {
                         <CardContent>
                           <Typography
                             variant="body2"
-                            color="textSecondary"
+                            color="textPrimary"
                             component="p"
                           >
                             {data.content}

@@ -59,6 +59,8 @@ const AddBills = () => {
     setSuccess("");
     if (!endDate) {
       setEndDate(moment().format("YYYY-MM-DD"));
+    } else if (moment(endDate).diff(moment(), "days") < 0) {
+      setError("La date ne peut pas être dans le passé");
     } else if (!statusid || !endDate || !tenantid || !reason || !amount) {
       setError("Complétez les champs obligatoires");
     } else {

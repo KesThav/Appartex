@@ -87,11 +87,7 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
                   <Typography variant="h6" color="textPrimary" component="p">
                     {data.title}
                   </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    component="p"
-                  >
+                  <Typography variant="body2" color="textPrimary" component="p">
                     {data.content}
                   </Typography>
                 </CardContent>
@@ -181,7 +177,7 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
                       <CardContent>
                         <Typography
                           variant="body2"
-                          color="textSecondary"
+                          color="textPrimary"
                           component="p"
                         >
                           {data.content}

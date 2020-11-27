@@ -99,23 +99,32 @@ const Tenant = () => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    setLoading(true);
-    const updatedata = {
-      name,
-      lastname,
-      email,
-      dateofbirth,
-      status,
-    };
-    try {
-      await authAxios.put(`/tenants/update/${data}`, updatedata);
-      setLoading(false);
-      setEditing(false);
-      setCount((count) => count + 1);
-      setSuccess("Locataire modifié avec succès");
-    } catch (err) {
-      setLoading(false);
-      setError(err.response.data);
+
+    if (moment().diff(moment(dateofbirth), "years") < 18) {
+      setError(
+        "Le locataire ne peut pas être créé par la personne n'est pas majeur"
+      );
+    } else if (!name || !lastname || !email || !dateofbirth) {
+      setError("Complétez tous les champs");
+    } else {
+      setLoading(true);
+      const updatedata = {
+        name,
+        lastname,
+        email,
+        dateofbirth,
+        status,
+      };
+      try {
+        await authAxios.put(`/tenants/update/${data}`, updatedata);
+        setLoading(false);
+        setEditing(false);
+        setCount((count) => count + 1);
+        setSuccess("Locataire modifié avec succès");
+      } catch (err) {
+        setLoading(false);
+        setError(err.response.data);
+      }
     }
   };
 
@@ -151,7 +160,7 @@ const Tenant = () => {
     <div>
       <Prompt
         when={editing}
-        message="You avez des changements non enregitrés, est-ce sûr de vouloir quitter la page ?"
+        message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
       <Typography variant="h3">Les locataires</Typography>
       <div style={{ marginBottom: "10px" }}>
@@ -300,14 +309,14 @@ const Tenant = () => {
                             placeholder="Date de naissance"
                           />
                         ) : (
-                          moment(tenant.dateofbirth).format("YYYY-MM-DD")
+                          moment(tenant.dateofbirth).format("DD/MM/YY")
                         )}
                       </TableCell>
                       <TableCell>
-                        {moment(tenant.createdAt).format("YYYY-MM-DD")}
+                        {moment(tenant.createdAt).format("DD/MM/YY")}
                       </TableCell>
                       <TableCell>
-                        {moment(tenant.updatedAt).format("YYYY-MM-DD")}
+                        {moment(tenant.updatedAt).format("DD/MM/YY")}
                       </TableCell>
                       <TableCell>
                         {editing && data === tenant._id ? (

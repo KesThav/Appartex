@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MyTable = ({ data, title, link, header }) => {
+const MyTable = ({ data, title, link, header, text }) => {
   const classes = useStyles();
   return (
     <div>
@@ -56,10 +56,10 @@ const MyTable = ({ data, title, link, header }) => {
               {data.slice(0, 5).map((data) => (
                 <TableRow key={data._id}>
                   <TableCell component="th" scope="row">
-                    {data._id}
+                    {`${data.tenant.name} ${data.tenant.lastname}`}
                   </TableCell>
                   <TableCell>
-                    {moment(data.updatedAt).format("YYYY-MM-DD")}
+                    {moment(data.updatedAt).format("DD/MM/YY")}
                   </TableCell>
                   <TableCell>
                     {typeof data.status == "string"
@@ -74,7 +74,7 @@ const MyTable = ({ data, title, link, header }) => {
         <Box className={classes.box}>
           <Typography variant="overline">
             <Link to={link} className={classes.link}>
-              Voir tous les {title.split(" ")[1]}
+              {text}
             </Link>
           </Typography>
         </Box>

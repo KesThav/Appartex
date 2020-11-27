@@ -94,12 +94,14 @@ const BillHistory = ({ data, setError }) => {
                 billhistory.map((bh) => (
                   <TableRow key={bh._id}>
                     <TableCell>
-                      {moment(bh.createdAt).format("YYYY-MM-DD")}
+                      {moment(bh.createdAt).format("DD/MM/YY")}
                     </TableCell>
-                    <TableCell>{bh.status.name}</TableCell>
+                    <TableCell>
+                      {bh.status ? bh.status.name : "état supprimé"}
+                    </TableCell>
                     <TableCell>
                       {bh.endDate
-                        ? moment(bh.endDate).format("YYYY-MM-DD")
+                        ? moment(bh.endDate).format("DD/MM/YY")
                         : "-"}
                     </TableCell>
                   </TableRow>

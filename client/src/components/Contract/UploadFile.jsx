@@ -126,7 +126,24 @@ const UploadFile = ({ setSuccess, setError }) => {
           {contract &&
             contract.map((option) => (
               <MenuItem key={option._id} value={option._id}>
-                {option._id}
+                {option.tenant.name + " " + option.tenant.lastname + " - "}
+                {option.appartmentid.building
+                  ? option.appartmentid.building.adress +
+                    " " +
+                    option.appartmentid.building.postalcode +
+                    " " +
+                    option.appartmentid.building.city +
+                    ", " +
+                    option.appartmentid.size +
+                    " pièces"
+                  : option.appartmentid.adress +
+                    " " +
+                    option.appartmentid.postalcode +
+                    " " +
+                    option.appartmentid.city +
+                    ", " +
+                    option.appartmentid.size +
+                    " pièces"}
               </MenuItem>
             ))}
         </TextField>

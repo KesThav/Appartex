@@ -215,7 +215,7 @@ const Appart = () => {
     <div>
       <Prompt
         when={editing}
-        message="You avez des changements non enregitrés, est-ce sûr de vouloir quitter la page ?"
+        message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
       <Typography variant="h3">Les appartements</Typography>
       <div style={{ marginBottom: "10px" }}>
@@ -403,10 +403,10 @@ const Appart = () => {
                           </div>
                         </TableCell>
                         <TableCell>
-                          {moment(appart.createdAt).format("YYYY-MM-DD")}
+                          {moment(appart.createdAt).format("DD/MM/YY")}
                         </TableCell>
                         <TableCell>
-                          {moment(appart.updatedAt).format("YYYY-MM-DD")}
+                          {moment(appart.updatedAt).format("DD/MM/YY")}
                         </TableCell>
                         <TableCell>
                           {editing && data === appart._id ? (
@@ -488,10 +488,10 @@ const Appart = () => {
                         </TableCell>
 
                         <TableCell>
-                          {moment(appart.createdAt).format("YYYY-MM-DD")}
+                          {moment(appart.createdAt).format("DD/MM/YY")}
                         </TableCell>
                         <TableCell>
-                          {moment(appart.updatedAt).format("YYYY-MM-DD")}
+                          {moment(appart.updatedAt).format("DD/MM/YY")}
                         </TableCell>
                         <TableCell>
                           {editing && data === appart._id ? (

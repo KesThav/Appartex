@@ -35,7 +35,6 @@ import ForumIcon from "@material-ui/icons/Forum";
 import InfoIcon from "@material-ui/icons/Info";
 import TimelineIcon from "@material-ui/icons/Timeline";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import Divider from "@material-ui/core/Divider";
 
 const drawerWidth = 250;
 

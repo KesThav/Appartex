@@ -80,15 +80,15 @@ const TaskHistory = ({ data, setError }) => {
                 taskhistory.map((ts) => (
                   <TableRow key={ts._id}>
                     <TableCell>
-                      {moment(ts.createdAt).format("YYYY-MM-DD")}
+                      {moment(ts.createdAt).format("DD/MM/YY")}
                     </TableCell>
                     <TableCell>{ts.title}</TableCell>
                     <TableCell>{ts.content}</TableCell>
                     <TableCell>
-                      {moment(ts.startDate).format("YYYY-MM-DD")}
+                      {moment(ts.startDate).format("DD/MM/YY HH:MM")}
                     </TableCell>
                     <TableCell>
-                      {moment(ts.endDate).format("YYYY-MM-DD")}
+                      {moment(ts.endDate).format("DD/MM/YY HH:MM")}
                     </TableCell>
                     <TableCell>
                       {ts.status ? ts.status.name : "état supprimé"}

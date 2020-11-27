@@ -71,6 +71,7 @@ const TenantLogin = ({ push }) => {
   return (
     <Fragment>
       <Button
+        size="large"
         fullWidth
         variant="contained"
         color="primary"

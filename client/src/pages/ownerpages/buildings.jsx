@@ -131,7 +131,7 @@ const Building = (props) => {
     <div>
       <Prompt
         when={editing}
-        message="You avez des changements non enregitrés, est-ce sûr de vouloir quitter la page ?"
+        message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
       <Typography variant="h3">Les immeubles</Typography>
       <div style={{ marginBottom: "10px" }}>
@@ -228,10 +228,10 @@ const Building = (props) => {
                     <TableCell>{building.numberofAppart}</TableCell>
                     <TableCell>{building.counter}</TableCell>
                     <TableCell>
-                      {moment(building.createdAt).format("YYYY-MM-DD")}
+                      {moment(building.createdAt).format("DD/MM/YY")}
                     </TableCell>
                     <TableCell>
-                      {moment(building.updatedAt).format("YYYY-MM-DD")}
+                      {moment(building.updatedAt).format("DD/MM/YY")}
                     </TableCell>
                     <TableCell>
                       {editing && data === building._id ? (

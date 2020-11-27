@@ -161,6 +161,7 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
               <TableRow>
                 <Fragment>
                   {[
+                    "Tâche n°",
                     "Titre",
                     "Contenu",
                     "Message n°",
@@ -183,6 +184,7 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
                 task.length > 0 &&
                 dynamicSearch().map((task) => (
                   <TableRow key={task._id}>
+                    <TableCell>{task._id}</TableCell>
                     <TableCell>{task.title}</TableCell>
                     <TableCell>{task.content}</TableCell>
                     <TableCell>
@@ -197,16 +199,16 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
                     </TableCell>
                     <TableCell>{task.status.name}</TableCell>
                     <TableCell>
-                      {moment(task.startDate).format("YYYY-MM-DD")}
+                      {moment(task.startDate).format("DD/MM/YY HH:MM")}
                     </TableCell>
                     <TableCell>
-                      {moment(task.endDate).format("YYYY-MM-DD")}
+                      {moment(task.endDate).format("DD/MM/YY HH:MM")}
                     </TableCell>
                     <TableCell>
-                      {moment(task.createdAt).format("YYYY-MM-DD")}
+                      {moment(task.createdAt).format("DD/MM/YY")}
                     </TableCell>
                     <TableCell>
-                      {moment(task.updatedAt).format("YYYY-MM-DD")}
+                      {moment(task.updatedAt).format("DD/MM/YY")}
                     </TableCell>
                     <TableCell>
                       <Fragment>

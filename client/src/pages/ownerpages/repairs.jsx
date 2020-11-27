@@ -15,6 +15,7 @@ import {
   MenuItem,
   Typography,
   Checkbox,
+  Chip,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import moment from "moment";
@@ -31,6 +32,7 @@ import { Prompt } from "react-router-dom";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
+import TrendingDownIcon from "@material-ui/icons/TrendingDown";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -61,6 +63,8 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     display: "flex",
     flexDirection: "row",
+    alignItems: "center",
+    alignContent: "center",
   },
   avatar: {
     background: [theme.palette.secondary.main],
@@ -160,7 +164,7 @@ const Repair = () => {
     <div>
       <Prompt
         when={editing}
-        message="You avez des changements non enregitrés, est-ce sûr de vouloir quitter la page ?"
+        message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
       <Typography variant="h3">Les réparations</Typography>
       <div style={{ marginBottom: "10px" }}>
@@ -207,7 +211,7 @@ const Repair = () => {
             onChange={(e) => {
               setSearch(e.target.value);
             }}
-            style={{ width: "30%" }}
+            style={{ width: "30%", marginRight: 20 }}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -216,6 +220,18 @@ const Repair = () => {
               ),
             }}
           />
+          <Chip
+            variant="outlined"
+            color="primary"
+            label={
+              repair &&
+              " " +
+                dynamicSearch().reduce((acc, data) => acc + data.amount, 0) +
+                " CHF"
+            }
+            deleteIcon={<TrendingDownIcon style={{ color: "#dd2c00" }} />}
+            onDelete={() => console.log("wow")}
+          />
         </Box>
         <TableContainer className={classes.table} component={Paper} square>
           <Table stickyHeader>
@@ -223,7 +239,7 @@ const Repair = () => {
               <TableRow>
                 {[
                   "Réparation n°",
-                  "Tâche n°",
+                  "Tâche",
                   "raison",
                   "montant (CHF)",
                   "statut",
@@ -246,7 +262,15 @@ const Repair = () => {
                       <TableCell component="th" scope="row">
                         {repair._id}
                       </TableCell>
-                      <TableCell>{repair.taskid._id}</TableCell>
+                      <TableCell>
+                        {repair.taskid._id} |
+                        <strong>
+                          {" " +
+                            repair.taskid.title +
+                            " - " +
+                            repair.taskid.content}
+                        </strong>
+                      </TableCell>
                       <TableCell>
                         {editing && data === repair._id ? (
                           <TextField
@@ -294,10 +318,10 @@ const Repair = () => {
                         )}
                       </TableCell>
                       <TableCell>
-                        {moment(repair.createdAt).format("YYYY-MM-DD")}
+                        {moment(repair.createdAt).format("DD/MM/YY")}
                       </TableCell>
                       <TableCell>
-                        {moment(repair.updatedAt).format("YYYY-MM-DD")}
+                        {moment(repair.updatedAt).format("DD/MM/YY")}
                       </TableCell>
                       <TableCell>
                         {editing && data === repair._id ? (

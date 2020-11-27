@@ -28,7 +28,7 @@ import LoadingScreen from "../../components/LoadingScreen";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import BillHistory from "../../components/Bill/BillHistory";
-import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
+import TrendingUpIcon from "@material-ui/icons/TrendingUp";
 import { Prompt } from "react-router-dom";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
@@ -63,6 +63,8 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     display: "flex",
     flexDirection: "row",
+    alignItems: "center",
+    alignContent: "center",
   },
   avatar: {
     background: [theme.palette.secondary.main],
@@ -85,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     height: 75,
     boxShadow: "none",
-    marginLeft: "30%",
+    marginLeft: "10%",
   },
   iconBox: {
     height: "100%",
@@ -133,24 +135,28 @@ const Bills = () => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    setLoading(true);
-    const updatedata = {
-      reference,
-      reason,
-      tenant: tenantid,
-      status: statusid,
-      endDate,
-      amount,
-    };
-    try {
-      await authAxios.put(`/bills/update/${data}`, updatedata);
-      setLoading(false);
-      setEditing(false);
-      setSuccess("Facture modifié avec succès");
-      setCount((count) => count + 1);
-    } catch (err) {
-      setLoading(false);
-      setError(err.response.data);
+    if (moment(endDate).diff(moment(), "days") < 0) {
+      setError("La date ne peut pas être dans le passé");
+    } else {
+      setLoading(true);
+      const updatedata = {
+        reference,
+        reason,
+        tenant: tenantid,
+        status: statusid,
+        endDate,
+        amount,
+      };
+      try {
+        await authAxios.put(`/bills/update/${data}`, updatedata);
+        setLoading(false);
+        setEditing(false);
+        setSuccess("Facture modifié avec succès");
+        setCount((count) => count + 1);
+      } catch (err) {
+        setLoading(false);
+        setError(err.response.data);
+      }
     }
   };
 
@@ -209,7 +215,7 @@ const Bills = () => {
     <div>
       <Prompt
         when={editing}
-        message="You avez des changements non enregitrés, est-ce sûr de vouloir quitter la page ?"
+        message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
       <Typography variant="h3">Les factures</Typography>
       <div style={{ marginBottom: "10px" }}>
@@ -268,7 +274,6 @@ const Bills = () => {
                 setUpbound(999999);
               }
             }}
-            className={classes.form}
           >
             {statut.map((option) => (
               <MenuItem key={option.id} value={option.value}>
@@ -285,7 +290,7 @@ const Bills = () => {
             onChange={(e) => {
               setSearch(e.target.value);
             }}
-            style={{ width: "30%" }}
+            style={{ width: "30%", marginRight: 20 }}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -295,22 +300,19 @@ const Bills = () => {
             }}
           />
 
-          <Paper className={classes.paper} square>
-            <Box className={classes.Box4}>
-              <Typography variant="h4">
-                {bill &&
-                  dynamicSearch().reduce((acc, data) => acc + data.amount, 0)}
-              </Typography>
-              <Typography variant="subtitle1" color="textSecondary">
-                CHF
-              </Typography>
-            </Box>
-            <Box className={classes.iconBox} style={{ background: "#212121" }}>
-              <AccountBalanceIcon style={{ fontSize: 75, color: "#fff" }} />
-            </Box>
-          </Paper>
+          <Chip
+            variant="outlined"
+            color="primary"
+            label={
+              bill &&
+              " " +
+                dynamicSearch().reduce((acc, data) => acc + data.amount, 0) +
+                " CHF"
+            }
+            deleteIcon={<TrendingUpIcon style={{ color: "52b202" }} />}
+            onDelete={() => console.log("wow")}
+          />
         </Box>
-        <Box></Box>
 
         <TableContainer className={classes.table} component={Paper} square>
           <Table stickyHeader>
@@ -379,32 +381,32 @@ const Bills = () => {
                         ) : moment(bill.endDate).diff(moment(), "days") > 30 ? (
                           <Chip
                             style={{ background: "#29b6f6", color: "#fff" }}
-                            label={moment(bill.endDate).format("YYYY-MM-DD")}
+                            label={moment(bill.endDate).format("DD/MM/YY")}
                           />
                         ) : moment(bill.endDate).diff(moment(), "days") <= 30 &&
                           moment(bill.endDate).diff(moment(), "days") > 15 ? (
                           <Chip
                             style={{ background: "#52b202", color: "#fff" }}
-                            label={moment(bill.endDate).format("YYYY-MM-DD")}
+                            label={moment(bill.endDate).format("DD/MM/YY")}
                           />
                         ) : moment(bill.endDate).diff(moment(), "days") <= 15 &&
                           moment(bill.endDate).diff(moment(), "days") > 0 ? (
                           <Chip
                             style={{ background: "#ffb300", color: "#fff" }}
-                            label={moment(bill.endDate).format("YYYY-MM-DD")}
+                            label={moment(bill.endDate).format("DD/MM/YY")}
                           />
                         ) : (
                           <Chip
                             style={{ background: "#dd2c00", color: "#fff" }}
-                            label={moment(bill.endDate).format("YYYY-MM-DD")}
+                            label={moment(bill.endDate).format("DD/MM/YY")}
                           />
                         )}
                       </TableCell>
                       <TableCell>
-                        {moment(bill.createdAt).format("YYYY-MM-DD")}
+                        {moment(bill.createdAt).format("DD/MM/YY")}
                       </TableCell>
                       <TableCell>
-                        {moment(bill.updateddAt).format("YYYY-MM-DD")}
+                        {moment(bill.updateddAt).format("DD/MM/YY")}
                       </TableCell>
                       <TableCell>
                         {editing && data === bill._id ? (

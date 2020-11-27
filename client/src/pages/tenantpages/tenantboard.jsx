@@ -149,10 +149,11 @@ const Tenantboard = (props) => {
     setError("");
     setSuccess("");
     setLoading(true);
-    if (!dateofbirth) {
-      setDate(moment().format("YYYY-MM-DD"));
-    }
-    if (!name || !lastname || !email || !password || !confirm) {
+    if (moment().diff(moment(dateofbirth), "years") < 18) {
+      setError(
+        "Le locataire ne peut pas être créé par la personne n'est pas majeur"
+      );
+    } else if (!name || !lastname || !email || !password || !confirm) {
       setError("Complétez tous les champs");
     } else if (password !== confirm) {
       setError("Les mot de passes ne correspondent pas");
@@ -205,7 +206,7 @@ const Tenantboard = (props) => {
               {user && user.name + " " + user.lastname}
             </Typography>
             <Typography variant="overline">
-              Créé le {user && moment(user.createdAt).format("YYYY-MM-DD")}
+              Créé le {user && moment(user.createdAt).format("DD/MM/YY")}
             </Typography>
             <Typography variant="caption">{user && user.email}</Typography>
           </Paper>
@@ -294,7 +295,7 @@ const Tenantboard = (props) => {
                             "Charge",
                             "Loyer",
                             "Statut",
-                            "Date",
+                            "Valable depuis le",
                             "Documents",
                           ].map((data, index) => (
                             <TableCell key={index}>
@@ -321,7 +322,7 @@ const Tenantboard = (props) => {
                               <TableCell>{data.rent}</TableCell>
                               <TableCell>{data.status}</TableCell>
                               <TableCell>
-                                {moment(data.updatedAt).format("YYYY-MM-DD")}
+                                {moment(data.createdAt).format("DD/MM/YY")}
                               </TableCell>
                               <TableCell>
                                 {data.file.map((doc) => (
@@ -380,7 +381,7 @@ const Tenantboard = (props) => {
                               <TableCell>{data.amount}</TableCell>
                               <TableCell>{data.status.name}</TableCell>
                               <TableCell>
-                                {moment(data.updatedAt).format("YYYY-MM-DD")}
+                                {moment(data.endDate).format("DD/MM/YY")}
                               </TableCell>
                               <TableCell>
                                 {data.file.map((doc) => (

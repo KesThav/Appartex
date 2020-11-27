@@ -9,8 +9,6 @@ import {
   DialogContent,
   TextField,
   InputAdornment,
-  Typography,
-  Tooltip,
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import EmailIcon from "@material-ui/icons/Email";
@@ -52,15 +50,16 @@ const AddTenant = () => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (!dateofbirth) {
-      setDate(moment().format("YYYY-MM-DD"));
-    }
     if (!name || !lastname || !email || !password || !confirm) {
       setError("Complétez tous les champs");
     } else if (password !== confirm) {
       setError("Les mot de passes ne correspondent pas");
     } else if (password.length < 6) {
       setError("Le mot de passe doit faire minimum 6 charactères");
+    } else if (moment().diff(moment(dateofbirth), "years") < 18) {
+      setError(
+        "Le locataire ne peut pas être créé par la personne n'est pas majeur"
+      );
     } else {
       setLoading(true);
       const data = {

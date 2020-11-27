@@ -88,9 +88,11 @@ const RepairHistory = ({ data, setError }) => {
                 repairhistory.map((rp) => (
                   <TableRow key={rp._id}>
                     <TableCell>
-                      {moment(rp.createdAt).format("YYYY-MM-DD")}
+                      {moment(rp.createdAt).format("DD/MM/YY")}
                     </TableCell>
-                    <TableCell>{rp.status.name}</TableCell>
+                    <TableCell>
+                      {rp.status ? rp.status.name : "état supprimé"}
+                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>

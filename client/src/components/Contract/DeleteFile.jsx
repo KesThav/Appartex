@@ -1,11 +1,9 @@
-import React, { useState, useContext, Fragment } from "react";
+import React, { useState, useContext, Fragment, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   Button,
-  List,
-  ListItem,
   Box,
   makeStyles,
   Divider,
@@ -33,6 +31,7 @@ const DeleteFile = ({
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const { setLoading, authAxios, setCount } = useContext(UserContext);
+  const [doc, setDoc] = useState("");
 
   const deleteFile = async (dt) => {
     setError("");
@@ -70,8 +69,7 @@ const DeleteFile = ({
         <Divider />
         <DialogContent>
           Êtez-vous sûr de vouloir supprimer le document <br />
-          <strong>{data}</strong> du contrat <strong>{contractid}</strong>
-          ? <br />
+          <strong>{data}</strong> du contrat ? <br />
           Une fois validé, il n'est plus possible de revenir en arrière.
         </DialogContent>
         <Divider />

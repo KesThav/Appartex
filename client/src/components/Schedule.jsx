@@ -36,7 +36,7 @@ const Schedule = ({ data }) => {
     <Fragment>
       {data &&
         data
-          .slice(0, 4)
+          .slice(0, 3)
           .filter((data) => moment(data.endDate) > moment())
           .sort((a, b) => new Date(b.endDate) - new Date(a.endDate))
           .map((data, i) => (

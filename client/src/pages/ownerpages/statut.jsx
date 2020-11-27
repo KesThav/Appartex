@@ -128,7 +128,7 @@ const Status = () => {
     <div>
       <Prompt
         when={editing}
-        message="You avez des changements non enregitrés, est-ce sûr de vouloir quitter la page ?"
+        message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
       <Typography variant="h3">Les statuts</Typography>
       <div style={{ marginBottom: "10px" }}>
@@ -161,17 +161,13 @@ const Status = () => {
             <TableHead>
               <TableRow>
                 <Fragment>
-                  {[
-                    "Statut n°",
-                    "Type",
-                    "Créé le",
-                    "Dernière modification",
-                    "Actions",
-                  ].map((title, index) => (
-                    <TableCell key={index}>
-                      <strong>{title}</strong>
-                    </TableCell>
-                  ))}
+                  {["Nom", "Créé le", "Dernière modification", "Actions"].map(
+                    (title, index) => (
+                      <TableCell key={index}>
+                        <strong>{title}</strong>
+                      </TableCell>
+                    )
+                  )}
                 </Fragment>
               </TableRow>
             </TableHead>
@@ -182,9 +178,6 @@ const Status = () => {
                   dynamicSearch().map((status) => (
                     <TableRow key={status._id}>
                       <TableCell component="th" scope="row">
-                        {status._id}
-                      </TableCell>
-                      <TableCell>
                         {editing && data === status._id ? (
                           <TextField
                             id={status.name}
@@ -198,10 +191,10 @@ const Status = () => {
                         )}
                       </TableCell>
                       <TableCell>
-                        {moment(status.createdAt).format("YYYY-MM-DD")}
+                        {moment(status.createdAt).format("DD/MM/YY")}
                       </TableCell>
                       <TableCell>
-                        {moment(status.updatedAt).format("YYYY-MM-DD")}
+                        {moment(status.updatedAt).format("DD/MM/YY")}
                       </TableCell>
                       <TableCell>
                         {editing && data === status._id ? (

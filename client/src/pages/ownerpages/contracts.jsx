@@ -214,7 +214,7 @@ const Contract = () => {
     <div>
       <Prompt
         when={editing}
-        message="You avez des changements non enregitrés, est-ce sûr de vouloir quitter la page ?"
+        message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
       <Typography variant="h3">Les contrats</Typography>
 
@@ -299,12 +299,18 @@ const Contract = () => {
                             " " +
                             contract.appartmentid.postalcode +
                             " " +
-                            contract.appartmentid.city
+                            contract.appartmentid.city +
+                            ", " +
+                            contract.appartmentid.size +
+                            " pièces"
                           : contract.appartmentid.building.adress +
                             " " +
                             contract.appartmentid.building.postalcode +
                             " " +
-                            contract.appartmentid.building.city}
+                            contract.appartmentid.building.city +
+                            ", " +
+                            contract.appartmentid.size +
+                            " pièces"}
                       </TableCell>
                       <TableCell>
                         {editing && data === contract._id ? (
@@ -347,10 +353,10 @@ const Contract = () => {
                       </TableCell>
                       <TableCell>{contract.status}</TableCell>
                       <TableCell>
-                        {moment(contract.createdAt).format("YYYY-MM-DD")}
+                        {moment(contract.createdAt).format("DD/MM/YY")}
                       </TableCell>
                       <TableCell>
-                        {moment(contract.updatedAt).format("YYYY-MM-DD")}
+                        {moment(contract.updatedAt).format("DD/MM/YY")}
                       </TableCell>
                       <TableCell>
                         {editing && data === contract._id ? (

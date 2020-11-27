@@ -228,7 +228,7 @@ const UserSkeleton = (props) => {
               {tenant && tenant.name + " " + tenant.lastname}
             </Typography>
             <Typography variant="overline">
-              Créé le {tenant && moment(tenant.createdAt).format("YYYY-MM-DD")}
+              Créé le {tenant && moment(tenant.createdAt).format("DD/MM/YY")}
             </Typography>
             <Typography variant="caption">{tenant && tenant.email}</Typography>
           </Paper>
@@ -317,7 +317,7 @@ const UserSkeleton = (props) => {
                             "Charge",
                             "Loyer",
                             "Statut",
-                            "Date",
+                            "Valable depuis le",
                             "Documents",
                           ].map((data, index) => (
                             <TableCell key={index}>
@@ -344,7 +344,7 @@ const UserSkeleton = (props) => {
                               <TableCell>{data.rent}</TableCell>
                               <TableCell>{data.status}</TableCell>
                               <TableCell>
-                                {moment(data.updatedAt).format("YYYY-MM-DD")}
+                                {moment(data.createdAt).format("DD/MM/YY")}
                               </TableCell>
                               <TableCell>
                                 {data.file.map((doc) => (
@@ -403,7 +403,7 @@ const UserSkeleton = (props) => {
                               <TableCell>{data.amount}</TableCell>
                               <TableCell>{data.status.name}</TableCell>
                               <TableCell>
-                                {moment(data.updatedAt).format("YYYY-MM-DD")}
+                                {moment(data.endDate).format("DD/MM/YY")}
                               </TableCell>
                               <TableCell>
                                 {data.file.map((doc) => (

@@ -54,7 +54,12 @@ const EditTaks = ({ appointmentData, setSuccess, setError }) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (!startDate || !endDate || !title || !content) {
+    if (
+      moment(startDate).diff(moment(), "days") < 0 ||
+      moment(endDate).diff(moment(), "days") < 0
+    ) {
+      setError("La date ne peut pas être dans le passé");
+    } else if (!startDate || !endDate || !title || !content) {
       setError("Complétez tous les champs");
     } else if (startDate > endDate) {
       setError(

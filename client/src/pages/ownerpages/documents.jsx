@@ -79,17 +79,17 @@ export default function VerticalTabs() {
           onChange={handleChange}
           className={classes.tabs}
         >
-          <Tab label="Locataires" {...a11yProps(0)} />
-          <Tab label="Appartements" {...a11yProps(1)} />
+          <Tab label="Appartements" {...a11yProps(0)} />
+          <Tab label="Locataires" {...a11yProps(1)} />
           <Tab label="Contrats" {...a11yProps(2)} />
           <Tab label="Factures" {...a11yProps(3)} />
           <Tab label="Réparations" {...a11yProps(4)} />
         </Tabs>
         <TabPanel value={value} index={0}>
-          <UploadTenantFile setSuccess={setSuccess} setError={setError} />
+          <UploadImage setSuccess={setSuccess} setError={setError} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <UploadImage setSuccess={setSuccess} setError={setError} />
+          <UploadTenantFile setSuccess={setSuccess} setError={setError} />
         </TabPanel>
         <TabPanel value={value} index={2}>
           <UploadContractFile setSuccess={setSuccess} setError={setError} />
