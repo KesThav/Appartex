@@ -4,6 +4,9 @@ const Status = require("../models/status.model");
 const Bill = require("../models/bill.model");
 const Task = require("../models/task.model");
 const Repair = require("../models/repair.model");
+const Billstatus = require("../models/bill_status.model");
+const Taskstatus = require("../models/task_status.model");
+const Repairstatus = require("../models/repair_status.model");
 const jwt = require("../middlewares/jwt");
 const adminAccess = require("../middlewares/adminAccess");
 let ObjectId = require("mongodb").ObjectId;
@@ -248,13 +251,28 @@ router.delete("/delete/:statusid", jwt, adminAccess, async (ctx) => {
       ctx.throw(400, "can't delete status. Status is used in bills");
     }
 
+    const billstatus = await Billstatus.findOne({ status: statusid });
+    if (billstatus) {
+      ctx.throw(400, "can't delete status. Status is used in bills");
+    }
+
     const task = await Task.findOne({ status: statusid });
     if (task) {
       ctx.throw(400, "can't delete status. Status is used in tasks");
     }
 
+    const taskstatus = await Taskstatus.findOne({ status: statusid });
+    if (taskstatus) {
+      ctx.throw(400, "can't delete status. Status is used in tasks");
+    }
+
     const repair = await Repair.findOne({ status: statusid });
     if (repair) {
+      ctx.throw(400, "can't delete status. Status is used in repairs");
+    }
+
+    const repairstatus = await Repairstatus.findOne({ status: statusid });
+    if (repairstatus) {
       ctx.throw(400, "can't delete status. Status is used in repairs");
     }
 
