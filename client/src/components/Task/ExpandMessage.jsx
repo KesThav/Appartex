@@ -73,7 +73,6 @@ const ExpandMessage = ({ id, setError }) => {
           }}
         >
           <ExpandMoreIcon />
-          {id}
         </Button>
       </Tooltip>
 

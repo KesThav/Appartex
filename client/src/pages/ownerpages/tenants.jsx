@@ -16,8 +16,7 @@ import {
   Chip,
   Paper,
   Typography,
-  Divider,
-  Avatar,
+  TablePagination,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import AddTenant from "../../components/Tenant/AddTenant";
@@ -89,6 +88,17 @@ const Tenant = () => {
   const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const classes = useStyles();
   useEffect(() => {
@@ -228,141 +238,151 @@ const Tenant = () => {
               <Fragment>
                 {!loading ? (
                   tenant.length > 0 &&
-                  dynamicSearch().map((tenant) => (
-                    <TableRow key={tenant._id}>
-                      <TableCell>
-                        {editing && data === tenant._id ? (
-                          <TextField
-                            id={tenant.lastname}
-                            type="text"
-                            value={lastname}
-                            onChange={(e) => setLastname(e.target.value)}
-                            placeholder="Nom"
-                          />
-                        ) : (
-                          tenant.lastname
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === tenant._id ? (
-                          <TextField
-                            id={tenant.name}
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="Prénom"
-                          />
-                        ) : (
-                          tenant.name
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === tenant._id ? (
-                          <TextField
-                            id={tenant.email}
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Email"
-                          />
-                        ) : (
-                          tenant.email
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === tenant._id ? (
-                          <TextField
-                            id={tenant.status}
-                            select
-                            value={status}
-                            onChange={(e) => setStatus(e.target.value)}
-                          >
-                            {statut.map((option) => (
-                              <MenuItem key={option.value} value={option.value}>
-                                {option.label}
-                              </MenuItem>
-                            ))}
-                          </TextField>
-                        ) : (
-                          <div>
-                            {tenant.status == "Actif" ? (
-                              <Chip
-                                style={{ background: "#52b202", color: "#fff" }}
-                                label={tenant.status}
-                              />
-                            ) : (
-                              <Chip
-                                style={{ background: "red", color: "#fff" }}
-                                label={tenant.status}
-                              />
-                            )}
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === tenant._id ? (
-                          <TextField
-                            id={tenant.dateofbirth}
-                            type="date"
-                            value={moment(dateofbirth).format("YYYY-MM-DD")}
-                            onChange={(e) => setDate(e.target.value)}
-                            placeholder="Date de naissance"
-                          />
-                        ) : (
-                          moment(tenant.dateofbirth).format("DD/MM/YY")
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {moment(tenant.createdAt).format("DD/MM/YY")}
-                      </TableCell>
-                      <TableCell>
-                        {moment(tenant.updatedAt).format("DD/MM/YY")}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === tenant._id ? (
-                          <Fragment>
-                            <IconButton>
-                              <CheckIcon onClick={submit} />
-                            </IconButton>
-                            <IconButton>
-                              <CloseIcon onClick={() => setEditing(!editing)} />
-                            </IconButton>
-                          </Fragment>
-                        ) : (
-                          <Fragment>
-                            <Link
-                              to={`/tenants/${tenant._id}`}
-                              className={classes.link}
-                            >
-                              <IconButton>
-                                <ArrowForwardIcon />
-                              </IconButton>
-                            </Link>
-                            <IconButton>
-                              <EditIcon
-                                onClick={() => {
-                                  setName(tenant.name);
-                                  setLastname(tenant.lastname);
-                                  setEmail(tenant.email);
-                                  setDate(tenant.dateofbirth);
-                                  setData(tenant._id);
-                                  setStatus(tenant.status);
-                                  setError("");
-                                  setSuccess("");
-                                  setEditing(!editing);
-                                }}
-                              />
-                            </IconButton>
-                            <DeleteTenant
-                              data={tenant}
-                              setSuccess={setSuccess}
-                              setError={setError}
+                  dynamicSearch()
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((tenant) => (
+                      <TableRow key={tenant._id}>
+                        <TableCell>
+                          {editing && data === tenant._id ? (
+                            <TextField
+                              id={tenant.lastname}
+                              type="text"
+                              value={lastname}
+                              onChange={(e) => setLastname(e.target.value)}
+                              placeholder="Nom"
                             />
-                          </Fragment>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))
+                          ) : (
+                            tenant.lastname
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === tenant._id ? (
+                            <TextField
+                              id={tenant.name}
+                              type="text"
+                              value={name}
+                              onChange={(e) => setName(e.target.value)}
+                              placeholder="Prénom"
+                            />
+                          ) : (
+                            tenant.name
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === tenant._id ? (
+                            <TextField
+                              id={tenant.email}
+                              type="email"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              placeholder="Email"
+                            />
+                          ) : (
+                            tenant.email
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === tenant._id ? (
+                            <TextField
+                              id={tenant.status}
+                              select
+                              value={status}
+                              onChange={(e) => setStatus(e.target.value)}
+                            >
+                              {statut.map((option) => (
+                                <MenuItem
+                                  key={option.value}
+                                  value={option.value}
+                                >
+                                  {option.label}
+                                </MenuItem>
+                              ))}
+                            </TextField>
+                          ) : (
+                            <div>
+                              {tenant.status == "Actif" ? (
+                                <Chip
+                                  style={{
+                                    background: "#52b202",
+                                    color: "#fff",
+                                  }}
+                                  label={tenant.status}
+                                />
+                              ) : (
+                                <Chip
+                                  style={{ background: "red", color: "#fff" }}
+                                  label={tenant.status}
+                                />
+                              )}
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === tenant._id ? (
+                            <TextField
+                              id={tenant.dateofbirth}
+                              type="date"
+                              value={moment(dateofbirth).format("YYYY-MM-DD")}
+                              onChange={(e) => setDate(e.target.value)}
+                              placeholder="Date de naissance"
+                            />
+                          ) : (
+                            moment(tenant.dateofbirth).format("DD/MM/YY")
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {moment(tenant.createdAt).format("DD/MM/YY")}
+                        </TableCell>
+                        <TableCell>
+                          {moment(tenant.updatedAt).format("DD/MM/YY")}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === tenant._id ? (
+                            <Fragment>
+                              <IconButton>
+                                <CheckIcon onClick={submit} />
+                              </IconButton>
+                              <IconButton>
+                                <CloseIcon
+                                  onClick={() => setEditing(!editing)}
+                                />
+                              </IconButton>
+                            </Fragment>
+                          ) : (
+                            <Fragment>
+                              <Link
+                                to={`/tenants/${tenant._id}`}
+                                className={classes.link}
+                              >
+                                <IconButton>
+                                  <ArrowForwardIcon />
+                                </IconButton>
+                              </Link>
+                              <IconButton>
+                                <EditIcon
+                                  onClick={() => {
+                                    setName(tenant.name);
+                                    setLastname(tenant.lastname);
+                                    setEmail(tenant.email);
+                                    setDate(tenant.dateofbirth);
+                                    setData(tenant._id);
+                                    setStatus(tenant.status);
+                                    setError("");
+                                    setSuccess("");
+                                    setEditing(!editing);
+                                  }}
+                                />
+                              </IconButton>
+                              <DeleteTenant
+                                data={tenant}
+                                setSuccess={setSuccess}
+                                setError={setError}
+                              />
+                            </Fragment>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))
                 ) : (
                   <LoadingScreen />
                 )}
@@ -370,6 +390,15 @@ const Tenant = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={tenant && tenant.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
       </Paper>
       <div style={{ marginTop: "13px" }}>
         <AddTenant />

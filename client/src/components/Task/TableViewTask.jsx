@@ -12,6 +12,7 @@ import {
   TextField,
   Paper,
   Checkbox,
+  TablePagination,
 } from "@material-ui/core";
 
 import moment from "moment";
@@ -72,6 +73,17 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
   const [activeFilter, setActiveFilter] = useState([]);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const handleChange = (event, filter) => {
     let newData = filter.map((data) => data._id);
@@ -161,7 +173,6 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
               <TableRow>
                 <Fragment>
                   {[
-                    "Tâche n°",
                     "Titre",
                     "Contenu",
                     "Message n°",
@@ -182,51 +193,52 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
             <TableBody>
               {!loading ? (
                 task.length > 0 &&
-                dynamicSearch().map((task) => (
-                  <TableRow key={task._id}>
-                    <TableCell>{task._id}</TableCell>
-                    <TableCell>{task.title}</TableCell>
-                    <TableCell>{task.content}</TableCell>
-                    <TableCell>
-                      {task.messageid ? (
-                        <ExpandMessage
-                          id={task.messageid._id}
-                          setError={setError}
-                        />
-                      ) : (
-                        ""
-                      )}
-                    </TableCell>
-                    <TableCell>{task.status.name}</TableCell>
-                    <TableCell>
-                      {moment(task.startDate).format("DD/MM/YY HH:MM")}
-                    </TableCell>
-                    <TableCell>
-                      {moment(task.endDate).format("DD/MM/YY HH:MM")}
-                    </TableCell>
-                    <TableCell>
-                      {moment(task.createdAt).format("DD/MM/YY")}
-                    </TableCell>
-                    <TableCell>
-                      {moment(task.updatedAt).format("DD/MM/YY")}
-                    </TableCell>
-                    <TableCell>
-                      <Fragment>
-                        <TaskHistory data={task._id} setError={setError} />
-                        <EditTask
-                          setSuccess={setSuccess}
-                          setError={setError}
-                          appointmentData={task}
-                        />
-                        <DeleteTask
-                          id={task._id}
-                          setSuccess={setSuccess}
-                          setError={setError}
-                        />
-                      </Fragment>
-                    </TableCell>
-                  </TableRow>
-                ))
+                dynamicSearch()
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((task) => (
+                    <TableRow key={task._id}>
+                      <TableCell>{task.title}</TableCell>
+                      <TableCell>{task.content}</TableCell>
+                      <TableCell>
+                        {task.messageid ? (
+                          <ExpandMessage
+                            id={task.messageid._id}
+                            setError={setError}
+                          />
+                        ) : (
+                          ""
+                        )}
+                      </TableCell>
+                      <TableCell>{task.status.name}</TableCell>
+                      <TableCell>
+                        {moment(task.startDate).format("DD/MM/YY HH:MM")}
+                      </TableCell>
+                      <TableCell>
+                        {moment(task.endDate).format("DD/MM/YY HH:MM")}
+                      </TableCell>
+                      <TableCell>
+                        {moment(task.createdAt).format("DD/MM/YY")}
+                      </TableCell>
+                      <TableCell>
+                        {moment(task.updatedAt).format("DD/MM/YY")}
+                      </TableCell>
+                      <TableCell>
+                        <Fragment>
+                          <TaskHistory data={task._id} setError={setError} />
+                          <EditTask
+                            setSuccess={setSuccess}
+                            setError={setError}
+                            appointmentData={task}
+                          />
+                          <DeleteTask
+                            id={task._id}
+                            setSuccess={setSuccess}
+                            setError={setError}
+                          />
+                        </Fragment>
+                      </TableCell>
+                    </TableRow>
+                  ))
               ) : (
                 <TableRow>
                   <LoadingScreen />
@@ -235,6 +247,15 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={task.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
       </Paper>
       <div style={{ marginTop: "13px" }}></div>
     </div>

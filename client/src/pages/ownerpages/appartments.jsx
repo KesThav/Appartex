@@ -18,6 +18,7 @@ import {
   MenuItem,
   FormControl,
   FormControlLabel,
+  TablePagination,
   Checkbox,
 } from "@material-ui/core";
 import { Prompt } from "react-router-dom";
@@ -99,8 +100,17 @@ const Appart = () => {
   const [filter, setFilter] = useState("");
   const [check, setCheck] = useState(false);
   const [activeFilter, setActiveFilter] = useState([]);
-  const [optionValue, setOptionValue] = useState();
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   const classes = useStyles();
   useEffect(() => {
     getBuildings();
@@ -141,6 +151,7 @@ const Appart = () => {
     let newData = filter.map((data) => data._id);
     setActiveFilter(newData);
   };
+
 
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -329,214 +340,224 @@ const Appart = () => {
               <Fragment>
                 {!loading ? (
                   appart.length > 0 &&
-                  dynamicSearch().map((appart) => {
-                    return !appart.building ? (
-                      <TableRow key={appart._id}>
-                        <TableCell component="th" scope="row">
-                          {appart.building ? "Oui" : "Non"}
-                        </TableCell>
-                        <TableCell>
-                          {editing && data === appart._id ? (
-                            <TextField
-                              id={appart.adress}
-                              type="text"
-                              value={adress}
-                              onChange={(e) => setAdress(e.target.value)}
-                              placeholder="Adresse"
-                            />
-                          ) : (
-                            appart.adress
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {editing && data === appart._id ? (
-                            <TextField
-                              id={appart.postalcode.toString()}
-                              type="number"
-                              value={postalcode}
-                              onChange={(e) => setPostalcode(e.target.value)}
-                              placeholder="Code postale"
-                            />
-                          ) : (
-                            appart.postalcode
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {editing && data === appart._id ? (
-                            <TextField
-                              id={appart.city}
-                              type="text"
-                              value={city}
-                              onChange={(e) => setCity(e.target.value)}
-                              placeholder="Ville"
-                            />
-                          ) : (
-                            appart.city
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {editing && data === appart._id ? (
-                            <TextField
-                              id={appart.size.toString()}
-                              type="number"
-                              value={size}
-                              onChange={(e) => setSize(e.target.value)}
-                              placeholder="Pièces"
-                            />
-                          ) : (
-                            appart.size
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <div>
-                            {appart.status == "Libre" ? (
-                              <Chip
-                                style={{ background: "#52b202", color: "#fff" }}
-                                label={appart.status}
+                  dynamicSearch()
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((appart) => {
+                      return !appart.building ? (
+                        <TableRow key={appart._id}>
+                          <TableCell component="th" scope="row">
+                            {appart.building ? "Oui" : "Non"}
+                          </TableCell>
+                          <TableCell>
+                            {editing && data === appart._id ? (
+                              <TextField
+                                id={appart.adress}
+                                type="text"
+                                value={adress}
+                                onChange={(e) => setAdress(e.target.value)}
+                                placeholder="Adresse"
                               />
                             ) : (
-                              <Chip
-                                style={{ background: "red", color: "#fff" }}
-                                label={appart.status}
-                              />
+                              appart.adress
                             )}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          {moment(appart.createdAt).format("DD/MM/YY")}
-                        </TableCell>
-                        <TableCell>
-                          {moment(appart.updatedAt).format("DD/MM/YY")}
-                        </TableCell>
-                        <TableCell>
-                          {editing && data === appart._id ? (
-                            <Fragment>
-                              <Button>
-                                <CheckIcon onClick={submit} />
-                              </Button>
-                              <Button>
-                                <CloseIcon
-                                  onClick={() => setEditing(!editing)}
+                          </TableCell>
+                          <TableCell>
+                            {editing && data === appart._id ? (
+                              <TextField
+                                id={appart.postalcode.toString()}
+                                type="number"
+                                value={postalcode}
+                                onChange={(e) => setPostalcode(e.target.value)}
+                                placeholder="Code postale"
+                              />
+                            ) : (
+                              appart.postalcode
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {editing && data === appart._id ? (
+                              <TextField
+                                id={appart.city}
+                                type="text"
+                                value={city}
+                                onChange={(e) => setCity(e.target.value)}
+                                placeholder="Ville"
+                              />
+                            ) : (
+                              appart.city
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {editing && data === appart._id ? (
+                              <TextField
+                                id={appart.size.toString()}
+                                type="number"
+                                value={size}
+                                onChange={(e) => setSize(e.target.value)}
+                                placeholder="Pièces"
+                              />
+                            ) : (
+                              appart.size
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <div>
+                              {appart.status == "Libre" ? (
+                                <Chip
+                                  style={{
+                                    background: "#52b202",
+                                    color: "#fff",
+                                  }}
+                                  label={appart.status}
                                 />
-                              </Button>
-                            </Fragment>
-                          ) : (
-                            <Fragment>
-                              {appart.picture.length > 0 && (
-                                <ShowDocument
-                                  appart={appart._id}
+                              ) : (
+                                <Chip
+                                  style={{ background: "red", color: "#fff" }}
+                                  label={appart.status}
+                                />
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {moment(appart.createdAt).format("DD/MM/YY")}
+                          </TableCell>
+                          <TableCell>
+                            {moment(appart.updatedAt).format("DD/MM/YY")}
+                          </TableCell>
+                          <TableCell>
+                            {editing && data === appart._id ? (
+                              <Fragment>
+                                <Button>
+                                  <CheckIcon onClick={submit} />
+                                </Button>
+                                <Button>
+                                  <CloseIcon
+                                    onClick={() => setEditing(!editing)}
+                                  />
+                                </Button>
+                              </Fragment>
+                            ) : (
+                              <Fragment>
+                                {appart.picture.length > 0 && (
+                                  <ShowDocument
+                                    appart={appart._id}
+                                    setError={setError}
+                                  />
+                                )}
+                                <IconButton>
+                                  <EditIcon
+                                    onClick={() => {
+                                      setSize(appart.size);
+                                      setAdress(appart.adress);
+                                      setPostalcode(appart.postalcode);
+                                      setCity(appart.city);
+                                      setData(appart._id);
+                                      setBuild(null);
+                                      setError("");
+                                      setSuccess("");
+                                      setEditing(!editing);
+                                    }}
+                                  />
+                                </IconButton>
+                                <DeleteAppart
+                                  data={appart}
+                                  setSuccess={setSuccess}
                                   setError={setError}
                                 />
-                              )}
-                              <IconButton>
-                                <EditIcon
-                                  onClick={() => {
-                                    setSize(appart.size);
-                                    setAdress(appart.adress);
-                                    setPostalcode(appart.postalcode);
-                                    setCity(appart.city);
-                                    setData(appart._id);
-                                    setBuild(null);
-                                    setError("");
-                                    setSuccess("");
-                                    setEditing(!editing);
-                                  }}
-                                />
-                              </IconButton>
-                              <DeleteAppart
-                                data={appart}
-                                setSuccess={setSuccess}
-                                setError={setError}
-                              />
-                            </Fragment>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      <TableRow key={appart._id}>
-                        <TableCell>{appart.building ? "Oui" : "Non"}</TableCell>
-                        <TableCell>{appart.building.adress}</TableCell>
-                        <TableCell>{appart.building.postalcode}</TableCell>
-                        <TableCell>{appart.building.city}</TableCell>
-                        <TableCell>
-                          {editing && data === appart._id ? (
-                            <TextField
-                              id={appart.size.toString()}
-                              type="number"
-                              value={size}
-                              onChange={(e) => setSize(e.target.value)}
-                              placeholder="Pièces"
-                            />
-                          ) : (
-                            appart.size
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <div>
-                            {appart.status == "Libre" ? (
-                              <Chip
-                                style={{ background: "#52b202", color: "#fff" }}
-                                label={appart.status}
+                              </Fragment>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        <TableRow key={appart._id}>
+                          <TableCell>
+                            {appart.building ? "Oui" : "Non"}
+                          </TableCell>
+                          <TableCell>{appart.building.adress}</TableCell>
+                          <TableCell>{appart.building.postalcode}</TableCell>
+                          <TableCell>{appart.building.city}</TableCell>
+                          <TableCell>
+                            {editing && data === appart._id ? (
+                              <TextField
+                                id={appart.size.toString()}
+                                type="number"
+                                value={size}
+                                onChange={(e) => setSize(e.target.value)}
+                                placeholder="Pièces"
                               />
                             ) : (
-                              <Chip
-                                style={{ background: "red", color: "#fff" }}
-                                label={appart.status}
-                              />
+                              appart.size
                             )}
-                          </div>
-                        </TableCell>
-
-                        <TableCell>
-                          {moment(appart.createdAt).format("DD/MM/YY")}
-                        </TableCell>
-                        <TableCell>
-                          {moment(appart.updatedAt).format("DD/MM/YY")}
-                        </TableCell>
-                        <TableCell>
-                          {editing && data === appart._id ? (
-                            <Fragment>
-                              <Button>
-                                <CheckIcon onClick={submit} />
-                              </Button>
-                              <Button>
-                                <CloseIcon
-                                  onClick={() => setEditing(!editing)}
-                                />
-                              </Button>
-                            </Fragment>
-                          ) : (
-                            <Fragment>
-                              {appart.picture.length > 0 && (
-                                <ShowDocument appart={appart._id} />
-                              )}
-
-                              <IconButton>
-                                <EditIcon
-                                  onClick={() => {
-                                    setSize(appart.size);
-                                    setAdress("");
-                                    setPostalcode("");
-                                    setCity("");
-                                    setData(appart._id);
-                                    setBuild(appart.building._id);
-                                    setError("");
-                                    setSuccess("");
-                                    setEditing(!editing);
+                          </TableCell>
+                          <TableCell>
+                            <div>
+                              {appart.status == "Libre" ? (
+                                <Chip
+                                  style={{
+                                    background: "#52b202",
+                                    color: "#fff",
                                   }}
+                                  label={appart.status}
                                 />
-                              </IconButton>
-                              <DeleteAppart
-                                data={appart}
-                                setSuccess={setSuccess}
-                                setError={setError}
-                              />
-                            </Fragment>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
+                              ) : (
+                                <Chip
+                                  style={{ background: "red", color: "#fff" }}
+                                  label={appart.status}
+                                />
+                              )}
+                            </div>
+                          </TableCell>
+
+                          <TableCell>
+                            {moment(appart.createdAt).format("DD/MM/YY")}
+                          </TableCell>
+                          <TableCell>
+                            {moment(appart.updatedAt).format("DD/MM/YY")}
+                          </TableCell>
+                          <TableCell>
+                            {editing && data === appart._id ? (
+                              <Fragment>
+                                <Button>
+                                  <CheckIcon onClick={submit} />
+                                </Button>
+                                <Button>
+                                  <CloseIcon
+                                    onClick={() => setEditing(!editing)}
+                                  />
+                                </Button>
+                              </Fragment>
+                            ) : (
+                              <Fragment>
+                                {appart.picture.length > 0 && (
+                                  <ShowDocument appart={appart._id} />
+                                )}
+
+                                <IconButton>
+                                  <EditIcon
+                                    onClick={() => {
+                                      setSize(appart.size);
+                                      setAdress("");
+                                      setPostalcode("");
+                                      setCity("");
+                                      setData(appart._id);
+                                      setBuild(appart.building._id);
+                                      setError("");
+                                      setSuccess("");
+                                      setEditing(!editing);
+                                    }}
+                                  />
+                                </IconButton>
+                                <DeleteAppart
+                                  data={appart}
+                                  setSuccess={setSuccess}
+                                  setError={setError}
+                                />
+                              </Fragment>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
                 ) : (
                   <TableRow>
                     <LoadingScreen />
@@ -546,6 +567,15 @@ const Appart = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={appart && appart.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
       </Paper>
 
       <div style={{ marginTop: "13px" }}>

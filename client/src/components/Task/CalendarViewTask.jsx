@@ -15,7 +15,6 @@ import {
   DateNavigator,
   Toolbar,
   AppointmentTooltip,
-  AppointmentForm,
   ViewSwitcher,
 } from "@devexpress/dx-react-scheduler-material-ui";
 import moment from "moment";
@@ -87,7 +86,7 @@ const CalendarViewTask = ({ setSuccess, setError, task }) => {
   return (
     <Fragment>
       {loading && <LoadingScreen />}
-      <Paper>
+      <Paper style={{ height: "50%" }}>
         {task && (
           <Scheduler data={task}>
             <ViewState

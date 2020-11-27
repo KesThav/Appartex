@@ -14,6 +14,7 @@ import {
   Paper,
   Typography,
   MenuItem,
+  TablePagination,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import AddContract from "../../components/Contract/AddContract";
@@ -90,6 +91,17 @@ const Contract = () => {
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState([]);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const classes = useStyles();
   useEffect(() => {
@@ -101,17 +113,6 @@ const Contract = () => {
     { value: "Actif", label: "Actif" },
     { value: "Archivé", label: "Archivé" },
   ];
-
-  const handleChangefilter = (filter) => {
-    if (activeFilter.includes(filter)) {
-      const filterIndex = activeFilter.indexOf(filter);
-      const newFilter = [...activeFilter];
-      newFilter.splice(filterIndex, 1);
-      setActiveFilter(newFilter);
-    } else {
-      setActiveFilter((oldFilter) => [...oldFilter, filter]);
-    }
-  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -285,131 +286,137 @@ const Contract = () => {
               <Fragment>
                 {!loading ? (
                   contract.length > 0 &&
-                  dynamicSearch().map((contract) => (
-                    <TableRow key={contract._id}>
-                      <TableCell component="th" scope="row">
-                        {contract._id}
-                      </TableCell>
-                      <TableCell>
-                        {contract.tenant.name + " " + contract.tenant.lastname}
-                      </TableCell>
-                      <TableCell>
-                        {!contract.appartmentid.building
-                          ? contract.appartmentid.adress +
+                  dynamicSearch()
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((contract) => (
+                      <TableRow key={contract._id}>
+                        <TableCell component="th" scope="row">
+                          {contract._id}
+                        </TableCell>
+                        <TableCell>
+                          {contract.tenant.name +
                             " " +
-                            contract.appartmentid.postalcode +
-                            " " +
-                            contract.appartmentid.city +
-                            ", " +
-                            contract.appartmentid.size +
-                            " pièces"
-                          : contract.appartmentid.building.adress +
-                            " " +
-                            contract.appartmentid.building.postalcode +
-                            " " +
-                            contract.appartmentid.building.city +
-                            ", " +
-                            contract.appartmentid.size +
-                            " pièces"}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === contract._id ? (
-                          <TextField
-                            id={contract.charge}
-                            type="number"
-                            value={charge}
-                            onChange={(e) => setCharge(e.target.value)}
-                            placeholder="Charge"
-                          />
-                        ) : (
-                          contract.charge
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === contract._id ? (
-                          <TextField
-                            id={contract.rent}
-                            type="number"
-                            value={rent}
-                            onChange={(e) => setRent(e.target.value)}
-                            placeholder="Loyer"
-                          />
-                        ) : (
-                          contract.rent
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === contract._id ? (
-                          <TextField
-                            id={contract.other}
-                            type="text"
-                            value={other}
-                            onChange={(e) => setOther(e.target.value)}
-                            placeholder="Autres"
-                          />
-                        ) : (
-                          contract.other
-                        )}
-                      </TableCell>
-                      <TableCell>{contract.status}</TableCell>
-                      <TableCell>
-                        {moment(contract.createdAt).format("DD/MM/YY")}
-                      </TableCell>
-                      <TableCell>
-                        {moment(contract.updatedAt).format("DD/MM/YY")}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === contract._id ? (
-                          <Fragment>
-                            <IconButton>
-                              <CheckIcon onClick={submit} />
-                            </IconButton>
-                            <IconButton>
-                              <CloseIcon onClick={() => setEditing(!editing)} />
-                            </IconButton>
-                          </Fragment>
-                        ) : (
-                          <Fragment>
-                            {contract.file.length > 0 && (
-                              <ContractDoc
-                                data={contract._id}
-                                setError={setError}
-                              />
-                            )}
-                            {contract.status !== "Archivé" && (
-                              <Fragment>
-                                <IconButton>
-                                  <EditIcon
-                                    onClick={() => {
-                                      setCharge(contract.charge);
-                                      setRent(contract.rent);
-                                      setTenantid(contract.tenant._id);
-                                      setAppartid(contract.appartmentid._id);
-                                      setOther(contract.other);
-                                      setData(contract._id);
-                                      setError("");
-                                      setSuccess("");
-                                      setEditing(!editing);
-                                    }}
-                                  />
-                                </IconButton>
-                                <ArchiveContract
-                                  data={contract}
-                                  setSuccess={setSuccess}
+                            contract.tenant.lastname}
+                        </TableCell>
+                        <TableCell>
+                          {!contract.appartmentid.building
+                            ? contract.appartmentid.adress +
+                              " " +
+                              contract.appartmentid.postalcode +
+                              " " +
+                              contract.appartmentid.city +
+                              ", " +
+                              contract.appartmentid.size +
+                              " pièces"
+                            : contract.appartmentid.building.adress +
+                              " " +
+                              contract.appartmentid.building.postalcode +
+                              " " +
+                              contract.appartmentid.building.city +
+                              ", " +
+                              contract.appartmentid.size +
+                              " pièces"}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === contract._id ? (
+                            <TextField
+                              id={contract.charge}
+                              type="number"
+                              value={charge}
+                              onChange={(e) => setCharge(e.target.value)}
+                              placeholder="Charge"
+                            />
+                          ) : (
+                            contract.charge
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === contract._id ? (
+                            <TextField
+                              id={contract.rent}
+                              type="number"
+                              value={rent}
+                              onChange={(e) => setRent(e.target.value)}
+                              placeholder="Loyer"
+                            />
+                          ) : (
+                            contract.rent
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === contract._id ? (
+                            <TextField
+                              id={contract.other}
+                              type="text"
+                              value={other}
+                              onChange={(e) => setOther(e.target.value)}
+                              placeholder="Autres"
+                            />
+                          ) : (
+                            contract.other
+                          )}
+                        </TableCell>
+                        <TableCell>{contract.status}</TableCell>
+                        <TableCell>
+                          {moment(contract.createdAt).format("DD/MM/YY")}
+                        </TableCell>
+                        <TableCell>
+                          {moment(contract.updatedAt).format("DD/MM/YY")}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === contract._id ? (
+                            <Fragment>
+                              <IconButton>
+                                <CheckIcon onClick={submit} />
+                              </IconButton>
+                              <IconButton>
+                                <CloseIcon
+                                  onClick={() => setEditing(!editing)}
+                                />
+                              </IconButton>
+                            </Fragment>
+                          ) : (
+                            <Fragment>
+                              {contract.file.length > 0 && (
+                                <ContractDoc
+                                  data={contract._id}
                                   setError={setError}
                                 />
-                              </Fragment>
-                            )}
-                            <DeleteContract
-                              data={contract}
-                              setSuccess={setSuccess}
-                              setError={setError}
-                            />
-                          </Fragment>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))
+                              )}
+                              {contract.status !== "Archivé" && (
+                                <Fragment>
+                                  <IconButton>
+                                    <EditIcon
+                                      onClick={() => {
+                                        setCharge(contract.charge);
+                                        setRent(contract.rent);
+                                        setTenantid(contract.tenant._id);
+                                        setAppartid(contract.appartmentid._id);
+                                        setOther(contract.other);
+                                        setData(contract._id);
+                                        setError("");
+                                        setSuccess("");
+                                        setEditing(!editing);
+                                      }}
+                                    />
+                                  </IconButton>
+                                  <ArchiveContract
+                                    data={contract}
+                                    setSuccess={setSuccess}
+                                    setError={setError}
+                                  />
+                                </Fragment>
+                              )}
+                              <DeleteContract
+                                data={contract}
+                                setSuccess={setSuccess}
+                                setError={setError}
+                              />
+                            </Fragment>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))
                 ) : (
                   <LoadingScreen />
                 )}
@@ -417,6 +424,15 @@ const Contract = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={contract && contract.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
       </Paper>
       <div style={{ marginTop: "13px" }}>
         <AddContract />

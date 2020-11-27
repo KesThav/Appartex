@@ -16,6 +16,7 @@ import {
   Typography,
   Checkbox,
   Chip,
+  TablePagination,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import moment from "moment";
@@ -96,6 +97,17 @@ const Repair = () => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
   const [activeFilter, setActiveFilter] = useState([]);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -257,112 +269,110 @@ const Repair = () => {
               <Fragment>
                 {!loading ? (
                   repair.length > 0 &&
-                  dynamicSearch().map((repair) => (
-                    <TableRow key={repair._id}>
-                      <TableCell component="th" scope="row">
-                        {repair._id}
-                      </TableCell>
-                      <TableCell>
-                        {repair.taskid._id} |
-                        <strong>
-                          {" " +
-                            repair.taskid.title +
-                            " - " +
-                            repair.taskid.content}
-                        </strong>
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === repair._id ? (
-                          <TextField
-                            id={repair.reason}
-                            type="text"
-                            value={reason}
-                            onChange={(e) => setReason(e.target.value)}
-                            placeholder="Raison"
-                          />
-                        ) : (
-                          repair.reason
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === repair._id ? (
-                          <TextField
-                            id={repair.amount.toString()}
-                            type="number"
-                            value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
-                            placeholder="Montant"
-                          />
-                        ) : (
-                          repair.amount
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === repair._id ? (
-                          <TextField
-                            id="Status"
-                            select
-                            value={statusid}
-                            onChange={(e) => setStatusid(e.target.value)}
-                            fullWidth
-                          >
-                            {status &&
-                              status.map((option) => (
-                                <MenuItem key={option._id} value={option._id}>
-                                  {option.name}
-                                </MenuItem>
-                              ))}
-                          </TextField>
-                        ) : (
-                          repair.status.name
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {moment(repair.createdAt).format("DD/MM/YY")}
-                      </TableCell>
-                      <TableCell>
-                        {moment(repair.updatedAt).format("DD/MM/YY")}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === repair._id ? (
-                          <Fragment>
-                            <IconButton>
-                              <CheckIcon onClick={submit} />
-                            </IconButton>
-                            <IconButton>
-                              <CloseIcon onClick={() => setEditing(!editing)} />
-                            </IconButton>
-                          </Fragment>
-                        ) : (
-                          <Fragment>
-                            <RepairHistory
-                              data={repair._id}
-                              setError={setError}
+                  dynamicSearch()
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((repair) => (
+                      <TableRow key={repair._id}>
+                        <TableCell component="th" scope="row">
+                          {repair._id}
+                        </TableCell>
+                        <TableCell>
+                          {repair.taskid.title + " - " + repair.taskid.content}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === repair._id ? (
+                            <TextField
+                              id={repair.reason}
+                              type="text"
+                              value={reason}
+                              onChange={(e) => setReason(e.target.value)}
+                              placeholder="Raison"
                             />
-                            <IconButton>
-                              <EditIcon
-                                onClick={() => {
-                                  setAmount(repair.amount);
-                                  setReason(repair.reason);
-                                  setStatusid(repair.status._id);
-                                  setTask(repair.taskid._id);
-                                  setData(repair._id);
-                                  setError("");
-                                  setSuccess("");
-                                  setEditing(!editing);
-                                }}
+                          ) : (
+                            repair.reason
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === repair._id ? (
+                            <TextField
+                              id={repair.amount.toString()}
+                              type="number"
+                              value={amount}
+                              onChange={(e) => setAmount(e.target.value)}
+                              placeholder="Montant"
+                            />
+                          ) : (
+                            repair.amount
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === repair._id ? (
+                            <TextField
+                              id="Status"
+                              select
+                              value={statusid}
+                              onChange={(e) => setStatusid(e.target.value)}
+                              fullWidth
+                            >
+                              {status &&
+                                status.map((option) => (
+                                  <MenuItem key={option._id} value={option._id}>
+                                    {option.name}
+                                  </MenuItem>
+                                ))}
+                            </TextField>
+                          ) : (
+                            repair.status.name
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {moment(repair.createdAt).format("DD/MM/YY")}
+                        </TableCell>
+                        <TableCell>
+                          {moment(repair.updatedAt).format("DD/MM/YY")}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === repair._id ? (
+                            <Fragment>
+                              <IconButton>
+                                <CheckIcon onClick={submit} />
+                              </IconButton>
+                              <IconButton>
+                                <CloseIcon
+                                  onClick={() => setEditing(!editing)}
+                                />
+                              </IconButton>
+                            </Fragment>
+                          ) : (
+                            <Fragment>
+                              <RepairHistory
+                                data={repair._id}
+                                setError={setError}
                               />
-                            </IconButton>
-                            <DeleteRepair
-                              data={repair}
-                              setSuccess={setSuccess}
-                              setError={setError}
-                            />
-                          </Fragment>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))
+                              <IconButton>
+                                <EditIcon
+                                  onClick={() => {
+                                    setAmount(repair.amount);
+                                    setReason(repair.reason);
+                                    setStatusid(repair.status._id);
+                                    setTask(repair.taskid._id);
+                                    setData(repair._id);
+                                    setError("");
+                                    setSuccess("");
+                                    setEditing(!editing);
+                                  }}
+                                />
+                              </IconButton>
+                              <DeleteRepair
+                                data={repair}
+                                setSuccess={setSuccess}
+                                setError={setError}
+                              />
+                            </Fragment>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))
                 ) : (
                   <TableRow>
                     <LoadingScreen />
@@ -372,6 +382,15 @@ const Repair = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={repair && repair.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
       </Paper>
 
       <div style={{ marginTop: "13px" }}>

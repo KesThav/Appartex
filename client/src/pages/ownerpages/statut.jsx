@@ -13,7 +13,7 @@ import {
   TextField,
   Paper,
   Typography,
-  Divider,
+  TablePagination,
 } from "@material-ui/core";
 import DeleteStatus from "../../components/Status/DeleteStatus";
 import EditIcon from "@material-ui/icons/Edit";
@@ -83,6 +83,17 @@ const Status = () => {
   const [name, setName] = useState("");
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const classes = useStyles();
   useEffect(() => {
@@ -175,60 +186,64 @@ const Status = () => {
               <Fragment>
                 {!loading ? (
                   status.length > 0 &&
-                  dynamicSearch().map((status) => (
-                    <TableRow key={status._id}>
-                      <TableCell component="th" scope="row">
-                        {editing && data === status._id ? (
-                          <TextField
-                            id={status.name}
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="Statut"
-                          />
-                        ) : (
-                          status.name
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {moment(status.createdAt).format("DD/MM/YY")}
-                      </TableCell>
-                      <TableCell>
-                        {moment(status.updatedAt).format("DD/MM/YY")}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === status._id ? (
-                          <Fragment>
-                            <IconButton>
-                              <CheckIcon onClick={submit} />
-                            </IconButton>
-                            <IconButton>
-                              <CloseIcon onClick={() => setEditing(!editing)} />
-                            </IconButton>
-                          </Fragment>
-                        ) : (
-                          <Fragment>
-                            <IconButton>
-                              <EditIcon
-                                onClick={() => {
-                                  setName(status.name);
-                                  setData(status._id);
-                                  setError("");
-                                  setSuccess("");
-                                  setEditing(!editing);
-                                }}
-                              />
-                            </IconButton>
-                            <DeleteStatus
-                              data={status}
-                              setSuccess={setSuccess}
-                              setError={setError}
+                  dynamicSearch()
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((status) => (
+                      <TableRow key={status._id}>
+                        <TableCell component="th" scope="row">
+                          {editing && data === status._id ? (
+                            <TextField
+                              id={status.name}
+                              type="text"
+                              value={name}
+                              onChange={(e) => setName(e.target.value)}
+                              placeholder="Statut"
                             />
-                          </Fragment>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))
+                          ) : (
+                            status.name
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {moment(status.createdAt).format("DD/MM/YY")}
+                        </TableCell>
+                        <TableCell>
+                          {moment(status.updatedAt).format("DD/MM/YY")}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === status._id ? (
+                            <Fragment>
+                              <IconButton>
+                                <CheckIcon onClick={submit} />
+                              </IconButton>
+                              <IconButton>
+                                <CloseIcon
+                                  onClick={() => setEditing(!editing)}
+                                />
+                              </IconButton>
+                            </Fragment>
+                          ) : (
+                            <Fragment>
+                              <IconButton>
+                                <EditIcon
+                                  onClick={() => {
+                                    setName(status.name);
+                                    setData(status._id);
+                                    setError("");
+                                    setSuccess("");
+                                    setEditing(!editing);
+                                  }}
+                                />
+                              </IconButton>
+                              <DeleteStatus
+                                data={status}
+                                setSuccess={setSuccess}
+                                setError={setError}
+                              />
+                            </Fragment>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))
                 ) : (
                   <LoadingScreen />
                 )}
@@ -236,6 +251,15 @@ const Status = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={status && status.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
       </Paper>
       <div style={{ marginTop: "13px" }}>
         <AddStatus />

@@ -16,6 +16,7 @@ import {
   MenuItem,
   Chip,
   Checkbox,
+  TablePagination,
 } from "@material-ui/core";
 import DeleteBills from "../../components/Bill/DeleteBills";
 import EditIcon from "@material-ui/icons/Edit";
@@ -124,6 +125,17 @@ const Bills = () => {
   const [upbound, setUpbound] = useState(999999);
   const [lowbound, setLowbound] = useState(-999999);
   const [activeFilter, setActiveFilter] = useState([]);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const classes = useStyles();
   useEffect(() => {
@@ -340,115 +352,125 @@ const Bills = () => {
               <Fragment>
                 {!loading ? (
                   bill.length > 0 &&
-                  dynamicSearch().map((bill) => (
-                    <TableRow key={bill._id}>
-                      <TableCell>{bill._id}</TableCell>
-                      <TableCell>
-                        {bill.tenant.name + " " + bill.tenant.lastname}
-                      </TableCell>
-                      <TableCell>{bill.reference}</TableCell>
-                      <TableCell>{bill.reason}</TableCell>
-                      <TableCell>{bill.amount}</TableCell>
-                      <TableCell>
-                        {editing && data === bill._id ? (
-                          <TextField
-                            id="Status"
-                            select
-                            value={statusid}
-                            onChange={(e) => setStatusid(e.target.value)}
-                            fullWidth
-                          >
-                            {status &&
-                              status.map((option) => (
-                                <MenuItem key={option._id} value={option._id}>
-                                  {option.name}
-                                </MenuItem>
-                              ))}
-                          </TextField>
-                        ) : (
-                          bill.status.name
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === bill._id ? (
-                          <TextField
-                            id="endDate"
-                            type="date"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                            fullWidth
-                          />
-                        ) : moment(bill.endDate).diff(moment(), "days") > 30 ? (
-                          <Chip
-                            style={{ background: "#29b6f6", color: "#fff" }}
-                            label={moment(bill.endDate).format("DD/MM/YY")}
-                          />
-                        ) : moment(bill.endDate).diff(moment(), "days") <= 30 &&
-                          moment(bill.endDate).diff(moment(), "days") > 15 ? (
-                          <Chip
-                            style={{ background: "#52b202", color: "#fff" }}
-                            label={moment(bill.endDate).format("DD/MM/YY")}
-                          />
-                        ) : moment(bill.endDate).diff(moment(), "days") <= 15 &&
-                          moment(bill.endDate).diff(moment(), "days") > 0 ? (
-                          <Chip
-                            style={{ background: "#ffb300", color: "#fff" }}
-                            label={moment(bill.endDate).format("DD/MM/YY")}
-                          />
-                        ) : (
-                          <Chip
-                            style={{ background: "#dd2c00", color: "#fff" }}
-                            label={moment(bill.endDate).format("DD/MM/YY")}
-                          />
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {moment(bill.createdAt).format("DD/MM/YY")}
-                      </TableCell>
-                      <TableCell>
-                        {moment(bill.updateddAt).format("DD/MM/YY")}
-                      </TableCell>
-                      <TableCell>
-                        {editing && data === bill._id ? (
-                          <Fragment>
-                            <IconButton>
-                              <CheckIcon onClick={submit} />
-                            </IconButton>
-                            <IconButton>
-                              <CloseIcon onClick={() => setEditing(!editing)} />
-                            </IconButton>
-                          </Fragment>
-                        ) : (
-                          <Fragment>
-                            <BillHistory data={bill._id} setError={setError} />
-                            <IconButton>
-                              <EditIcon
-                                onClick={() => {
-                                  setReference(bill.reference);
-                                  setAmount(bill.amount);
-                                  setReason(bill.reason);
-                                  setTenantid(bill.tenant._id);
-                                  setStatusid(bill.status._id);
-                                  setEndDate(
-                                    moment(bill.endDate).format("YYYY-MM-DD")
-                                  );
-                                  setData(bill._id);
-                                  setError("");
-                                  setSuccess("");
-                                  setEditing(!editing);
-                                }}
-                              />
-                            </IconButton>
-                            <DeleteBills
-                              data={bill}
-                              setSuccess={setSuccess}
-                              setError={setError}
+                  dynamicSearch()
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((bill) => (
+                      <TableRow key={bill._id}>
+                        <TableCell>{bill._id}</TableCell>
+                        <TableCell>
+                          {bill.tenant.name + " " + bill.tenant.lastname}
+                        </TableCell>
+                        <TableCell>{bill.reference}</TableCell>
+                        <TableCell>{bill.reason}</TableCell>
+                        <TableCell>{bill.amount}</TableCell>
+                        <TableCell>
+                          {editing && data === bill._id ? (
+                            <TextField
+                              id="Status"
+                              select
+                              value={statusid}
+                              onChange={(e) => setStatusid(e.target.value)}
+                              fullWidth
+                            >
+                              {status &&
+                                status.map((option) => (
+                                  <MenuItem key={option._id} value={option._id}>
+                                    {option.name}
+                                  </MenuItem>
+                                ))}
+                            </TextField>
+                          ) : (
+                            bill.status.name
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === bill._id ? (
+                            <TextField
+                              id="endDate"
+                              type="date"
+                              value={endDate}
+                              onChange={(e) => setEndDate(e.target.value)}
+                              fullWidth
                             />
-                          </Fragment>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))
+                          ) : moment(bill.endDate).diff(moment(), "days") >
+                            30 ? (
+                            <Chip
+                              style={{ background: "#29b6f6", color: "#fff" }}
+                              label={moment(bill.endDate).format("DD/MM/YY")}
+                            />
+                          ) : moment(bill.endDate).diff(moment(), "days") <=
+                              30 &&
+                            moment(bill.endDate).diff(moment(), "days") > 15 ? (
+                            <Chip
+                              style={{ background: "#52b202", color: "#fff" }}
+                              label={moment(bill.endDate).format("DD/MM/YY")}
+                            />
+                          ) : moment(bill.endDate).diff(moment(), "days") <=
+                              15 &&
+                            moment(bill.endDate).diff(moment(), "days") > 0 ? (
+                            <Chip
+                              style={{ background: "#ffb300", color: "#fff" }}
+                              label={moment(bill.endDate).format("DD/MM/YY")}
+                            />
+                          ) : (
+                            <Chip
+                              style={{ background: "#dd2c00", color: "#fff" }}
+                              label={moment(bill.endDate).format("DD/MM/YY")}
+                            />
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {moment(bill.createdAt).format("DD/MM/YY")}
+                        </TableCell>
+                        <TableCell>
+                          {moment(bill.updateddAt).format("DD/MM/YY")}
+                        </TableCell>
+                        <TableCell>
+                          {editing && data === bill._id ? (
+                            <Fragment>
+                              <IconButton>
+                                <CheckIcon onClick={submit} />
+                              </IconButton>
+                              <IconButton>
+                                <CloseIcon
+                                  onClick={() => setEditing(!editing)}
+                                />
+                              </IconButton>
+                            </Fragment>
+                          ) : (
+                            <Fragment>
+                              <BillHistory
+                                data={bill._id}
+                                setError={setError}
+                              />
+                              <IconButton>
+                                <EditIcon
+                                  onClick={() => {
+                                    setReference(bill.reference);
+                                    setAmount(bill.amount);
+                                    setReason(bill.reason);
+                                    setTenantid(bill.tenant._id);
+                                    setStatusid(bill.status._id);
+                                    setEndDate(
+                                      moment(bill.endDate).format("YYYY-MM-DD")
+                                    );
+                                    setData(bill._id);
+                                    setError("");
+                                    setSuccess("");
+                                    setEditing(!editing);
+                                  }}
+                                />
+                              </IconButton>
+                              <DeleteBills
+                                data={bill}
+                                setSuccess={setSuccess}
+                                setError={setError}
+                              />
+                            </Fragment>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))
                 ) : (
                   <LoadingScreen />
                 )}
@@ -456,6 +478,15 @@ const Bills = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={bill && bill.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
       </Paper>
       <div style={{ marginTop: "13px" }}>
         <AddBills />

@@ -13,6 +13,7 @@ import {
   TextField,
   Paper,
   Typography,
+  TablePagination,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import AddBuilding from "../../components/Building/AddBuilding";
@@ -85,6 +86,17 @@ const Building = (props) => {
   const [city, setCity] = useState("");
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const classes = useStyles();
   useEffect(() => {
@@ -184,94 +196,96 @@ const Building = (props) => {
             <TableBody>
               {!loading ? (
                 building.length > 0 &&
-                dynamicSearch().map((building) => (
-                  <TableRow key={building._id}>
-                    <TableCell>
-                      {editing && data === building._id ? (
-                        <TextField
-                          id={building.adress}
-                          type="text"
-                          value={adress}
-                          onChange={(e) => setAdress(e.target.value)}
-                          placeholder="Adresse"
-                        />
-                      ) : (
-                        building.adress
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === building._id ? (
-                        <TextField
-                          id={building.postalcode.toString()}
-                          type="text"
-                          value={postalcode}
-                          onChange={(e) => setPostalcode(e.target.value)}
-                          placeholder="Code postale"
-                        />
-                      ) : (
-                        building.postalcode
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === building._id ? (
-                        <TextField
-                          id={building.city}
-                          type="text"
-                          value={city}
-                          onChange={(e) => setCity(e.target.value)}
-                          placeholder="Ville"
-                        />
-                      ) : (
-                        building.city
-                      )}
-                    </TableCell>
-                    <TableCell>{building.numberofAppart}</TableCell>
-                    <TableCell>{building.counter}</TableCell>
-                    <TableCell>
-                      {moment(building.createdAt).format("DD/MM/YY")}
-                    </TableCell>
-                    <TableCell>
-                      {moment(building.updatedAt).format("DD/MM/YY")}
-                    </TableCell>
-                    <TableCell>
-                      {editing && data === building._id ? (
-                        <Fragment>
-                          <IconButton>
-                            <CheckIcon onClick={submit} />
-                          </IconButton>
-                          <IconButton>
-                            <CloseIcon onClick={() => setEditing(!editing)} />
-                          </IconButton>
-                        </Fragment>
-                      ) : (
-                        <Fragment>
-                          <BuildingTenants
-                            data={building._id}
-                            setError={setError}
+                dynamicSearch()
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((building) => (
+                    <TableRow key={building._id}>
+                      <TableCell>
+                        {editing && data === building._id ? (
+                          <TextField
+                            id={building.adress}
+                            type="text"
+                            value={adress}
+                            onChange={(e) => setAdress(e.target.value)}
+                            placeholder="Adresse"
                           />
-                          <IconButton>
-                            <EditIcon
-                              onClick={() => {
-                                setAdress(building.adress);
-                                setPostalcode(building.postalcode);
-                                setCity(building.city);
-                                setData(building._id);
-                                setError("");
-                                setSuccess("");
-                                setEditing(!editing);
-                              }}
+                        ) : (
+                          building.adress
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editing && data === building._id ? (
+                          <TextField
+                            id={building.postalcode.toString()}
+                            type="text"
+                            value={postalcode}
+                            onChange={(e) => setPostalcode(e.target.value)}
+                            placeholder="Code postale"
+                          />
+                        ) : (
+                          building.postalcode
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editing && data === building._id ? (
+                          <TextField
+                            id={building.city}
+                            type="text"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
+                            placeholder="Ville"
+                          />
+                        ) : (
+                          building.city
+                        )}
+                      </TableCell>
+                      <TableCell>{building.numberofAppart}</TableCell>
+                      <TableCell>{building.counter}</TableCell>
+                      <TableCell>
+                        {moment(building.createdAt).format("DD/MM/YY")}
+                      </TableCell>
+                      <TableCell>
+                        {moment(building.updatedAt).format("DD/MM/YY")}
+                      </TableCell>
+                      <TableCell>
+                        {editing && data === building._id ? (
+                          <Fragment>
+                            <IconButton>
+                              <CheckIcon onClick={submit} />
+                            </IconButton>
+                            <IconButton>
+                              <CloseIcon onClick={() => setEditing(!editing)} />
+                            </IconButton>
+                          </Fragment>
+                        ) : (
+                          <Fragment>
+                            <BuildingTenants
+                              data={building._id}
+                              setError={setError}
                             />
-                          </IconButton>
-                          <DeleteBuilding
-                            data={building}
-                            setSuccess={setSuccess}
-                            setError={setError}
-                          />
-                        </Fragment>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))
+                            <IconButton>
+                              <EditIcon
+                                onClick={() => {
+                                  setAdress(building.adress);
+                                  setPostalcode(building.postalcode);
+                                  setCity(building.city);
+                                  setData(building._id);
+                                  setError("");
+                                  setSuccess("");
+                                  setEditing(!editing);
+                                }}
+                              />
+                            </IconButton>
+                            <DeleteBuilding
+                              data={building}
+                              setSuccess={setSuccess}
+                              setError={setError}
+                            />
+                          </Fragment>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))
               ) : (
                 <TableRow>
                   <LoadingScreen />
@@ -280,6 +294,15 @@ const Building = (props) => {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={building && building.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
       </Paper>
       <div style={{ marginTop: "13px" }}>
         <AddBuilding />
