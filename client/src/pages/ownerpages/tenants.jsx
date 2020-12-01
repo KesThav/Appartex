@@ -393,7 +393,7 @@ const Tenant = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={tenant && tenant.length}
+          count={tenant && dynamicSearch().length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}

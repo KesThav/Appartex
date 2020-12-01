@@ -427,7 +427,7 @@ const Contract = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={contract && contract.length}
+          count={contract && dynamicSearch().length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}

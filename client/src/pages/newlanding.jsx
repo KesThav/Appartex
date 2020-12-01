@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
     height: "100vh",
     width: "100vw",
     minWidth: "360px",
+    flexDirection: "column",
   },
   mainBox: {
     [theme.breakpoints.down("sm")]: {
@@ -35,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    textAlign: "center",
     padding: 20,
   },
   typography: {
@@ -45,13 +47,23 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 10,
     marginBottom: 10,
   },
+  footer: {
+    position: "absolute",
+    bottom: 0,
+    width: "100vw",
+    textAlign: "center",
+    height: 30,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 }));
 
 const Newlanding = (props) => {
   const classes = useStyles();
 
   return (
-    <Fragment>
+    <div>
       <CssBaseline />
       <Container className={classes.root}>
         <Box className={classes.mainBox}>
@@ -78,8 +90,13 @@ const Newlanding = (props) => {
             <TenantLogin push={props.history.push} />
           </Box>
         </Box>
+        <footer className={classes.footer}>
+          <Typography variant="caption">
+            Travail de Bachelor © Kesigan Thavarajasingam
+          </Typography>
+        </footer>
       </Container>
-    </Fragment>
+    </div>
   );
 };
 

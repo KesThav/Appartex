@@ -152,7 +152,6 @@ const Appart = () => {
     setActiveFilter(newData);
   };
 
-
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
@@ -570,7 +569,7 @@ const Appart = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={appart && appart.length}
+          count={appart && dynamicSearch().length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}

@@ -254,7 +254,7 @@ const Status = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={status && status.length}
+          count={status && dynamicSearch().length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}

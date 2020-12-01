@@ -385,7 +385,7 @@ const Repair = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={repair && repair.length}
+          count={repair && dynamicSearch().length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}

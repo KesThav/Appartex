@@ -86,7 +86,7 @@ const CalendarViewTask = ({ setSuccess, setError, task }) => {
   return (
     <Fragment>
       {loading && <LoadingScreen />}
-      <Paper style={{ height: "50%" }}>
+      <Paper>
         {task && (
           <Scheduler data={task}>
             <ViewState

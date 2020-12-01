@@ -250,7 +250,7 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={task.length}
+          count={dynamicSearch().length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
