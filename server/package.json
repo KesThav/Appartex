@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "client": "cd .. && cd client && npm start",
-    "dev": "concurrently \"nodemon\" \"npm run client\""
+    "dev": "concurrently \"nodemon\" \"npm run client\"",
+    "publish": "cd .. && git subtree push --prefix server appartex-server master || true"
   },
   "keywords": [],
   "author": "",
