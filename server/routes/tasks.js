@@ -40,8 +40,7 @@ const Message = require("../models/message.model");
  *          - startDate
  *          - endDate
  *          - messageid
- *          - status
- *
+ *          - status 
  */
 
 /**
@@ -62,7 +61,6 @@ const Message = require("../models/message.model");
  *         description: Forbidden
  *      '500':
  *         description: Server error
- *
  */
 
 router.get("/", jwt, adminAccess, async (ctx) => {

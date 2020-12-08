@@ -71,50 +71,6 @@ const Task = require("../models/task.model");
 /**
  *  @swagger
  *
- *  /messages:
- *  get :
- *    summary : Return all messages
- *    operationId : getmessages
- *    tags :
- *        - message
- *    security:
- *        - bearerAuth: []
- *    responses:
- *      '200':
- *        description: 'Success'
- *      '403':
- *         description: Forbidden
- *      '500':
- *         description: Server error
- *
- */
-
-router.get("/", jwt, async (ctx) => {
-  try {
-    let allmessages = await Message.find({
-      $or: [
-        { createdBy: ctx.request.jwt._id },
-        { sendedTo: ctx.request.jwt._id },
-      ],
-      status: { $ne: "Archivé" },
-    })
-      .populate("sendedTo", "name lastname")
-      .populate("createdBy", "name lastname")
-      .populate({
-        path: "comments",
-        populate: { path: "createdBy", select: "name lastname" },
-      })
-      .sort({ updatedAt: -1 });
-    ctx.status = 200;
-    ctx.body = allmessages;
-  } catch (err) {
-    ctx.throw(400, err);
-  }
-});
-
-/**
- *  @swagger
- *
  *  /messages/sended:
  *  get :
  *    summary : Return all sended messages
