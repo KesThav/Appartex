@@ -14,6 +14,7 @@ import {
   Paper,
   Typography,
   TablePagination,
+  Button,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import AddBuilding from "../../components/Building/AddBuilding";
@@ -27,6 +28,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import DeleteBuilding from "../../components/Building/DeleteBuilding";
 import BuildingTenants from "../../components/Building/BuildingTenants";
 import { Prompt } from "react-router-dom";
+import { BuildingToExcel } from "./export";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -145,7 +147,17 @@ const Building = (props) => {
         when={editing}
         message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
-      <Typography variant="h3">Les immeubles</Typography>
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="h3">Les immeubles</Typography>
+        {building && <BuildingToExcel dynamicSearch={dynamicSearch()} />}
+      </Box>
+
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}

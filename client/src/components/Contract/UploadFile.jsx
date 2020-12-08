@@ -164,7 +164,10 @@ const UploadFile = ({ setSuccess, setError }) => {
               paddingLeft: "5px",
             }}
           >
-            <Link to={`//localhost:5000/${data}`} target="_blank">
+            <Link
+              to={`//appartex-server.herokuapp.com/${data}`}
+              target="_blank"
+            >
               {data}
             </Link>
             <DeleteFile

@@ -15,6 +15,7 @@ import { UserContext } from "../../middlewares/ContextAPI";
 import Alert from "@material-ui/lab/Alert";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
+import LoadingScreen from '../LoadingScreen'
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -55,7 +56,10 @@ const Login = ({ push }) => {
       };
 
       try {
-        const res = await axios.post("/auth/login", data);
+        const res = await axios.post(
+          "https://appartex-server.herokuapp.com/auth/login",
+          data
+        );
         localStorage.setItem("authtoken", `Bearer ${res.data}`);
         const decodedToken = jwtDecode(localStorage.authtoken);
         setUser(decodedToken);
@@ -85,6 +89,7 @@ const Login = ({ push }) => {
         <DialogTitle>Connexion</DialogTitle>
 
         <DialogContent>
+          {loading && <LoadingScreen />}
           {err && <Alert severity="error">{err}</Alert>}
           {success && <Alert severity="success">{success}</Alert>}
           <br />

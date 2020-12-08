@@ -67,6 +67,7 @@ const AdminDashboard = (props) => {
     getTasks,
     task,
     getStatus,
+    loading,
   } = useContext(UserContext);
 
   useEffect(() => {
@@ -86,6 +87,7 @@ const AdminDashboard = (props) => {
 
   return (
     <div className={classes.root}>
+      {loading && <LoadingScreen />}
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography variant="h3">Adminboard</Typography>

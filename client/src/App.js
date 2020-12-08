@@ -43,7 +43,7 @@ if (token) {
 }
 
 let authAxios = Axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: "https://appartex-server.herokuapp.com",
   headers: {
     Authorization: token,
   },
@@ -68,82 +68,109 @@ const App = () => {
   //get data here and give it to children via Context API
   const getTenants = async () => {
     try {
+      setLoading(true)
       const res = await authAxios.get("/tenants");
       setTenant(res.data);
+      setLoading(false)
     } catch (err) {
       console.log(err);
+      setLoading(false)
     }
   };
 
   const getBuildings = async () => {
     try {
+      setLoading(true)
       const res = await authAxios.get("/buildings");
       setBuilding(res.data);
+      setLoading(false)
     } catch (err) {
       console.log(err);
+      setLoading(false)
     }
   };
 
   const getApparts = async () => {
     try {
+      setLoading(true)
       const res = await authAxios.get("/appartments");
       setAppart(res.data);
+      setLoading(false)
     } catch (err) {
       console.log(err);
+      setLoading(false)
     }
   };
 
   const getContracts = async () => {
     try {
+      setLoading(true)
       const res = await authAxios.get("/contracts");
       setContract(res.data);
+      setLoading(false)
     } catch (err) {
       console.log(err);
+      setLoading(false)
     }
   };
 
   const getBills = async () => {
     try {
+      setLoading(true)
       const res = await authAxios.get("/bills");
       setBill(res.data);
+      setLoading(false)
     } catch (err) {
       console.log(err);
+      setLoading(false)
     }
   };
 
   const getBillHistories = async () => {
     try {
+      setLoading(true)
       const res = await authAxios.get("/history/bills");
       setBillhistory(res.data);
+      setLoading(false)
     } catch (err) {
       console.log(err);
+      setLoading(false)
     }
   };
 
   const getStatus = async () => {
     try {
+      setLoading(true)
       const res = await authAxios.get("/status");
       setStatus(res.data);
+      setLoading(false)
     } catch (err) {
       console.log(err);
+      setLoading(false)
     }
   };
 
   const getTasks = async () => {
     try {
+      setLoading(true)
       const res = await authAxios.get("/tasks");
       setTask(res.data);
+      setLoading(false)
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err);
+      setLoading(false)
     }
   };
 
   const getRepairs = async () => {
     try {
+      setLoading(true)
       const res = await authAxios.get("/repairs");
       setRepair(res.data);
+      setLoading(false)
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err);
+      setLoading(false)
     }
   };
 

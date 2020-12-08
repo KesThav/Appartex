@@ -34,6 +34,7 @@ import { Prompt } from "react-router-dom";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
+import { BillToExcel } from "./export";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -229,7 +230,16 @@ const Bills = () => {
         when={editing}
         message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
-      <Typography variant="h3">Les factures</Typography>
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="h3">Les factures</Typography>{" "}
+        {bill && <BillToExcel dynamicSearch={dynamicSearch()} />}
+      </Box>
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}

@@ -65,7 +65,10 @@ const ContractDoc = ({ data, setError }) => {
             <DialogContent>
               {doc.map((doc) => (
                 <TableRow>
-                  <Link to={`//localhost:5000/${doc}`} target="_blank">
+                  <Link
+                    to={`//appartex-server.herokuapp.com/${doc}`}
+                    target="_blank"
+                  >
                     {doc}
                   </Link>
                 </TableRow>

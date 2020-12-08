@@ -18,6 +18,7 @@
     "moment": "^2.29.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-export-excel": "^0.5.3",
     "react-material-ui-carousel": "^2.1.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3"
@@ -28,7 +29,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "cd .. && cd server && nodemon",
-    "dev": "concurrently \"npm run server\" \"npm start\""
+    "dev": "concurrently \"npm run server\" \"npm start\"",
+    "publishToHeroku": "cd ../ && git subtree push --prefix client heroku-appartex-client master || true"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -45,5 +47,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000"
+  "proxy": "https://appartex-server.herokuapp.com",
+  "devDependencies": {
+    "gh-pages": "^3.1.0"
+  }
 }

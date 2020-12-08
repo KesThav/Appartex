@@ -48,11 +48,14 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("sm")]: {
       width: drawerWidth,
       flexShrink: 0,
-      display: "flex",
       backgroundColor: "#eceff1",
     },
   },
   appBar: {
+    [theme.breakpoints.up("sm")]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: drawerWidth,
+    },
     backgroundColor: "transparent",
     boxShadow: "none",
     color: "#000000",
@@ -279,7 +282,7 @@ const Layout = (props) => {
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">
-        <Hidden smUp implementation="css">
+        <Hidden smDown implementation="css">
           <Drawer
             container={container}
             variant="temporary"
@@ -310,7 +313,7 @@ const Layout = (props) => {
             {user && user.role == "Admin" ? ownerDrawer : tenantDrawer}
           </Drawer>
         </Hidden>
-        <Hidden mdDown implementation="css">
+        <Hidden smDown implementation="css">
           <Drawer
             classes={{
               paper: classes.drawerPaper,

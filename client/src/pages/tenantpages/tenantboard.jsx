@@ -327,7 +327,7 @@ const Tenantboard = (props) => {
                               <TableCell>
                                 {data.file.map((doc) => (
                                   <Link
-                                    to={`//localhost:5000/${doc}`}
+                                    to={`//appartex-server.herokuapp.com/${doc}`}
                                     target="_blank"
                                   >
                                     {doc}
@@ -386,7 +386,7 @@ const Tenantboard = (props) => {
                               <TableCell>
                                 {data.file.map((doc) => (
                                   <Link
-                                    to={`//localhost:5000/${doc}`}
+                                    to={`//appartex-server.herokuapp.com/${doc}`}
                                     target="_blank"
                                   >
                                     {doc}
@@ -433,7 +433,10 @@ const Tenantboard = (props) => {
                   {doc &&
                     doc.map((data) => (
                       <TableCell>
-                        <Link to={`//localhost:5000/${data}`} target="_blank">
+                        <Link
+                          to={`//appartex-server.herokuapp.com/${data}`}
+                          target="_blank"
+                        >
                           {data}
                         </Link>
                       </TableCell>

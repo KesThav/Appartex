@@ -349,7 +349,7 @@ const UserSkeleton = (props) => {
                               <TableCell>
                                 {data.file.map((doc) => (
                                   <Link
-                                    to={`//localhost:5000/${doc}`}
+                                    to={`//appartex-server.herokuapp.com/${doc}`}
                                     target="_blank"
                                   >
                                     {doc}
@@ -408,7 +408,7 @@ const UserSkeleton = (props) => {
                               <TableCell>
                                 {data.file.map((doc) => (
                                   <Link
-                                    to={`//localhost:5000/${doc}`}
+                                    to={`//appartex-server.herokuapp.com/${doc}`}
                                     target="_blank"
                                   >
                                     {doc}
@@ -454,7 +454,10 @@ const UserSkeleton = (props) => {
                   {doc &&
                     doc.map((data) => (
                       <TableCell>
-                        <Link to={`//localhost:5000/${data}`} target="_blank">
+                        <Link
+                          to={`//appartex-server.herokuapp.com/${data}`}
+                          target="_blank"
+                        >
                           {data}
                         </Link>
                       </TableCell>

@@ -100,9 +100,7 @@ const BillHistory = ({ data, setError }) => {
                       {bh.status ? bh.status.name : "état supprimé"}
                     </TableCell>
                     <TableCell>
-                      {bh.endDate
-                        ? moment(bh.endDate).format("DD/MM/YY")
-                        : "-"}
+                      {bh.endDate ? moment(bh.endDate).format("DD/MM/YY") : "-"}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -115,7 +113,10 @@ const BillHistory = ({ data, setError }) => {
             <DialogContent>
               {doc.map((doc) => (
                 <TableRow>
-                  <Link to={`//localhost:5000/${doc}`} target="_blank">
+                  <Link
+                    to={`//appartex-server.herokuapp.com/${doc}`}
+                    target="_blank"
+                  >
                     {doc}
                   </Link>
                 </TableRow>

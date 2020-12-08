@@ -45,7 +45,7 @@ const ShowAppartDocuments = ({ appart, setError }) => {
                 <img
                   key={i}
                   style={{ maxWidth: "100%" }}
-                  src={`http://localhost:5000/${data}`}
+                  src={`//appartex-server.herokuapp.com/${data}`}
                 />
               ))}
           </Carousel>

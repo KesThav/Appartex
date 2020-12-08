@@ -29,6 +29,7 @@ import DeleteContract from "../../components/Contract/DeleteContract";
 import ArchiveContract from "../../components/Contract/ArchiveContract";
 import { Prompt } from "react-router-dom";
 import ContractDoc from "../../components/Contract/ContractDoc";
+import { ContractToExcel } from "./export";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -217,7 +218,16 @@ const Contract = () => {
         when={editing}
         message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
-      <Typography variant="h3">Les contrats</Typography>
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="h3">Les contrats</Typography>{" "}
+        {contract && <ContractToExcel dynamicSearch={dynamicSearch()} />}
+      </Box>
 
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}

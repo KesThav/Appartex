@@ -15,6 +15,7 @@ import { UserContext } from "../../middlewares/ContextAPI";
 import Alert from "@material-ui/lab/Alert";
 import axios from "axios";
 import PersonIcon from "@material-ui/icons/Person";
+import LoadingScreen from '../LoadingScreen'
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -62,7 +63,10 @@ const Login = ({ push }) => {
         password,
       };
       try {
-        await axios.post("/auth/register", data);
+        await axios.post(
+          "https://appartex-server.herokuapp.com/auth/register",
+          data
+        );
         setLoading(false);
         setSuccess("Inscription avec succès, vous pouvez vous connecter");
       } catch (err) {
@@ -89,6 +93,7 @@ const Login = ({ push }) => {
         <DialogTitle>Inscription</DialogTitle>
 
         <DialogContent>
+          {loading && <LoadingScreen/>}
           {err && <Alert severity="error">{err}</Alert>}
           {success && <Alert severity="success">{success}</Alert>}
           <br />

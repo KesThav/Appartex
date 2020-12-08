@@ -30,6 +30,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteTenant from "../../components/Tenant/DeleteTenant";
 import { Prompt } from "react-router-dom";
+import { TenantToExcel } from "./export";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -172,7 +173,16 @@ const Tenant = () => {
         when={editing}
         message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
-      <Typography variant="h3">Les locataires</Typography>
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="h3">Les locataires</Typography>{" "}
+        {tenant && <TenantToExcel dynamicSearch={dynamicSearch()} />}
+      </Box>
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}

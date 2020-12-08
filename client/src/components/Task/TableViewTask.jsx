@@ -26,6 +26,7 @@ import TaskHistory from "./TaskHistory";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
+import { TaskToExcel } from "../../pages/ownerpages/export";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -117,6 +118,7 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
 
   return (
     <div>
+      {task && <TaskToExcel dynamicSearch={dynamicSearch()} />}
       <Paper>
         <Box className={classes.box3}>
           {status && (

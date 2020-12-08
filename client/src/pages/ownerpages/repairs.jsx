@@ -34,6 +34,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import TrendingDownIcon from "@material-ui/icons/TrendingDown";
+import { RepairToExcel } from "./export";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -178,7 +179,16 @@ const Repair = () => {
         when={editing}
         message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
-      <Typography variant="h3">Les réparations</Typography>
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="h3">Les réparations</Typography>{" "}
+        {repair && <RepairToExcel dynamicSearch={dynamicSearch()} />}
+      </Box>
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}
