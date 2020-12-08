@@ -2,12 +2,24 @@ import React from "react";
 import ReactExport from "react-export-excel";
 import VerticalAlignBottomSharpIcon from "@material-ui/icons/VerticalAlignBottomSharp";
 import { Button } from "@material-ui/core";
-
+import moment from "moment";
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 export const BuildingToExcel = ({ dynamicSearch }) => {
+  const data = dynamicSearch.map((data) => {
+    return {
+      _id: data._id,
+      adress: data.adress,
+      postalcode: data.postalcode,
+      city: data.city,
+      numberofAppart: data.numberofAppart,
+      counter: data.counter,
+      createdAt: moment(data.createdAt).format("DD/MM/YYYY"),
+      updatedAt: moment(data.updatedAt).format("DD/MM/YYYY"),
+    };
+  });
   return (
     <ExcelFile
       element={
@@ -16,7 +28,7 @@ export const BuildingToExcel = ({ dynamicSearch }) => {
         </Button>
       }
     >
-      <ExcelSheet data={dynamicSearch} name="Building">
+      <ExcelSheet data={data} name="Building">
         <ExcelColumn label="_id" value="_id" />
         <ExcelColumn label="Nbr d'appartement" value="numberofAppart" />
         <ExcelColumn label="Nbr d'appartement occupé" value="counter" />
@@ -39,8 +51,8 @@ export const AppartToExcel = ({ dynamicSearch }) => {
       city: data.building ? data.building.city : data.city,
       status: data.status,
       size: data.size,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt,
+      createdAt: moment(data.createdAt).format("DD/MM/YYYY"),
+      updatedAt: moment(data.updatedAt).format("DD/MM/YYYY"),
     };
   });
   return (
@@ -66,6 +78,17 @@ export const AppartToExcel = ({ dynamicSearch }) => {
 };
 
 export const TenantToExcel = ({ dynamicSearch }) => {
+  const data = dynamicSearch.map((data) => {
+    return {
+      _id: data._id,
+      name: data.name,
+      lastname: data.lastname,
+      email: data.email,
+      status: data.status,
+      createdAt: moment(data.createdAt).format("DD/MM/YYYY"),
+      updatedAt: moment(data.updatedAt).format("DD/MM/YYYY"),
+    };
+  });
   return (
     <ExcelFile
       element={
@@ -74,7 +97,7 @@ export const TenantToExcel = ({ dynamicSearch }) => {
         </Button>
       }
     >
-      <ExcelSheet data={dynamicSearch} name="Tenants">
+      <ExcelSheet data={data} name="Tenants">
         <ExcelColumn label="_id" value="_id" />
         <ExcelColumn label="Nom" value="lastname" />
         <ExcelColumn label="Prénom" value="name" />
@@ -106,8 +129,8 @@ export const ContractToExcel = ({ dynamicSearch }) => {
       charge: data.charge,
       other: data.other,
       rent: data.rent,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt,
+      createdAt: moment(data.createdAt).format("DD/MM/YYYY"),
+      updatedAt: moment(data.updatedAt).format("DD/MM/YYYY"),
     };
   });
   return (
@@ -143,9 +166,9 @@ export const BillToExcel = ({ dynamicSearch }) => {
       reference: data.reference,
       status: data.status.name,
       amount: data.amount,
-      endDate: data.endDate,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt,
+      endDate: moment(data.endDate).format("DD/MM/YYYY"),
+      createdAt: moment(data.createdAt).format("DD/MM/YYYY"),
+      updatedAt: moment(data.updatedAt).format("DD/MM/YYYY"),
     };
   });
   return (
@@ -179,8 +202,8 @@ export const RepairToExcel = ({ dynamicSearch }) => {
       amount: data.amount,
       status: data.status.name,
       reason: data.reason,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt,
+      createdAt: moment(data.createdAt).format("DD/MM/YYYY"),
+      updatedAt: moment(data.updatedAt).format("DD/MM/YYYY"),
     };
   });
   return (
@@ -211,11 +234,11 @@ export const TaskToExcel = ({ dynamicSearch }) => {
       _id: data._id,
       title: data.title,
       content: data.content,
-      startDate: data.startDate,
-      endDate: data.endDate,
+      startDate: moment(data.startDate).format("DD/MM/YYYY"),
+      endDate: moment(data.endDate).format("DD/MM/YYYY"),
       status: data.status.name,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt,
+      createdAt: moment(data.createdAt).format("DD/MM/YYYY"),
+      updatedAt: moment(data.updatedAt).format("DD/MM/YYYY"),
     };
   });
   return (
