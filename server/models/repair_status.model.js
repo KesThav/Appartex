@@ -5,7 +5,7 @@ const repairstatusSchema = new Mongoose.Schema(
     repairid: {
       type: Mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "Task",
+      ref: "Repair",
     },
     status: {
       type: Mongoose.Schema.Types.ObjectId,
