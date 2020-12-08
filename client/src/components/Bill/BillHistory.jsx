@@ -19,6 +19,7 @@ import { UserContext } from "../../middlewares/ContextAPI";
 import HistoryIcon from "@material-ui/icons/History";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { BillHistoryToExcel } from "../../pages/ownerpages/export";
 
 const useStyles = makeStyles({
   box: {
@@ -80,7 +81,9 @@ const BillHistory = ({ data, setError }) => {
         disableBackdropClick
       >
         <DialogTitle>Historique de la facture</DialogTitle>
+
         <DialogContent>
+          {billhistory && <BillHistoryToExcel billHistory={billhistory} />}
           <Table>
             <TableHead>
               <TableRow>

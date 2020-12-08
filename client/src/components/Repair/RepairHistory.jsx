@@ -19,6 +19,7 @@ import { UserContext } from "../../middlewares/ContextAPI";
 import HistoryIcon from "@material-ui/icons/History";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { RepairHistoryToExcel } from "../../pages/ownerpages/export";
 
 const useStyles = makeStyles({
   box: {
@@ -76,6 +77,9 @@ const RepairHistory = ({ data, setError }) => {
         <DialogTitle>Détail de la réparation</DialogTitle>
         <Divider />
         <DialogContent>
+          {repairhistory && (
+            <RepairHistoryToExcel repairHistory={repairhistory} />
+          )}
           <Table>
             <TableHead>
               <TableRow>

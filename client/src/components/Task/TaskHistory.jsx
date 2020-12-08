@@ -18,6 +18,7 @@ import {
 import { UserContext } from "../../middlewares/ContextAPI";
 import HistoryIcon from "@material-ui/icons/History";
 import moment from "moment";
+import { TaskHistoryToExcel } from "../../pages/ownerpages/export";
 
 const useStyles = makeStyles({
   box: {
@@ -64,6 +65,7 @@ const TaskHistory = ({ data, setError }) => {
         <DialogTitle>Détail de la tâche</DialogTitle>
         <Divider />
         <DialogContent>
+          {taskhistory && <TaskHistoryToExcel taskHistory={taskhistory} />}
           <Table>
             <TableHead>
               <TableRow>

@@ -13,7 +13,6 @@ const ShowAppartDocuments = ({ appart, setError }) => {
     try {
       const res = await authAxios.get(`/appartments/${appart}`);
       setPicture(res.data.picture);
-      setCount((count) => count + 1);
     } catch (err) {
       setError(err.response.data);
     }
