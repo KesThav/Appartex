@@ -27,8 +27,9 @@ export const BuildingToExcel = ({ dynamicSearch }) => {
           <VerticalAlignBottomSharpIcon /> EXPORT
         </Button>
       }
+      filename={"Immeubles_" + moment().format("YYYYMMDD")}
     >
-      <ExcelSheet data={data} name="Building">
+      <ExcelSheet data={data} name="Immeubles">
         <ExcelColumn label="N°" value="_id" />
         <ExcelColumn label="Nbr d'appartement" value="numberofAppart" />
         <ExcelColumn label="Nbr d'appartement occupé" value="counter" />
@@ -62,8 +63,9 @@ export const AppartToExcel = ({ dynamicSearch }) => {
           <VerticalAlignBottomSharpIcon /> EXPORT
         </Button>
       }
+      filename={"Apparts_" + moment().format("YYYYMMDD")}
     >
-      <ExcelSheet data={data} name="Appart">
+      <ExcelSheet data={data} name="Apparts">
         <ExcelColumn label="N°" value="_id" />
         <ExcelColumn label="Adresse" value="adress" />
         <ExcelColumn label="Code postale" value="postalcode" />
@@ -96,8 +98,9 @@ export const TenantToExcel = ({ dynamicSearch }) => {
           <VerticalAlignBottomSharpIcon /> EXPORT
         </Button>
       }
+      filename={"Locataires_" + moment().format("YYYYMMDD")}
     >
-      <ExcelSheet data={data} name="Tenants">
+      <ExcelSheet data={data} name="Locataires">
         <ExcelColumn label="N°" value="_id" />
         <ExcelColumn label="Nom" value="lastname" />
         <ExcelColumn label="Prénom" value="name" />
@@ -140,8 +143,9 @@ export const ContractToExcel = ({ dynamicSearch }) => {
           <VerticalAlignBottomSharpIcon /> EXPORT
         </Button>
       }
+      filename={"Contrats_" + moment().format("YYYYMMDD")}
     >
-      <ExcelSheet data={data} name="Appart">
+      <ExcelSheet data={data} name="Contrats">
         <ExcelColumn label="N°" value="_id" />
         <ExcelColumn label="Locataire" value="tenant" />
         <ExcelColumn label="Adresse" value="adress" />
@@ -178,8 +182,9 @@ export const BillToExcel = ({ dynamicSearch }) => {
           <VerticalAlignBottomSharpIcon /> EXPORT
         </Button>
       }
+      filename={"Immeuble_" + moment().format("YYYYMMDD")}
     >
-      <ExcelSheet data={data} name="Appart">
+      <ExcelSheet data={data} name="Factures">
         <ExcelColumn label="N°" value="_id" />
         <ExcelColumn label="Locataire" value="tenant" />
         <ExcelColumn label="Réference" value="reference" />
@@ -210,8 +215,9 @@ export const BillHistoryToExcel = ({ billHistory }) => {
           <VerticalAlignBottomSharpIcon /> EXPORT
         </Button>
       }
+      filename={"Facture_historique_" + moment().format("YYYYMMDD")}
     >
-      <ExcelSheet data={data} name="Appart">
+      <ExcelSheet data={data} name="Factures_historique">
         <ExcelColumn label="N°" value="_id" />
         <ExcelColumn label="Facture n°" value="billid" />
         <ExcelColumn label="Statut" value="status" />
@@ -242,8 +248,9 @@ export const RepairToExcel = ({ dynamicSearch }) => {
           <VerticalAlignBottomSharpIcon /> EXPORT
         </Button>
       }
+      filename={"Réparations_" + moment().format("YYYYMMDD")}
     >
-      <ExcelSheet data={data} name="Appart">
+      <ExcelSheet data={data} name="Réparations">
         <ExcelColumn label="N°" value="_id" />
         <ExcelColumn label="Tâche_titre" value="task_title" />
         <ExcelColumn label="Tâche_contenu" value="task_content" />
@@ -273,8 +280,9 @@ export const RepairHistoryToExcel = ({ repairHistory }) => {
           <VerticalAlignBottomSharpIcon /> EXPORT
         </Button>
       }
+      filename={"Réparation_historique_" + moment().format("YYYYMMDD")}
     >
-      <ExcelSheet data={data} name="Appart">
+      <ExcelSheet data={data} name="Réparation_historique">
         <ExcelColumn label="N°" value="_id" />
         <ExcelColumn label="réparation n°" value="repairid" />
         <ExcelColumn label="Statut" value="status" />
@@ -304,8 +312,9 @@ export const TaskToExcel = ({ dynamicSearch }) => {
           <VerticalAlignBottomSharpIcon /> EXPORT
         </Button>
       }
+      filename={"Tâches_" + moment().format("YYYYMMDD")}
     >
-      <ExcelSheet data={data} name="Appart">
+      <ExcelSheet data={data} name="Tâches">
         <ExcelColumn label="N°" value="_id" />
         <ExcelColumn label="Titre" value="title" />
         <ExcelColumn label="Contenu" value="content" />
@@ -339,8 +348,9 @@ export const TaskHistoryToExcel = ({ taskHistory }) => {
           <VerticalAlignBottomSharpIcon /> EXPORT
         </Button>
       }
+      filename={"Tâche_historique_" + moment().format("YYYYMMDD")}
     >
-      <ExcelSheet data={data} name="Appart">
+      <ExcelSheet data={data} name="Tâche_historique">
         <ExcelColumn label="N°" value="_id" />
         <ExcelColumn label="Tâche n°" value="taskid" />
         <ExcelColumn label="Titre" value="task_title" />
