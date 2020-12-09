@@ -24,7 +24,7 @@ const Task = require("../models/task.model");
  *         sendedToType:
  *           type: String
  *           enum : ["Owner", "Tenant"]
- *           summary : set de ref vers le bon schema
+ *           summary : ajoute la ref vers le bon schema
  *         content:
  *            type: String
  *            example: Welcome to Fribourg
