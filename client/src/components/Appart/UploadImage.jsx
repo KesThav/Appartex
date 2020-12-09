@@ -126,23 +126,14 @@ const UploadImage = ({ setSuccess, setError }) => {
           {appart &&
             appart.map((option) => (
               <MenuItem key={option._id} value={option._id}>
-                {!option.building
-                  ? option.adress +
-                    " " +
-                    option.postalcode +
-                    " " +
-                    option.city +
-                    ", " +
-                    option.size +
-                    " pièces"
-                  : option.building.adress +
-                    " " +
-                    option.building.postalcode +
-                    " " +
-                    option.building.city +
-                    ", " +
-                    option.size +
-                    " pièces"}
+                {option.adress +
+                  " " +
+                  option.postalcode +
+                  " " +
+                  option.city +
+                  ", " +
+                  option.size +
+                  " pièces"}
               </MenuItem>
             ))}
         </TextField>

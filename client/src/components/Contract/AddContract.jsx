@@ -164,21 +164,7 @@ const AddContract = () => {
                   .filter((option) => option.status == "Libre")
                   .map((option) => (
                     <MenuItem key={option._id} value={option._id}>
-                      {!option.building
-                        ? option.adress +
-                          " " +
-                          option.postalcode +
-                          " " +
-                          option.city +
-                          ", " +
-                          option.size
-                        : option.building.adress +
-                          " " +
-                          option.building.postalcode +
-                          " " +
-                          option.building.city +
-                          ", " +
-                          option.size}
+                      {`${option.adress} ${option.postalcode} ${option.city}, ${option.size} pièces`}
                     </MenuItem>
                   ))}
             </TextField>

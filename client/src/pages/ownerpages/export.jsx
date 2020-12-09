@@ -47,9 +47,9 @@ export const AppartToExcel = ({ dynamicSearch }) => {
   const data = dynamicSearch.map((data) => {
     return {
       _id: data._id,
-      adress: data.building ? data.building.adress : data.adress,
-      postalcode: data.building ? data.building.postalcode : data.postalcode,
-      city: data.building ? data.building.city : data.city,
+      adress: data.adress,
+      postalcode: data.postalcode,
+      city: data.city,
       status: data.status,
       size: data.size,
       createdAt: moment(data.createdAt).format("DD/MM/YYYY"),
@@ -118,20 +118,15 @@ export const ContractToExcel = ({ dynamicSearch }) => {
   const data = dynamicSearch.map((data) => {
     return {
       _id: data._id,
-      tenant: `${data.tenant.name} ${data.tenant.lastname}`,
-      adress: data.appartmentid.building
-        ? data.appartmentid.building.adress
-        : data.appartmentid.adress,
-      postalcode: data.appartmentid.building
-        ? data.appartmentid.building.postalcode
-        : data.appartmentid.postalcode,
-      city: data.appartmentid.building
-        ? data.appartmentid.building.city
-        : data.appartmentid.city,
+      tenant: data.tenant,
+      adress: data.adress,
+      postalcode: data.postalcode,
+      city: data.city,
       status: data.status,
       charge: data.charge,
       other: data.other,
       rent: data.rent,
+      size: data.size,
       createdAt: moment(data.createdAt).format("DD/MM/YYYY"),
       updatedAt: moment(data.updatedAt).format("DD/MM/YYYY"),
     };
@@ -151,6 +146,7 @@ export const ContractToExcel = ({ dynamicSearch }) => {
         <ExcelColumn label="Adresse" value="adress" />
         <ExcelColumn label="Code postale" value="postalcode" />
         <ExcelColumn label="Ville" value="city" />
+        <ExcelColumn label="Pièces" value="size" />
         <ExcelColumn label="Statut" value="status" />
         <ExcelColumn label="Charge" value="charge" />
         <ExcelColumn label="Loyer" value="rent" />

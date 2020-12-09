@@ -145,70 +145,39 @@ const Contract = () => {
         .filter((data) =>
           activeFilter.length == 0 ? data : activeFilter.includes(data.status)
         )
-        .filter((name) =>
-          !name.appartmentid.building
-            ? name._id
-                .toString()
-                .toLowerCase()
-                .includes(search.toString().toLowerCase()) ||
-              name.charge.toString().includes(search.toString()) ||
-              name.rent
-                .toString()
-                .toLowerCase()
-                .includes(search.toLowerCase()) ||
-              name.tenant
-                .toString()
-                .toLowerCase()
-                .includes(search.toString().toLowerCase()) ||
-              name.appartmentid
-                .toString()
-                .toLowerCase()
-                .includes(search.toString().toLowerCase()) ||
-              name.other
-                .toString()
-                .toLowerCase()
-                .includes(search.toString().toLowerCase()) ||
-              name.tenant.name.toLowerCase().includes(search.toLowerCase()) ||
-              name.tenant.lastname
-                .toLowerCase()
-                .includes(search.toLowerCase()) ||
-              name.appartmentid.adress
-                .toLowerCase()
-                .includes(search.toLowerCase()) ||
-              name.status
-                .toLowerCase()
-                .includes(search.toString().toLowerCase())
-            : name._id
-                .toString()
-                .toLowerCase()
-                .includes(search.toString().toLowerCase()) ||
-              name.charge.toString().includes(search.toString()) ||
-              name.rent
-                .toString()
-                .toLowerCase()
-                .includes(search.toLowerCase()) ||
-              name.tenant
-                .toString()
-                .toLowerCase()
-                .includes(search.toString().toLowerCase()) ||
-              name.appartmentid
-                .toString()
-                .toLowerCase()
-                .includes(search.toString().toLowerCase()) ||
-              name.other
-                .toString()
-                .toLowerCase()
-                .includes(search.toString().toLowerCase()) ||
-              name.tenant.name.toLowerCase().includes(search.toLowerCase()) ||
-              name.tenant.lastname
-                .toLowerCase()
-                .includes(search.toLowerCase()) ||
-              name.appartmentid.building.adress
-                .toLowerCase()
-                .includes(search.toLowerCase()) ||
-              name.status
-                .toLowerCase()
-                .includes(search.toString().toLowerCase())
+        .filter(
+          (name) =>
+            name.adress
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.postalcode
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.city
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.size
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name._id
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.charge.toString().includes(search.toString()) ||
+            name.rent.toString().toLowerCase().includes(search.toLowerCase()) ||
+            name.tenant
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.other
+              .toString()
+              .toLowerCase()
+              .includes(search.toString().toLowerCase()) ||
+            name.status.toLowerCase().includes(search.toString().toLowerCase())
         );
   };
 
@@ -303,29 +272,9 @@ const Contract = () => {
                         <TableCell component="th" scope="row">
                           {contract._id}
                         </TableCell>
+                        <TableCell>{contract.tenant}</TableCell>
                         <TableCell>
-                          {contract.tenant.name +
-                            " " +
-                            contract.tenant.lastname}
-                        </TableCell>
-                        <TableCell>
-                          {!contract.appartmentid.building
-                            ? contract.appartmentid.adress +
-                              " " +
-                              contract.appartmentid.postalcode +
-                              " " +
-                              contract.appartmentid.city +
-                              ", " +
-                              contract.appartmentid.size +
-                              " pièces"
-                            : contract.appartmentid.building.adress +
-                              " " +
-                              contract.appartmentid.building.postalcode +
-                              " " +
-                              contract.appartmentid.building.city +
-                              ", " +
-                              contract.appartmentid.size +
-                              " pièces"}
+                          {`${contract.adress} ${contract.postalcode} ${contract.city}, ${contract.size} pièces`}
                         </TableCell>
                         <TableCell>
                           {editing && data === contract._id ? (
@@ -400,8 +349,8 @@ const Contract = () => {
                                       onClick={() => {
                                         setCharge(contract.charge);
                                         setRent(contract.rent);
-                                        setTenantid(contract.tenant._id);
-                                        setAppartid(contract.appartmentid._id);
+                                        setTenantid(contract.tenantid);
+                                        setAppartid(contract.appartid);
                                         setOther(contract.other);
                                         setData(contract._id);
                                         setError("");

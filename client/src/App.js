@@ -68,109 +68,155 @@ const App = () => {
   //get data here and give it to children via Context API
   const getTenants = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const res = await authAxios.get("/tenants");
       setTenant(res.data);
-      setLoading(false)
+      setLoading(false);
     } catch (err) {
       console.log(err);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
   const getBuildings = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const res = await authAxios.get("/buildings");
       setBuilding(res.data);
-      setLoading(false)
+      setLoading(false);
     } catch (err) {
       console.log(err);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
   const getApparts = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const res = await authAxios.get("/appartments");
-      setAppart(res.data);
-      setLoading(false)
+      const data =
+        res &&
+        res.data.map((data) => {
+          return {
+            picture: data.picture.map((pic) => pic),
+            hasBuilding: data.building ? true : false,
+            _id: data._id,
+            adress: data.building ? data.building.adress : data.adress,
+            postalcode: data.building
+              ? data.building.postalcode
+              : data.postalcode,
+            city: data.building ? data.building.city : data.city,
+            status: data.status,
+            size: data.size,
+            building: data.building ? data.building._id : null,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt,
+          };
+        });
+      setAppart(data);
+      setLoading(false);
     } catch (err) {
       console.log(err);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
   const getContracts = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const res = await authAxios.get("/contracts");
-      setContract(res.data);
-      setLoading(false)
+      const data =
+        res &&
+        res.data.map((data) => {
+          return {
+            _id: data._id,
+            tenantid: data.tenant._id,
+            tenant: `${data.tenant.name} ${data.tenant.lastname}`,
+            appartid: data.appartmentid._id,
+            adress: data.appartmentid.building
+              ? data.appartmentid.building.adress
+              : data.appartmentid.adress,
+            city: data.appartmentid.building
+              ? data.appartmentid.building.city
+              : data.appartmentid.city,
+            postalcode: data.appartmentid.building
+              ? data.appartmentid.building.postalcode
+              : data.appartmentid.postalcode,
+            size: data.appartmentid.size,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt,
+            charge: data.charge,
+            rent: data.rent,
+            file: data.file.map((file) => file),
+            other: data.other,
+            status: data.status,
+          };
+        });
+      setContract(data);
+      setLoading(false);
     } catch (err) {
       console.log(err);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
   const getBills = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const res = await authAxios.get("/bills");
       setBill(res.data);
-      setLoading(false)
+      setLoading(false);
     } catch (err) {
       console.log(err);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
   const getBillHistories = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const res = await authAxios.get("/history/bills");
       setBillhistory(res.data);
-      setLoading(false)
+      setLoading(false);
     } catch (err) {
       console.log(err);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
   const getStatus = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const res = await authAxios.get("/status");
       setStatus(res.data);
-      setLoading(false)
+      setLoading(false);
     } catch (err) {
       console.log(err);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
   const getTasks = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const res = await authAxios.get("/tasks");
       setTask(res.data);
-      setLoading(false)
+      setLoading(false);
     } catch (err) {
       console.log(err);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
   const getRepairs = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const res = await authAxios.get("/repairs");
       setRepair(res.data);
-      setLoading(false)
+      setLoading(false);
     } catch (err) {
       console.log(err);
-      setLoading(false)
+      setLoading(false);
     }
   };
 

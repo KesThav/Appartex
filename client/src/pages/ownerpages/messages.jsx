@@ -101,7 +101,7 @@ const Drawer = (props) => {
   };
 
   const statut = [
-    { value: "Envoyé", label: "envoyé" },
+    { value: "envoyé", label: "Envoyé" },
     { value: "En cours", label: "En cours" },
     { value: "Tâche créé", label: "Tâche créé" },
     { value: "Terminé", label: "Terminé" },
@@ -150,50 +150,50 @@ const Drawer = (props) => {
             <Tab label="Messages Archivés" {...a11yProps(2)} />
           ) : null}
         </Tabs>
-          <TabPanel value={value} index={0} style={{ width: "50%" }}>
-            <Fragment>
-              {sendedmessage.length > 0 && (
-                <ShowMessages
-                  getMessages={getMessages}
-                  setError={setError}
-                  setSuccess={setSuccess}
-                  message={sendedmessage.filter((data) =>
-                    activeFilter.length == 0
-                      ? data
-                      : activeFilter.includes(data.status)
-                  )}
-                />
+        <TabPanel value={value} index={0} style={{ width: "50%" }}>
+          <Fragment>
+            {sendedmessage.length > 0 && (
+              <ShowMessages
+                getMessages={getMessages}
+                setError={setError}
+                setSuccess={setSuccess}
+                message={sendedmessage.filter((data) =>
+                  activeFilter.length == 0
+                    ? data
+                    : activeFilter.includes(data.status)
+                )}
+              />
+            )}
+          </Fragment>
+        </TabPanel>
+        <TabPanel value={value} index={1} style={{ width: "50%" }}>
+          {receivedmessage.length > 0 && (
+            <ShowMessages
+              getMessages={getMessages}
+              setError={setError}
+              setSuccess={setSuccess}
+              message={receivedmessage.filter((data) =>
+                activeFilter.length == 0
+                  ? data
+                  : activeFilter.includes(data.status)
               )}
-            </Fragment>
-          </TabPanel>
-          <TabPanel value={value} index={1} style={{ width: "50%" }}>
-            {receivedmessage.length > 0 && (
-              <ShowMessages
-                getMessages={getMessages}
-                setError={setError}
-                setSuccess={setSuccess}
-                message={receivedmessage.filter((data) =>
-                  activeFilter.length == 0
-                    ? data
-                    : activeFilter.includes(data.status)
-                )}
-              />
-            )}
-          </TabPanel>
-          <TabPanel value={value} index={2} style={{ width: "50%" }}>
-            {archivedmessage.length > 0 && (
-              <ShowMessages
-                getMessages={getMessages}
-                setError={setError}
-                setSuccess={setSuccess}
-                message={archivedmessage.filter((data) =>
-                  activeFilter.length == 0
-                    ? data
-                    : activeFilter.includes(data.status)
-                )}
-              />
-            )}
-          </TabPanel>
+            />
+          )}
+        </TabPanel>
+        <TabPanel value={value} index={2} style={{ width: "50%" }}>
+          {archivedmessage.length > 0 && (
+            <ShowMessages
+              getMessages={getMessages}
+              setError={setError}
+              setSuccess={setSuccess}
+              message={archivedmessage.filter((data) =>
+                activeFilter.length == 0
+                  ? data
+                  : activeFilter.includes(data.status)
+              )}
+            />
+          )}
+        </TabPanel>
       </div>
     </Fragment>
   );
