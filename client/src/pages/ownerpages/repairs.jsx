@@ -214,7 +214,7 @@ const Repair = () => {
                   {option.name}
                 </React.Fragment>
               )}
-              style={{ width: "30%", marginRight: "20px" }}
+              style={{ width: "20%", marginRight: "20px" }}
               renderInput={(params) => (
                 <TextField
                   {...params}

@@ -197,7 +197,7 @@ const Appart = () => {
           alignItems: "center",
         }}
       >
-        <Typography variant="h3">Les appartements</Typography>{" "}
+        <Typography variant="h3">Les appartements</Typography>
         {appart && <AppartToExcel dynamicSearch={dynamicSearch()} />}
       </Box>
 

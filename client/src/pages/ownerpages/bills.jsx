@@ -123,8 +123,12 @@ const Bills = () => {
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
-  const [upbound, setUpbound] = useState(999999);
-  const [lowbound, setLowbound] = useState(-999999);
+  const [upbound, setUpbound] = useState(
+    moment().add(1, "year").format("YYYY-MM-DD")
+  );
+  const [lowbound, setLowbound] = useState(
+    moment().add(-1, "year").format("YYYY-MM-DD")
+  );
   const [activeFilter, setActiveFilter] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
@@ -173,14 +177,6 @@ const Bills = () => {
     }
   };
 
-  const statut = [
-    { id: 0, value: 30, label: "Plus de 30 jours" },
-    { id: 1, value: 15, label: "Entre 30 et 15 jours" },
-    { id: 2, value: 0, label: "Moins de 15 jours" },
-    { id: 3, value: -100, label: "En retard" },
-    { id: 4, value: -999999, label: "Tout" },
-  ];
-
   const dynamicSearch = () => {
     if (bill) {
       return bill
@@ -189,12 +185,8 @@ const Bills = () => {
             ? bill
             : activeFilter.includes(data.status._id)
         )
-        .filter(
-          (data) => moment(data.endDate).diff(moment(), "days") > lowbound
-        )
-        .filter(
-          (data) => moment(data.endDate).diff(moment(), "days") <= upbound
-        )
+        .filter((data) => moment(data.endDate).format("YYYY-MM-DD") > lowbound)
+        .filter((data) => moment(data.endDate).format("YYYY-MM-DD") <= upbound)
         .filter((data) => data.status._id.includes(filter))
         .filter(
           (name) =>
@@ -265,7 +257,7 @@ const Bills = () => {
                   {option.name}
                 </React.Fragment>
               )}
-              style={{ width: "30%", marginRight: "20px" }}
+              style={{ width: "20%", marginRight: "20px" }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -275,34 +267,6 @@ const Bills = () => {
               )}
             />
           )}
-          <TextField
-            style={{ width: "10%", marginRight: "20px" }}
-            variant="outlined"
-            id="Nombre de jours restant"
-            select
-            value={lowbound}
-            label="Nombre de jours"
-            onChange={(e) => {
-              setLowbound(e.target.value);
-              if (e.target.value == 30) {
-                setUpbound(99999);
-              } else if (e.target.value == 15) {
-                setUpbound(30);
-              } else if (e.target.value == 0) {
-                setUpbound(15);
-              } else if (e.target.value == -100) {
-                setUpbound(0);
-              } else {
-                setUpbound(999999);
-              }
-            }}
-          >
-            {statut.map((option) => (
-              <MenuItem key={option.id} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
           <TextField
             variant="outlined"
             id="search"
@@ -321,7 +285,22 @@ const Bills = () => {
               ),
             }}
           />
-
+          <TextField
+            style={{ marginRight: 20 }}
+            onChange={(e) => setLowbound(e.target.value)}
+            value={lowbound}
+            variant="outlined"
+            label="date de début"
+            type="date"
+          />
+          <TextField
+            onChange={(e) => setUpbound(e.target.value)}
+            style={{ marginRight: 20 }}
+            value={upbound}
+            variant="outlined"
+            label="date de fin"
+            type="date"
+          />
           <Chip
             variant="outlined"
             color="primary"
