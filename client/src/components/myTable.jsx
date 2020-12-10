@@ -56,7 +56,9 @@ const MyTable = ({ data, title, link, header, text }) => {
               {data.slice(0, 5).map((data) => (
                 <TableRow key={data._id}>
                   <TableCell component="th" scope="row">
-                    {`${data.tenant.name} ${data.tenant.lastname}`}
+                    {data.tenant.name
+                      ? `${data.tenant.name} ${data.tenant.lastname}`
+                      : data.tenant}
                   </TableCell>
                   <TableCell>
                     {moment(data.updatedAt).format("DD/MM/YY")}
