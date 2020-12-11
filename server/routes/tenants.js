@@ -270,7 +270,14 @@ router.put("/update/:tenantid", jwt, filterAccess, async (ctx) => {
       }
     }
   }
-
+  if (ctx.request.body.status == "Inactif") {
+    const res = await Contract.findOne({ tenant: tenantid, status: "Actif" });
+    if (res) {
+      ctx.throw(
+        "Le locataire ne peut pas être désactivé car il possède des contrats actifs. Archivez d'abord les contrats."
+      );
+    }
+  }
   try {
     const updatedtenant = await Tenant.findByIdAndUpdate(
       tenantid,
