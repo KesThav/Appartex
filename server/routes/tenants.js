@@ -274,6 +274,7 @@ router.put("/update/:tenantid", jwt, filterAccess, async (ctx) => {
     const res = await Contract.findOne({ tenant: tenantid, status: "Actif" });
     if (res) {
       ctx.throw(
+        400,
         "Le locataire ne peut pas être désactivé car il possède des contrats actifs. Archivez d'abord les contrats."
       );
     }
