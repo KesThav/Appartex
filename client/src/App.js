@@ -43,7 +43,8 @@ if (token) {
 }
 
 let authAxios = Axios.create({
-  baseURL: "https://appartex-server.herokuapp.com",
+  baseURL:
+    /* "https://appartex-server.herokuapp.com" */ "http://localhost:5000",
   headers: {
     Authorization: token,
   },
@@ -186,13 +187,10 @@ const App = () => {
 
   const getStatus = async () => {
     try {
-      setLoading(true);
       const res = await authAxios.get("/status");
       setStatus(res.data);
-      setLoading(false);
     } catch (err) {
       console.log(err);
-      setLoading(false);
     }
   };
 

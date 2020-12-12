@@ -238,8 +238,8 @@ const Contract = () => {
           />
         </Box>
         <TableContainer className={classes.table} component={Paper} square>
-          <Table stickyHeader>
-            <TableHead style={{ background: "#fff" }}>
+          <Table stickyHeader /* style={{ tableLayout: "fixed" }} */>
+            <TableHead>
               <TableRow>
                 <Fragment>
                   {[

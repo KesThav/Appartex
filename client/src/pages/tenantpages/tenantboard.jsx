@@ -26,6 +26,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Alert from "@material-ui/lab/Alert";
 import PersonIcon from "@material-ui/icons/Person";
 import { Link } from "react-router-dom";
+import { arrayBufferToBase64 } from "../../components/arrayBufferToBase64";
 
 const useStyles = makeStyles((theme) => ({
   flex: {
@@ -101,7 +102,27 @@ const Tenantboard = (props) => {
     setLoading(true);
     try {
       const res = await authAxios.get(`/tenants/bills/${user._id}`);
-      setBills(res.data);
+      const doc = res.data.map((data) => {
+        return {
+          _id: data._id,
+          reference: data.reference,
+          reason: data.reason,
+          amount: data.amount,
+          status: data.status.name,
+          endDate: data.endDate,
+          createdAt: data.createdAt,
+          file: data.file.map((data) => {
+            return {
+              data:
+                `data:${data.contentType};base64,` +
+                arrayBufferToBase64(data.data.data),
+              name: data.name,
+              _id: data._id,
+            };
+          }),
+        };
+      });
+      setBills(doc);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -113,7 +134,35 @@ const Tenantboard = (props) => {
     setLoading(true);
     try {
       const res = await authAxios.get(`/tenants/contracts/${user._id}`);
-      setContracts(res.data);
+      const doc =
+        res &&
+        res.data.map((data) => {
+          return {
+            adress: data.appartmentid.building
+              ? data.appartmentid.building.adress +
+                " " +
+                data.appartmentid.building.postalcode +
+                " " +
+                data.appartmentid.building.city
+              : data.appartmentid.adress,
+            _id: data._id,
+            charge: data.charge,
+            rent: data.rent,
+            status: data.status.name,
+            createdAt: data.createdtAt,
+            updatedAt: data.updatedAt,
+            file: data.file.map((data) => {
+              return {
+                data:
+                  `data:${data.contentType};base64,` +
+                  arrayBufferToBase64(data.data.data),
+                name: data.name,
+                _id: data._id,
+              };
+            }),
+          };
+        });
+      setContracts(doc);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -137,7 +186,17 @@ const Tenantboard = (props) => {
     setLoading(true);
     try {
       const res = await authAxios.get(`/tenants/${user._id}`);
-      setDoc(res.data.file);
+      setDoc(
+        res.data.file.map((data) => {
+          return {
+            data:
+              `data:${data.contentType};base64,` +
+              arrayBufferToBase64(data.data.data),
+            name: data.name,
+            _id: data._id,
+          };
+        })
+      );
       setLoading(false);
     } catch (err) {
       setError(err.response.data);
@@ -309,15 +368,7 @@ const Tenantboard = (props) => {
                           contract.map((data) => (
                             <TableRow key={data._id}>
                               <TableCell>{data._id}</TableCell>
-                              <TableCell>
-                                {data.appartmentid.building
-                                  ? data.appartmentid.building.adress +
-                                    " " +
-                                    data.appartmentid.building.postalcode +
-                                    " " +
-                                    data.appartmentid.building.city
-                                  : data.appartmentid.adress}
-                              </TableCell>
+                              <TableCell>{data.adress}</TableCell>
                               <TableCell>{data.charge}</TableCell>
                               <TableCell>{data.rent}</TableCell>
                               <TableCell>{data.status}</TableCell>
@@ -326,12 +377,12 @@ const Tenantboard = (props) => {
                               </TableCell>
                               <TableCell>
                                 {data.file.map((doc) => (
-                                  <Link
-                                    to={`//appartex-server.herokuapp.com/${doc}`}
-                                    target="_blank"
-                                  >
-                                    {doc}
-                                  </Link>
+                                  <Fragment>
+                                    <a href={doc.data} download={doc.name}>
+                                      {doc.name}
+                                    </a>
+                                    <br />
+                                  </Fragment>
                                 ))}
                               </TableCell>
                             </TableRow>
@@ -385,12 +436,12 @@ const Tenantboard = (props) => {
                               </TableCell>
                               <TableCell>
                                 {data.file.map((doc) => (
-                                  <Link
-                                    to={`//appartex-server.herokuapp.com/${doc}`}
-                                    target="_blank"
-                                  >
-                                    {doc}
-                                  </Link>
+                                  <Fragment>
+                                    <a href={doc.data} download={doc.name}>
+                                      {doc.name}
+                                    </a>
+                                    <br />
+                                  </Fragment>
                                 ))}
                               </TableCell>
                             </TableRow>
@@ -433,12 +484,9 @@ const Tenantboard = (props) => {
                   {doc &&
                     doc.map((data) => (
                       <TableCell>
-                        <Link
-                          to={`//appartex-server.herokuapp.com/${data}`}
-                          target="_blank"
-                        >
-                          {data}
-                        </Link>
+                        <a href={data.data} download={data.name}>
+                          {data.name}
+                        </a>
                       </TableCell>
                     ))}
                 </AccordionDetails>

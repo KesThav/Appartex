@@ -168,7 +168,7 @@ const Status = () => {
           />
         </Box>
         <TableContainer className={classes.table} component={Paper} square>
-          <Table stickyHeader>
+          <Table stickyHeader style={{ tableLayout: "fixed" }}>
             <TableHead>
               <TableRow>
                 <Fragment>

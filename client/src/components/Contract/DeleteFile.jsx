@@ -69,7 +69,7 @@ const DeleteFile = ({
         <Divider />
         <DialogContent>
           Êtez-vous sûr de vouloir supprimer le document <br />
-          <strong>{data}</strong> du contrat ? <br />
+          <strong>{data.name}</strong> du contrat ? <br />
           Une fois validé, il n'est plus possible de revenir en arrière.
         </DialogContent>
         <Divider />
@@ -83,7 +83,7 @@ const DeleteFile = ({
           </Button>
 
           <Button
-            onClick={() => deleteFile(data)}
+            onClick={() => deleteFile(data._id)}
             color="primary"
             className={classes.button}
           >

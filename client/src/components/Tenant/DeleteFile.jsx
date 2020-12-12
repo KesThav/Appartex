@@ -81,7 +81,7 @@ const DeleteFile = ({ data, tenantid, setSuccess, setError, getOneTenant }) => {
         <Divider />
         <DialogContent>
           Êtez-vous sûr de vouloir supprimer le document <br />
-          <strong>{data + " "}</strong> du locataire
+          <strong>{data.name + " "}</strong> du locataire
           <strong>{" " + doc.name + " " + doc.lastname}</strong>
           ? <br />
           Une fois validé, il n'est plus possible de revenir en arrière.
@@ -97,7 +97,7 @@ const DeleteFile = ({ data, tenantid, setSuccess, setError, getOneTenant }) => {
           </Button>
 
           <Button
-            onClick={() => deleteFile(data)}
+            onClick={() => deleteFile(data._id)}
             color="primary"
             className={classes.button}
           >

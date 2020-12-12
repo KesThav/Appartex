@@ -3,7 +3,6 @@ import { UserContext } from "../../middlewares/ContextAPI";
 import {
   Paper,
   makeStyles,
-  Card,
   Button,
   TextField,
   MenuItem,
@@ -11,8 +10,8 @@ import {
   Typography,
 } from "@material-ui/core";
 import LoadingScreen from "../LoadingScreen";
-import { Link } from "react-router-dom";
 import DeleteFile from "./DeleteFile";
+import { arrayBufferToBase64 } from "../arrayBufferToBase64";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -78,7 +77,18 @@ const UploadFile = ({ setSuccess, setError }) => {
   const getOneTenant = async (dt) => {
     try {
       const res = await authAxios.get(`/tenants/${dt}`);
-      setData(res.data.file);
+      const doc =
+        res &&
+        res.data.file.map((data) => {
+          return {
+            data:
+              `data:${data.contentType};base64,` +
+              arrayBufferToBase64(data.data.data),
+            name: data.name,
+            _id: data._id,
+          };
+        });
+      setData(doc);
       setCount((count) => count + 1);
     } catch (err) {
       setError(err.response.data);
@@ -136,7 +146,7 @@ const UploadFile = ({ setSuccess, setError }) => {
         </Button>
       </form>
       {data.length > 0 &&
-        data.map((data, i) => (
+        data.map((doc, i) => (
           <Paper
             key={i}
             square
@@ -148,14 +158,11 @@ const UploadFile = ({ setSuccess, setError }) => {
               paddingLeft: "5px",
             }}
           >
-            <Link
-              to={`//appartex-server.herokuapp.com/${data}`}
-              target="_blank"
-            >
-              {data}
-            </Link>
+            <a href={doc.data} download={doc.name}>
+              {doc.name}
+            </a>
             <DeleteFile
-              data={data}
+              data={doc}
               tenantid={tenantid}
               setSuccess={setSuccess}
               setError={setError}

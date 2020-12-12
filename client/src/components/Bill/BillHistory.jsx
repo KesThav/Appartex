@@ -18,8 +18,8 @@ import {
 import { UserContext } from "../../middlewares/ContextAPI";
 import HistoryIcon from "@material-ui/icons/History";
 import moment from "moment";
-import { Link } from "react-router-dom";
 import { BillHistoryToExcel } from "../../pages/ownerpages/export";
+import { arrayBufferToBase64 } from "../arrayBufferToBase64";
 
 const useStyles = makeStyles({
   box: {
@@ -48,7 +48,18 @@ const BillHistory = ({ data, setError }) => {
   const getOneBill = async (data) => {
     try {
       const res = await authAxios.get(`/bills/${data}`);
-      setDoc(res.data.file);
+      const doc =
+        res &&
+        res.data.file.map((data) => {
+          return {
+            data:
+              `data:${data.contentType};base64,` +
+              arrayBufferToBase64(data.data.data),
+            name: data.name,
+            _id: data._id,
+          };
+        });
+      setDoc(doc);
     } catch (err) {
       setError(err.response.data);
     }
@@ -116,12 +127,9 @@ const BillHistory = ({ data, setError }) => {
             <DialogContent>
               {doc.map((doc) => (
                 <TableRow>
-                  <Link
-                    to={`//appartex-server.herokuapp.com/${doc}`}
-                    target="_blank"
-                  >
-                    {doc}
-                  </Link>
+                  <a href={doc.data} download={doc.name}>
+                    {doc.name}
+                  </a>
                 </TableRow>
               ))}
             </DialogContent>

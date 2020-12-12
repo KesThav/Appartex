@@ -3,6 +3,7 @@ import { Tooltip, IconButton, Dialog, DialogContent } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
 import Carousel from "react-material-ui-carousel";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
+import { arrayBufferToBase64 } from "../arrayBufferToBase64";
 
 const ShowAppartDocuments = ({ appart, setError }) => {
   const [open, setOpen] = useState(false);
@@ -12,7 +13,14 @@ const ShowAppartDocuments = ({ appart, setError }) => {
   const getOneAppart = async (appart) => {
     try {
       const res = await authAxios.get(`/appartments/${appart}`);
-      setPicture(res.data.picture);
+      const img =
+        res &&
+        res.data.picture.map(
+          (data) =>
+            `data:${data.contentType};base64,` +
+            arrayBufferToBase64(data.data.data)
+        );
+      setPicture(img);
     } catch (err) {
       setError(err.response.data);
     }
@@ -41,11 +49,7 @@ const ShowAppartDocuments = ({ appart, setError }) => {
           <Carousel>
             {picture.length > 0 &&
               picture.map((data, i) => (
-                <img
-                  key={i}
-                  style={{ maxWidth: "100%" }}
-                  src={`//appartex-server.herokuapp.com/${data}`}
-                />
+                <img key={i} style={{ maxWidth: "100%" }} src={`${data}`} />
               ))}
           </Carousel>
         </DialogContent>

@@ -27,6 +27,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Alert from "@material-ui/lab/Alert";
 import PersonIcon from "@material-ui/icons/Person";
 import KeyboardBackspaceIcon from "@material-ui/icons/KeyboardBackspace";
+import { arrayBufferToBase64 } from "./arrayBufferToBase64";
 
 const useStyles = makeStyles((theme) => ({
   flex: {
@@ -108,7 +109,17 @@ const UserSkeleton = (props) => {
       setLastname(res.data.lastname);
       setEmail(res.data.email);
       setDate(res.data.dateofbirth);
-      setDoc(res.data.file);
+      setDoc(
+        res.data.file.map((data) => {
+          return {
+            data:
+              `data:${data.contentType};base64,` +
+              arrayBufferToBase64(data.data.data),
+            name: data.name,
+            _id: data._id,
+          };
+        })
+      );
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -122,7 +133,28 @@ const UserSkeleton = (props) => {
       const res = await authAxios.get(
         `tenants/bills/${props.match.params.tenantid}`
       );
-      setBills(res.data);
+
+      const doc = res.data.map((data) => {
+        return {
+          _id: data._id,
+          reference: data.reference,
+          reason: data.reason,
+          amount: data.amount,
+          status: data.status.name,
+          endDate: data.endDate,
+          createdAt: data.createdAt,
+          file: data.file.map((data) => {
+            return {
+              data:
+                `data:${data.contentType};base64,` +
+                arrayBufferToBase64(data.data.data),
+              name: data.name,
+              _id: data._id,
+            };
+          }),
+        };
+      });
+      setBills(doc);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -136,7 +168,34 @@ const UserSkeleton = (props) => {
       const res = await authAxios.get(
         `tenants/contracts/${props.match.params.tenantid}`
       );
-      setContracts(res.data);
+      const doc =
+        res &&
+        res.data.map((data) => {
+          return {
+            adress: data.appartmentid.building
+              ? data.appartmentid.building.adress +
+                " " +
+                data.appartmentid.building.postalcode +
+                " " +
+                data.appartmentid.building.city
+              : data.appartmentid.adress,
+            _id: data._id,
+            charge: data.charge,
+            rent: data.rent,
+            status: data.status.name,
+            createdAt: data.createdtAt,
+            file: data.file.map((data) => {
+              return {
+                data:
+                  `data:${data.contentType};base64,` +
+                  arrayBufferToBase64(data.data.data),
+                name: data.name,
+                _id: data._id,
+              };
+            }),
+          };
+        });
+      setContracts(doc);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -331,15 +390,7 @@ const UserSkeleton = (props) => {
                           contract.map((data) => (
                             <TableRow key={data._id}>
                               <TableCell>{data._id}</TableCell>
-                              <TableCell>
-                                {data.appartmentid.building
-                                  ? data.appartmentid.building.adress +
-                                    " " +
-                                    data.appartmentid.building.postalcode +
-                                    " " +
-                                    data.appartmentid.building.city
-                                  : data.appartmentid.adress}
-                              </TableCell>
+                              <TableCell>{data.adress}</TableCell>
                               <TableCell>{data.charge}</TableCell>
                               <TableCell>{data.rent}</TableCell>
                               <TableCell>{data.status}</TableCell>
@@ -348,12 +399,12 @@ const UserSkeleton = (props) => {
                               </TableCell>
                               <TableCell>
                                 {data.file.map((doc) => (
-                                  <Link
-                                    to={`//appartex-server.herokuapp.com/${doc}`}
-                                    target="_blank"
-                                  >
-                                    {doc}
-                                  </Link>
+                                  <Fragment>
+                                    <a href={doc.data} download={doc.name}>
+                                      {doc.name}
+                                    </a>
+                                    <br />
+                                  </Fragment>
                                 ))}
                               </TableCell>
                             </TableRow>
@@ -401,18 +452,18 @@ const UserSkeleton = (props) => {
                               <TableCell>{data.reference}</TableCell>
                               <TableCell>{data.reason}</TableCell>
                               <TableCell>{data.amount}</TableCell>
-                              <TableCell>{data.status.name}</TableCell>
+                              <TableCell>{data.status}</TableCell>
                               <TableCell>
                                 {moment(data.endDate).format("DD/MM/YY")}
                               </TableCell>
                               <TableCell>
                                 {data.file.map((doc) => (
-                                  <Link
-                                    to={`//appartex-server.herokuapp.com/${doc}`}
-                                    target="_blank"
-                                  >
-                                    {doc}
-                                  </Link>
+                                  <Fragment>
+                                    <a href={doc.data} download={doc.name}>
+                                      {doc.name}
+                                    </a>
+                                    <br />
+                                  </Fragment>
                                 ))}
                               </TableCell>
                             </TableRow>
@@ -454,12 +505,9 @@ const UserSkeleton = (props) => {
                   {doc &&
                     doc.map((data) => (
                       <TableCell>
-                        <Link
-                          to={`//appartex-server.herokuapp.com/${data}`}
-                          target="_blank"
-                        >
-                          {data}
-                        </Link>
+                        <a href={data.data} download={data.name}>
+                          {data.name}
+                        </a>
                       </TableCell>
                     ))}
                 </AccordionDetails>

@@ -8,10 +8,14 @@ import {
   TextField,
   MenuItem,
   OutlinedInput,
+  Dialog,
+  DialogContent,
 } from "@material-ui/core";
 import LoadingScreen from "../LoadingScreen";
 import { Link } from "react-router-dom";
 import DeleteImage from "./DeleteImage";
+import { arrayBufferToBase64 } from "../arrayBufferToBase64";
+import Carousel from "react-material-ui-carousel";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -44,6 +48,8 @@ const UploadImage = ({ setSuccess, setError }) => {
   const [pic, setPic] = useState([]);
   const [appartid, setAppartid] = useState("");
   const [data, setData] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [imgToShow, setimgToShow] = useState("");
 
   const submit = async (e) => {
     e.preventDefault();
@@ -77,7 +83,18 @@ const UploadImage = ({ setSuccess, setError }) => {
   const getOneAppart = async (dt) => {
     try {
       const res = await authAxios.get(`/appartments/${dt}`);
-      setData(res.data.picture);
+      const img =
+        res &&
+        res.data.picture.map((data) => {
+          return {
+            data:
+              `data:${data.contentType};base64,` +
+              arrayBufferToBase64(data.data.data),
+            _id: data._id,
+            name: data.name,
+          };
+        });
+      setData(img);
       setCount((count) => count + 1);
     } catch (err) {
       setError(err.response.data);
@@ -154,10 +171,12 @@ const UploadImage = ({ setSuccess, setError }) => {
             }}
           >
             <Link
-              to={`//appartex-server.herokuapp.com/${data}`}
-              target="_blank"
+              onClick={() => {
+                setimgToShow(data.data);
+                setOpen(!open);
+              }}
             >
-              {data}
+              {data.name}
             </Link>
             <DeleteImage
               data={data}
@@ -168,6 +187,12 @@ const UploadImage = ({ setSuccess, setError }) => {
             />
           </Paper>
         ))}
+
+      <Dialog open={open} onClose={() => setOpen(!open)}>
+        <DialogContent>
+          <Carousel>{imgToShow && <img src={imgToShow} />}</Carousel>
+        </DialogContent>
+      </Dialog>
     </Fragment>
   );
 };

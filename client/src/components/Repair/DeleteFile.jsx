@@ -64,7 +64,8 @@ const DeleteFile = ({ data, repairid, setSuccess, setError, getOneRepair }) => {
         <Divider />
         <DialogContent>
           Êtez-vous sûr de vouloir supprimer le document <br />
-          <strong>{data}</strong> de la réparation <strong>{repairid}</strong>
+          <strong>{data.name}</strong> de la réparation
+          <strong>{repairid}</strong>
           ? <br />
           Une fois validé, il n'est plus possible de revenir en arrière.
         </DialogContent>
@@ -79,7 +80,7 @@ const DeleteFile = ({ data, repairid, setSuccess, setError, getOneRepair }) => {
           </Button>
 
           <Button
-            onClick={() => deleteFile(data)}
+            onClick={() => deleteFile(data._id)}
             color="primary"
             className={classes.button}
           >

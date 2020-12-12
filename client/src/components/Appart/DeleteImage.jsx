@@ -85,7 +85,7 @@ const DeleteAppart = ({
         <Divider />
         <DialogContent>
           Êtez-vous sûr de vouloir supprimer le document
-          <strong>{data + " "}</strong> de l'appartement
+          <strong>{data.name + " "}</strong> de l'appartement
           <strong>
             {doc.building
               ? " " +
@@ -121,7 +121,7 @@ const DeleteAppart = ({
           </Button>
 
           <Button
-            onClick={() => deletePicture(data)}
+            onClick={() => deletePicture(data._id)}
             color="primary"
             className={classes.button}
           >
