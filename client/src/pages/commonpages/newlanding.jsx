@@ -9,9 +9,9 @@ import {
   CssBaseline,
   Hidden,
 } from "@material-ui/core";
-import Login from "../components/landingPage/login";
-import TenantLogin from "../components/landingPage/tenantlogin";
-import Signup from "../components/landingPage/signup";
+import Login from "../../components/landingPage/login";
+import TenantLogin from "../../components/landingPage/tenantlogin";
+import Signup from "../../components/landingPage/signup";
 
 const useStyles = makeStyles((theme) => ({
   root: {

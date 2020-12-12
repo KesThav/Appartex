@@ -10,7 +10,6 @@ import {
   Tab,
   Typography,
   Box,
-  Hidden,
 } from "@material-ui/core";
 
 import ShowMessages from "../../components/MessagesComponents/ShowMessages";
