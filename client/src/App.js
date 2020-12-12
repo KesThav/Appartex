@@ -43,8 +43,7 @@ if (token) {
 }
 
 let authAxios = Axios.create({
-  baseURL:
-    /* "https://appartex-server.herokuapp.com" */ "http://localhost:5000",
+  baseURL: "https://appartex-server.herokuapp.com",
   headers: {
     Authorization: token,
   },
