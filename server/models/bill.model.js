@@ -18,7 +18,7 @@ const billSchema = new Mongoose.Schema(
       type: Number,
       required: true,
     },
-    file: [{ type: String }],
+    file: [{ type: Mongoose.Schema.Types.ObjectId, ref: "File" }],
     reason: {
       type: String,
       required: true,

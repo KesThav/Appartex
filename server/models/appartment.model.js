@@ -25,7 +25,8 @@ const appartSchema = new Mongoose.Schema(
     },
     picture: [
       {
-        type: String,
+        type: Mongoose.Schema.Types.ObjectId,
+        ref: "File",
       },
     ],
     status: {

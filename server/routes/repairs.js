@@ -10,6 +10,7 @@ let ObjectId = require("mongodb").ObjectId;
 const multer = require("@koa/multer");
 const path = require("path");
 const fs = require("fs");
+const File = require("../models/file.model");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -91,6 +92,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
     let allrepairs = await Repair.find({ createdBy: ctx.request.jwt._id })
       .populate("status", "name")
       .populate("taskid")
+      .populate("file")
       .sort({ updatedAt: -1 });
     ctx.body = allrepairs;
   } catch (err) {
@@ -135,6 +137,7 @@ router.get("/:repairid", jwt, adminAccess, async (ctx) => {
     const repair = await Repair.findById(repairid)
       .populate("status", "name")
       .populate("taskid")
+      .populate("file")
       .sort({ updatedAt: -1 });
     if (!repair) {
       ctx.throw(400, "Repair not found");
@@ -361,6 +364,7 @@ router.delete("/delete/:repairid", jwt, adminAccess, async (ctx) => {
  */
 
 router.put("/upload/:repairid", jwt, adminAccess, async (ctx, next) => {
+  let uploadedFiles = [];
   let validate = ObjectId.isValid(ctx.params.repairid);
   if (!validate) return ctx.throw(404, "repair not found");
   let repairid = new ObjectId(ctx.params.repairid);
@@ -378,9 +382,20 @@ router.put("/upload/:repairid", jwt, adminAccess, async (ctx, next) => {
       ctx.throw(400, err.message);
     }
     for (i = 0; i < ctx.files.length; i++) {
+      let file = new File({
+        data: fs.readFileSync(ctx.files[i].path),
+        contentType: ctx.files[i].mimetype,
+        name: ctx.files[i].filename,
+      });
+
+      const savefile = await file.save();
+      uploadedFiles.push(savefile._id);
+    }
+
+    for (i = 0; i < uploadedFiles.length; i++) {
       await Repair.findByIdAndUpdate(repairid, {
         $push: {
-          file: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
+          file: new ObjectId(uploadedFiles[i]),
         },
       });
     }
@@ -443,9 +458,7 @@ router.put("/delete/file/:repairid", jwt, adminAccess, async (ctx) => {
     await Repair.findByIdAndUpdate(repairid, {
       $pull: { file: ctx.request.body.file },
     });
-    await fs.unlink(`public/${ctx.request.body.file}`, (err) => {
-      if (err) return ctx.throw(400, err);
-    });
+    await File.findByIdAndDelete(ctx.request.body.file);
     ctx.body = "ok";
   } catch (err) {
     ctx.throw(500, err);

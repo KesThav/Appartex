@@ -20,7 +20,7 @@ const contractSchema = new Mongoose.Schema(
       ref: "Appart",
       required: true,
     },
-    file: [{ type: String }],
+    file: [{ type: Mongoose.Schema.Types.ObjectId, ref: "File" }],
     other: {
       type: String,
       default: null,

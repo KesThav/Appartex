@@ -11,6 +11,7 @@ const multer = require("@koa/multer");
 const path = require("path");
 const fs = require("fs");
 const { contractSchema } = require("../helpers/validation");
+const File = require("../models/file.model");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -145,6 +146,7 @@ router.get("/:contractid", jwt, adminAccess, async (ctx) => {
     let contractid = new ObjectId(ctx.params.contractid);
     const onecontract = await Contract.findById(contractid)
       .populate("tenant")
+      .populate("file")
       .populate({ path: "appartmentid", populate: { path: "building" } });
     if (!onecontract) {
       ctx.throw(404, "contract not found");
@@ -447,6 +449,7 @@ router.delete("/delete/:contractid", jwt, adminAccess, async (ctx) => {
  */
 
 router.put("/upload/:contractid", jwt, adminAccess, async (ctx, next) => {
+  let uploadedFiles = [];
   let validate = ObjectId.isValid(ctx.params.contractid);
   if (!validate) return ctx.throw(404, "contract not found");
   let contractid = new ObjectId(ctx.params.contractid);
@@ -463,10 +466,22 @@ router.put("/upload/:contractid", jwt, adminAccess, async (ctx, next) => {
     if (err) {
       ctx.throw(400, err.message);
     }
+
     for (i = 0; i < ctx.files.length; i++) {
+      let file = new File({
+        data: fs.readFileSync(ctx.files[i].path),
+        contentType: ctx.files[i].mimetype,
+        name: ctx.files[i].filename,
+      });
+
+      const savefile = await file.save();
+      uploadedFiles.push(savefile._id);
+    }
+
+    for (i = 0; i < uploadedFiles.length; i++) {
       await Contract.findByIdAndUpdate(contractid, {
         $push: {
-          file: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
+          file: new ObjectId(uploadedFiles[i]),
         },
       });
     }
@@ -529,9 +544,7 @@ router.put("/delete/file/:contractid", jwt, adminAccess, async (ctx) => {
     await Contract.findByIdAndUpdate(contractid, {
       $pull: { file: ctx.request.body.file },
     });
-    await fs.unlink(`public/${ctx.request.body.file}`, (err) => {
-      if (err) return ctx.throw(400, err);
-    });
+    await File.findByIdAndDelete(ctx.request.body.file);
     ctx.body = "ok";
   } catch (err) {
     ctx.throw(500, err);

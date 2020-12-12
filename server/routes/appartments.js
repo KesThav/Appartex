@@ -10,6 +10,7 @@ const appartValidation = require("../helpers/appartValidation");
 const multer = require("@koa/multer");
 const path = require("path");
 const fs = require("fs");
+const File = require("../models/file.model");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -93,7 +94,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
       .sort({ updatedAt: -1 });
     ctx.body = allapparts;
   } catch (err) {
-    ctx.throw(400, error);
+    ctx.throw(400, err);
   }
 });
 
@@ -133,7 +134,9 @@ router.get("/:appartid", jwt, adminAccess, async (ctx) => {
   if (!validate) return ctx.throw(404, "appartment not found");
   try {
     let appartid = new ObjectId(ctx.params.appartid);
-    const oneappart = await Appart.findById(appartid).populate("building");
+    const oneappart = await Appart.findById(appartid)
+      .populate("building")
+      .populate("picture");
     if (!oneappart) {
       ctx.throw(404, "appartment not found");
     } else {
@@ -426,6 +429,7 @@ router.delete("/delete/:appartid", jwt, adminAccess, async (ctx) => {
  */
 
 router.put("/upload/:appartid", jwt, adminAccess, async (ctx, next) => {
+  let uploadedFiles = [];
   let validate = ObjectId.isValid(ctx.params.appartid);
   if (!validate) return ctx.throw(404, "appartment not found");
   let appartid = new ObjectId(ctx.params.appartid);
@@ -442,13 +446,26 @@ router.put("/upload/:appartid", jwt, adminAccess, async (ctx, next) => {
     if (err) {
       ctx.throw(400, err.message);
     }
+
     for (i = 0; i < ctx.files.length; i++) {
+      let file = new File({
+        data: fs.readFileSync(ctx.files[i].path),
+        contentType: ctx.files[i].mimetype,
+        name: ctx.files[i].filename,
+      });
+
+      const savefile = await file.save();
+      uploadedFiles.push(savefile._id);
+    }
+
+    for (i = 0; i < uploadedFiles.length; i++) {
       await Appart.findByIdAndUpdate(appartid, {
         $push: {
-          picture: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
+          picture: new ObjectId(uploadedFiles[i]),
         },
       });
     }
+
     ctx.body = "ok";
   } catch (err) {
     ctx.throw(500, err);
@@ -508,9 +525,7 @@ router.put("/delete/file/:appartid", jwt, adminAccess, async (ctx) => {
     await Appart.findByIdAndUpdate(appartid, {
       $pull: { picture: ctx.request.body.picture },
     });
-    await fs.unlink(`public/${ctx.request.body.picture}`, (err) => {
-      if (err) return ctx.throw(400, err);
-    });
+    await File.findByIdAndDelete(ctx.request.body.picture);
     ctx.body = "ok";
   } catch (err) {
     ctx.throw(500, err);

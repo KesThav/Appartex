@@ -17,6 +17,7 @@ const Message = require("../models/message.model");
 const multer = require("@koa/multer");
 const path = require("path");
 const fs = require("fs");
+const File = require("../models/file.model");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -105,7 +106,9 @@ router.get("/", jwt, adminAccess, async (ctx) => {
   try {
     let alltenants = await Tenant.find({
       createdBy: ctx.request.jwt._id,
-    }).sort({ updatedAt: -1 });
+    })
+      .populate("file")
+      .sort({ updatedAt: -1 });
     ctx.body = alltenants;
   } catch (err) {
     ctx.throw(500, error);
@@ -148,7 +151,7 @@ router.get("/:tenantid", jwt, filterAccess, async (ctx) => {
   if (!validate) return ctx.throw(404, "tenant not found");
   try {
     let tenantid = new ObjectId(ctx.params.tenantid);
-    const onetenant = await Tenant.findById(tenantid).exec();
+    const onetenant = await Tenant.findById(tenantid).populate("file");
     if (!onetenant) {
       ctx.throw(404, "tenant not found");
     } else {
@@ -462,6 +465,7 @@ router.get("/contracts/:tenantid", jwt, filterAccess, async (ctx) => {
         path: "appartmentid",
         populate: { path: "building" },
       })
+      .populate("file")
       .sort({ updatedAt: -1 });
 
     if (!contracts) {
@@ -512,6 +516,7 @@ router.get("/bills/:tenantid", jwt, filterAccess, async (ctx) => {
     let tenantid = new ObjectId(ctx.params.tenantid);
     const bills = await Bill.find({ tenant: tenantid })
       .populate("status")
+      .populate("file")
       .sort({ updatedAt: -1 });
 
     if (!bills) {
@@ -625,6 +630,7 @@ router.get("/tasks/:tenantid", jwt, filterAccess, async (ctx) => {
  */
 
 router.put("/upload/:tenantid", jwt, adminAccess, async (ctx, next) => {
+  let uploadedFiles = [];
   let validate = ObjectId.isValid(ctx.params.tenantid);
   if (!validate) return ctx.throw(404, "tenant not found");
   let tenantid = new ObjectId(ctx.params.tenantid);
@@ -641,13 +647,26 @@ router.put("/upload/:tenantid", jwt, adminAccess, async (ctx, next) => {
     if (err) {
       ctx.throw(400, err.message);
     }
+
     for (i = 0; i < ctx.files.length; i++) {
+      let file = new File({
+        data: fs.readFileSync(ctx.files[i].path),
+        contentType: ctx.files[i].mimetype,
+        name: ctx.files[i].filename,
+      });
+
+      const savefile = await file.save();
+      uploadedFiles.push(savefile._id);
+    }
+
+    for (i = 0; i < uploadedFiles.length; i++) {
       await Tenant.findByIdAndUpdate(tenantid, {
         $push: {
-          file: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
+          file: new ObjectId(uploadedFiles[i]),
         },
       });
     }
+
     ctx.body = "ok";
   } catch (err) {
     ctx.throw(500, err);
@@ -707,9 +726,7 @@ router.put("/delete/file/:tenantid", jwt, adminAccess, async (ctx) => {
     await Tenant.findByIdAndUpdate(tenantid, {
       $pull: { file: ctx.request.body.file },
     });
-    await fs.unlink(`public/${ctx.request.body.file}`, (err) => {
-      if (err) return ctx.throw(400, err);
-    });
+
     ctx.body = "ok";
   } catch (err) {
     ctx.throw(500, err);

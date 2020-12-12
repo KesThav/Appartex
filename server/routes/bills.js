@@ -8,7 +8,7 @@ const { billSchema } = require("../helpers/validation");
 const Billstatus = require("../models/bill_status.model");
 let ObjectId = require("mongodb").ObjectId;
 const fs = require("fs");
-
+const File = require("../models/file.model");
 const multer = require("@koa/multer");
 const path = require("path");
 
@@ -98,6 +98,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
     let allbills = await Bill.find({ createdBy: ctx.request.jwt._id })
       .populate("status", "name")
       .populate("tenant", "name lastname")
+      .populate("file")
       .sort({ updatedAt: -1 });
     ctx.body = allbills;
   } catch (err) {
@@ -142,6 +143,7 @@ router.get("/:billid", jwt, adminAccess, async (ctx) => {
     const bill = await Bill.findById(billid)
       .populate("status", "name")
       .populate("tenant", "name lastname")
+      .populate("file")
       .sort({ updatedAt: -1 });
     if (!bill) {
       ctx.throw(400, "Bill not found");
@@ -375,6 +377,7 @@ router.delete("/delete/:billid", jwt, adminAccess, async (ctx) => {
  */
 
 router.put("/upload/:billid", jwt, adminAccess, async (ctx, next) => {
+  let uploadedFiles = [];
   let validate = ObjectId.isValid(ctx.params.billid);
   if (!validate) return ctx.throw(404, "bill not found");
   let billid = new ObjectId(ctx.params.billid);
@@ -392,9 +395,20 @@ router.put("/upload/:billid", jwt, adminAccess, async (ctx, next) => {
       ctx.throw(400, err.message);
     }
     for (i = 0; i < ctx.files.length; i++) {
+      let file = new File({
+        data: fs.readFileSync(ctx.files[i].path),
+        contentType: ctx.files[i].mimetype,
+        name: ctx.files[i].filename,
+      });
+
+      const savefile = await file.save();
+      uploadedFiles.push(savefile._id);
+    }
+
+    for (i = 0; i < uploadedFiles.length; i++) {
       await Bill.findByIdAndUpdate(billid, {
         $push: {
-          file: ctx.files[i].path.replace(/\\/g, "/").replace("public/", ""),
+          file: new ObjectId(uploadedFiles[i]),
         },
       });
     }
@@ -457,9 +471,7 @@ router.put("/delete/file/:billid", jwt, adminAccess, async (ctx) => {
     await Bill.findByIdAndUpdate(billid, {
       $pull: { file: ctx.request.body.file },
     });
-    await fs.unlink(`public/${ctx.request.body.file}`, (err) => {
-      if (err) return ctx.throw(400, err);
-    });
+    await File.findByIdAndDelete(ctx.request.body.file);
     ctx.body = "ok";
   } catch (err) {
     ctx.throw(500, err);
