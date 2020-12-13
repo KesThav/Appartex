@@ -29,12 +29,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddBuilding = () => {
+const AddBuilding = ({ setSuccess }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const { setLoading, authAxios, loading, setCount } = useContext(UserContext);
   const [err, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [adress, setAdress] = useState("");
   const [postalcode, setPostalcode] = useState("");
   const [city, setCity] = useState("");
@@ -55,6 +54,7 @@ const AddBuilding = () => {
       try {
         await authAxios.post("/buildings/add", data);
         setLoading(false);
+        setOpen(false);
         setSuccess("Immeuble créé avec succès");
         setCount((count) => count + 1);
       } catch (err) {
@@ -86,7 +86,6 @@ const AddBuilding = () => {
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}
-            {success && <Alert severity="success">{success}</Alert>}
             {loading && <LoadingScreen />}
           </div>
           <form onSubmit={submit} autoComplete="off">

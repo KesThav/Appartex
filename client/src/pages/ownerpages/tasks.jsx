@@ -40,7 +40,7 @@ const Tasks = () => {
 
   return (
     <Fragment>
-      <AddTask />
+      <AddTask setSuccess={setSuccess} />
       <div style={{ marginBottom: "10px" }}>
         {loading && <LoadingScreen />}
         {err && <Alert severity="error">{err}</Alert>}

@@ -117,7 +117,7 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
                             id={data._id}
                             statustype={data.status}
                           />
-                          <AddTask id={data._id} />
+                          <AddTask id={data._id} setSuccess={setSuccess} />
                         </ButtonGroup>
                       </Fragment>
                     ) : (

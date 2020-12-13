@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddAppart = () => {
+const AddAppart = ({ setSuccess }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const {
@@ -82,7 +82,6 @@ const AddAppart = () => {
     loading,
   } = useContext(UserContext);
   const [err, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [adress, setAdress] = useState(null);
   const [postalcode, setPostalcode] = useState(null);
   const [city, setCity] = useState(null);
@@ -127,6 +126,7 @@ const AddAppart = () => {
       try {
         await authAxios.post("/appartments/add", data);
         setLoading(false);
+        setOpen(false);
         setSuccess("Appartement créé avec succès");
         setCount((count) => count + 1);
       } catch (err) {
@@ -167,7 +167,6 @@ const AddAppart = () => {
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}
-            {success && <Alert severity="success">{success}</Alert>}
           </div>
           <div className={classes.root}>
             <AppBar

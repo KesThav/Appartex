@@ -394,7 +394,7 @@ const Contract = () => {
         />
       </Paper>
       <div style={{ marginTop: "13px" }}>
-        <AddContract />
+        <AddContract setSuccess={setSuccess} />
       </div>
     </div>
   );

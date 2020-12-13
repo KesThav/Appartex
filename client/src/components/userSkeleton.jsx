@@ -38,9 +38,12 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
   },
   paper: {
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+    },
     width: "40%",
     display: "flex",
-    height: "30vh",
+    height: "35vh",
     marginRight: 20,
     flexDirection: "column",
     alignItems: "center",
@@ -182,7 +185,7 @@ const UserSkeleton = (props) => {
             _id: data._id,
             charge: data.charge,
             rent: data.rent,
-            status: data.status.name,
+            status: data.status,
             createdAt: data.createdtAt,
             file: data.file.map((data) => {
               return {
@@ -276,8 +279,10 @@ const UserSkeleton = (props) => {
             Retour aux locataires
           </Link>
         </Button>
-        {err && <Alert severity="error">{err}</Alert>}
-        {success && <Alert severity="success">{success}</Alert>}
+        <div style={{ marginBottom: "10px" }}>
+          {err && <Alert severity="error">{err}</Alert>}
+          {success && <Alert severity="success">{success}</Alert>}
+        </div>
         <Box className={classes.flex}>
           <Paper className={classes.paper}>
             <Avatar className={classes.avatar}>
@@ -371,7 +376,6 @@ const UserSkeleton = (props) => {
                       <TableHead>
                         <TableRow>
                           {[
-                            "Contrat n°",
                             "Adresse",
                             "Charge",
                             "Loyer",
@@ -389,7 +393,6 @@ const UserSkeleton = (props) => {
                         {contract.length > 0 &&
                           contract.map((data) => (
                             <TableRow key={data._id}>
-                              <TableCell>{data._id}</TableCell>
                               <TableCell>{data.adress}</TableCell>
                               <TableCell>{data.charge}</TableCell>
                               <TableCell>{data.rent}</TableCell>
@@ -430,7 +433,6 @@ const UserSkeleton = (props) => {
                       <TableHead>
                         <TableRow>
                           {[
-                            "Facture n°",
                             "Référence",
                             "Raison",
                             "Montant",
@@ -448,7 +450,6 @@ const UserSkeleton = (props) => {
                         {bills.length > 0 &&
                           bills.map((data) => (
                             <TableRow key={data._id}>
-                              <TableCell>{data._id}</TableCell>
                               <TableCell>{data.reference}</TableCell>
                               <TableCell>{data.reason}</TableCell>
                               <TableCell>{data.amount}</TableCell>

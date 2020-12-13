@@ -9,10 +9,8 @@ import {
   DialogContent,
   TextField,
   MenuItem,
-  Typography,
-  Fab,
 } from "@material-ui/core";
-import moment from "moment";
+
 import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
@@ -32,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddRepair = () => {
+const AddRepair = ({ setSuccess }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const {
@@ -46,7 +44,6 @@ const AddRepair = () => {
     setCount,
   } = useContext(UserContext);
   const [err, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [reason, setReason] = useState(null);
   const [statusid, setStatusid] = useState(null);
   const [taskid, setTaskid] = useState("");
@@ -69,6 +66,7 @@ const AddRepair = () => {
       try {
         await authAxios.post("/repairs/add", data);
         setLoading(false);
+        setOpen(false);
         setSuccess("Réparation créé avec succès");
         setCount((count) => count + 1);
       } catch (err) {
@@ -106,7 +104,6 @@ const AddRepair = () => {
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}
-            {success && <Alert severity="success">{success}</Alert>}
           </div>
           <form onSubmit={submit} autoComplete="off">
             <TextField

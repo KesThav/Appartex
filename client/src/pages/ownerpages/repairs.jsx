@@ -404,7 +404,7 @@ const Repair = () => {
       </Paper>
 
       <div style={{ marginTop: "13px" }}>
-        <AddRepair />
+        <AddRepair setSuccess={setSuccess} />
       </div>
     </div>
   );

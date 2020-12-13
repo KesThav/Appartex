@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddBills = () => {
+const AddBills = ({ setSuccess }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const {
@@ -45,7 +45,6 @@ const AddBills = () => {
     setCount,
   } = useContext(UserContext);
   const [err, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [endDate, setEndDate] = useState("");
   const [reference, setReference] = useState("");
   const [amount, setAmount] = useState("");
@@ -76,6 +75,7 @@ const AddBills = () => {
       try {
         await authAxios.post("/bills/add", data);
         setLoading(false);
+        setOpen(false);
         setSuccess("Facture créé avec succès");
         setCount((count) => count + 1);
       } catch (err) {
@@ -117,7 +117,6 @@ const AddBills = () => {
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}
-            {success && <Alert severity="success">{success}</Alert>}
           </div>
           {tenant && tenant.length == 0 && (
             <Alert severity="info">

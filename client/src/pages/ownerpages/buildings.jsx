@@ -184,7 +184,7 @@ const Building = (props) => {
           />
         </Box>
         <TableContainer className={classes.table} component={Paper} square>
-          <Table stickyHeader style={{tableLayout: 'fixed'}}>
+          <Table stickyHeader style={{ tableLayout: "fixed" }}>
             <TableHead>
               <TableRow>
                 <Fragment>
@@ -317,7 +317,7 @@ const Building = (props) => {
         />
       </Paper>
       <div style={{ marginTop: "13px" }}>
-        <AddBuilding />
+        <AddBuilding setSuccess={setSuccess} />
       </div>
     </div>
   );

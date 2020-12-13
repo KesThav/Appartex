@@ -25,7 +25,6 @@ import moment from "moment";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Alert from "@material-ui/lab/Alert";
 import PersonIcon from "@material-ui/icons/Person";
-import { Link } from "react-router-dom";
 import { arrayBufferToBase64 } from "../../components/arrayBufferToBase64";
 
 const useStyles = makeStyles((theme) => ({
@@ -37,9 +36,12 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
   },
   paper: {
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+    },
     width: "40%",
     display: "flex",
-    height: "30vh",
+    height: "35vh",
     marginRight: 20,
     flexDirection: "column",
     alignItems: "center",
@@ -148,7 +150,7 @@ const Tenantboard = (props) => {
             _id: data._id,
             charge: data.charge,
             rent: data.rent,
-            status: data.status.name,
+            status: data.status,
             createdAt: data.createdtAt,
             updatedAt: data.updatedAt,
             file: data.file.map((data) => {
@@ -210,7 +212,7 @@ const Tenantboard = (props) => {
     setLoading(true);
     if (moment().diff(moment(dateofbirth), "years") < 18) {
       setError(
-        "Le locataire ne peut pas être créé par la personne n'est pas majeur"
+        "Les changements ne peuvent pas être enregistré car vous n'êtes pas majeur"
       );
     } else if (!name || !lastname || !email || !password || !confirm) {
       setError("Complétez tous les champs");
@@ -231,7 +233,7 @@ const Tenantboard = (props) => {
           password: password,
         });
         setLoading(false);
-        setSuccess("Locataire modifié avec succès");
+        setSuccess("Modifications enregistrées avec succès");
         setCount((count) => count + 1);
       } catch (err) {
         setLoading(false);
@@ -254,8 +256,10 @@ const Tenantboard = (props) => {
   return (
     <Fragment>
       <Container maxWidthLg>
-        {err && <Alert severity="error">{err}</Alert>}
-        {success && <Alert severity="success">{success}</Alert>}
+        <div style={{ marginBottom: "10px" }}>
+          {err && <Alert severity="error">{err}</Alert>}
+          {success && <Alert severity="success">{success}</Alert>}
+        </div>
         <Box className={classes.flex}>
           <Paper className={classes.paper}>
             <Avatar className={classes.avatar}>
@@ -349,7 +353,6 @@ const Tenantboard = (props) => {
                       <TableHead>
                         <TableRow>
                           {[
-                            "Contrat n°",
                             "Adresse",
                             "Charge",
                             "Loyer",
@@ -367,7 +370,6 @@ const Tenantboard = (props) => {
                         {contract.length > 0 &&
                           contract.map((data) => (
                             <TableRow key={data._id}>
-                              <TableCell>{data._id}</TableCell>
                               <TableCell>{data.adress}</TableCell>
                               <TableCell>{data.charge}</TableCell>
                               <TableCell>{data.rent}</TableCell>
@@ -408,7 +410,6 @@ const Tenantboard = (props) => {
                       <TableHead>
                         <TableRow>
                           {[
-                            "Facture n°",
                             "Référence",
                             "Raison",
                             "Montant",
@@ -426,7 +427,6 @@ const Tenantboard = (props) => {
                         {bills.length > 0 &&
                           bills.map((data) => (
                             <TableRow key={data._id}>
-                              <TableCell>{data._id}</TableCell>
                               <TableCell>{data.reference}</TableCell>
                               <TableCell>{data.reason}</TableCell>
                               <TableCell>{data.amount}</TableCell>

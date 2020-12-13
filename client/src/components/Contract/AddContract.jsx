@@ -9,9 +9,6 @@ import {
   DialogContent,
   TextField,
   MenuItem,
-  Typography,
-  Fab,
-  Tooltip,
 } from "@material-ui/core";
 
 import Alert from "@material-ui/lab/Alert";
@@ -33,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddContract = () => {
+const AddContract = ({ setSuccess }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const {
@@ -48,7 +45,6 @@ const AddContract = () => {
     loading,
   } = useContext(UserContext);
   const [err, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [charge, setCharge] = useState(null);
   const [tenantid, setTenantid] = useState(null);
   const [appartid, setAppartid] = useState(null);
@@ -73,6 +69,7 @@ const AddContract = () => {
       try {
         await authAxios.post("/contracts/add", data);
         setLoading(false);
+        setOpen(false);
         setSuccess("Contrat créé avec succès");
         setAppartid("");
         setCount((count) => count + 1);
@@ -112,7 +109,6 @@ const AddContract = () => {
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}
-            {success && <Alert severity="success">{success}</Alert>}
             {tenant && tenant.length == 0 && (
               <Alert severity="info">
                 Aucun locataire trouvé. Merci de créer un ou des locataires

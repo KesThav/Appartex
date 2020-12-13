@@ -478,7 +478,7 @@ const Bills = () => {
         />
       </Paper>
       <div style={{ marginTop: "13px" }}>
-        <AddBills />
+        <AddBills setSuccess={setSuccess} />
       </div>
     </div>
   );

@@ -262,7 +262,7 @@ const Status = () => {
         />
       </Paper>
       <div style={{ marginTop: "13px" }}>
-        <AddStatus />
+        <AddStatus setSuccess={setSuccess} />
       </div>
     </div>
   );

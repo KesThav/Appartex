@@ -8,7 +8,6 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
-  Typography,
 } from "@material-ui/core";
 
 import Alert from "@material-ui/lab/Alert";
@@ -30,12 +29,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddStatus = () => {
+const AddStatus = ({ setSuccess }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const { setCount, setLoading, authAxios, loading } = useContext(UserContext);
   const [err, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [name, setName] = useState("");
 
   const submit = async (e) => {
@@ -52,6 +50,7 @@ const AddStatus = () => {
       try {
         await authAxios.post("/status/add", data);
         setLoading(false);
+        setOpen(false);
         setSuccess("Status créé avec succès");
         setCount((count) => count + 1);
       } catch (err) {
@@ -81,7 +80,6 @@ const AddStatus = () => {
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}
-            {success && <Alert severity="success">{success}</Alert>}
           </div>
           <form onSubmit={submit} autoComplete="off">
             <TextField

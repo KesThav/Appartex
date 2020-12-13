@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddTask = ({ id }) => {
+const AddTask = ({ id, setSuccess }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const {
@@ -45,7 +45,6 @@ const AddTask = ({ id }) => {
   } = useContext(UserContext);
   const [err, setError] = useState("");
   const [statusid, setStatusid] = useState("");
-  const [success, setSuccess] = useState("");
   const [messageid, setMessageid] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -82,6 +81,7 @@ const AddTask = ({ id }) => {
       try {
         const res = await authAxios.post("/tasks/add", data);
         setLoading(false);
+        setOpen(false);
         setSuccess("Tâche créé avec succès");
         setCount((count) => count + 1);
       } catch (err) {
@@ -117,7 +117,6 @@ const AddTask = ({ id }) => {
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}
-            {success && <Alert severity="success">{success}</Alert>}
           </div>
           <form onSubmit={submit} autoComplete="off">
             {id && (

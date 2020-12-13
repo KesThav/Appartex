@@ -15,8 +15,13 @@ const LoadingScreen = () => {
 
   return (
     <Fragment>
-      <Backdrop component={"span"} className={classes.backdrop} open={true}>
-        <CircularProgress color="inherit" />
+      <Backdrop
+        component={"span"}
+        className={classes.backdrop}
+        open={true}
+        invisible
+      >
+        <CircularProgress color="primary" />
       </Backdrop>
     </Fragment>
   );

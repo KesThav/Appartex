@@ -411,7 +411,7 @@ const Tenant = () => {
         />
       </Paper>
       <div style={{ marginTop: "13px" }}>
-        <AddTenant />
+        <AddTenant setSuccess={setSuccess} />
       </div>
     </div>
   );

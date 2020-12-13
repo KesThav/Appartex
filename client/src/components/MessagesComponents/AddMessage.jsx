@@ -32,7 +32,7 @@ const useStyles = makeStyles({
   },
 });
 
-const AddMessage = () => {
+const AddMessage = ({ setSuccess }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -46,7 +46,6 @@ const AddMessage = () => {
     count,
   } = useContext(UserContext);
   const [err, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [tenantid, setTenantid] = useState([]);
   const [content, setContent] = useState("");
 
@@ -69,6 +68,7 @@ const AddMessage = () => {
         try {
           const res = await authAxios.post("/messages/add", data);
           setLoading(false);
+          setOpen(false);
           setSuccess("Message envoyé");
           setCount((count) => count + 1);
         } catch (err) {
@@ -91,6 +91,7 @@ const AddMessage = () => {
         try {
           const res = await authAxios.post("/messages/add", data);
           setLoading(false);
+          setOpen(false);
           setSuccess("Message envoyé");
           setCount((count) => count + 1);
         } catch (err) {
@@ -129,7 +130,6 @@ const AddMessage = () => {
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>
             {err && <Alert severity="error">{err}</Alert>}
-            {success && <Alert severity="success">{success}</Alert>}
           </div>
           <form onSubmit={submit}>
             {user && user.role == "Admin"

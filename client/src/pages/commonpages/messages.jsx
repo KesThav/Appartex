@@ -108,7 +108,7 @@ const Drawer = (props) => {
 
   return (
     <Fragment>
-      <AddMessage getMessages={getMessages} />
+      <AddMessage getMessages={getMessages} setSuccess={setSuccess} />
       <FormControl
         component="fieldset"
         className={classes.formControl}

@@ -473,7 +473,7 @@ const Appart = () => {
       </Paper>
 
       <div style={{ marginTop: "13px" }}>
-        <AddAppart />
+        <AddAppart setSuccess={setSuccess} />
       </div>
     </div>
   );
