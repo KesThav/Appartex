@@ -20,8 +20,7 @@ import Building from "./pages/ownerpages/buildings";
 import Appartment from "./pages/ownerpages/appartments";
 import Bill from "./pages/ownerpages/bills";
 import Contract from "./pages/ownerpages/contracts";
-import UserSkeleton from "./components/userSkeleton";
-import Status from "./pages/ownerpages/statut";
+import Status from "./pages/ownerpages/status";
 import Message from "./pages/commonpages/messages";
 import Tasks from "./pages/ownerpages/tasks";
 import Repair from "./pages/ownerpages/repairs";
@@ -283,7 +282,7 @@ const App = () => {
                     <AdminRoute
                       exact
                       path="/tenants/:tenantid"
-                      component={UserSkeleton}
+                      component={Tenantboard}
                     />
                     <AdminRoute exact path="/tasks" component={Tasks} />
                     <AdminRoute exact path="/repairs" component={Repair} />

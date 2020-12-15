@@ -17,6 +17,7 @@ import moment from "moment";
 const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 650,
+    width: "100%",
     boxShadow: "none",
   },
   link: {
@@ -29,7 +30,9 @@ const useStyles = makeStyles((theme) => ({
     marginBotton: 3,
   },
   paper: {
+    width: "100%",
     marginBottom: 20,
+    overflow: "hidden",
   },
 }));
 
@@ -44,7 +47,7 @@ const MyTable = ({ data, title, link, header, text }) => {
           </Typography>
         </Box>
         <TableContainer component={Paper} square className={classes.table}>
-          <Table>
+          <Table style={{ tableLayout: "fixed" }}>
             <TableHead>
               <TableRow>
                 {header.map((header, index) => (

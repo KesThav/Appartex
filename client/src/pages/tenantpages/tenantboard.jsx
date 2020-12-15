@@ -26,6 +26,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Alert from "@material-ui/lab/Alert";
 import PersonIcon from "@material-ui/icons/Person";
 import { arrayBufferToBase64 } from "../../components/arrayBufferToBase64";
+import { Link } from "react-router-dom";
+import KeyboardBackspaceIcon from "@material-ui/icons/KeyboardBackspace";
 
 const useStyles = makeStyles((theme) => ({
   flex: {
@@ -89,21 +91,23 @@ const Tenantboard = (props) => {
   const [bills, setBills] = useState("");
   const [contract, setContracts] = useState("");
   const [task, setTasks] = useState("");
-  const [name, setName] = useState(user.name);
-  const [lastname, setLastname] = useState(user.lastname);
-  const [email, setEmail] = useState(user.email);
+  const [name, setName] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [dateofbirth, setDate] = useState(user.dateofbirth);
+  const [dateofbirth, setDate] = useState("");
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [count, setCount] = useState(0);
   const [doc, setDoc] = useState("");
+  const [userToFetch, setUserToFetch] = useState(null);
+  const [tenant, setTenant] = useState("");
 
   const getBills = async () => {
     setLoading(true);
     try {
-      const res = await authAxios.get(`/tenants/bills/${user._id}`);
+      const res = await authAxios.get(`/tenants/bills/${userToFetch}`);
       const doc = res.data.map((data) => {
         return {
           _id: data._id,
@@ -135,7 +139,7 @@ const Tenantboard = (props) => {
   const getContracts = async () => {
     setLoading(true);
     try {
-      const res = await authAxios.get(`/tenants/contracts/${user._id}`);
+      const res = await authAxios.get(`/tenants/contracts/${userToFetch}`);
       const doc =
         res &&
         res.data.map((data) => {
@@ -175,7 +179,7 @@ const Tenantboard = (props) => {
   const getTasks = async () => {
     setLoading(true);
     try {
-      const res = await authAxios.get(`/tenants/tasks/${user._id}`);
+      const res = await authAxios.get(`/tenants/tasks/${userToFetch}`);
       setTasks(res.data);
       setLoading(false);
     } catch (err) {
@@ -184,10 +188,15 @@ const Tenantboard = (props) => {
     }
   };
 
-  const getTenantFile = async () => {
+  const getTenants = async () => {
     setLoading(true);
     try {
-      const res = await authAxios.get(`/tenants/${user._id}`);
+      const res = await authAxios.get(`tenants/${userToFetch}`);
+      setTenant(res.data);
+      setName(res.data.name);
+      setLastname(res.data.lastname);
+      setEmail(res.data.email);
+      setDate(res.data.dateofbirth);
       setDoc(
         res.data.file.map((data) => {
           return {
@@ -201,6 +210,7 @@ const Tenantboard = (props) => {
       );
       setLoading(false);
     } catch (err) {
+      setLoading(false);
       setError(err.response.data);
     }
   };
@@ -228,8 +238,8 @@ const Tenantboard = (props) => {
         dateofbirth,
       };
       try {
-        await authAxios.put(`/tenants/update/${user._id}`, updatedata);
-        await authAxios.put(`/tenants/update/password/${user._id}`, {
+        await authAxios.put(`/tenants/update/${userToFetch}`, updatedata);
+        await authAxios.put(`/tenants/update/password/${userToFetch}`, {
           password: password,
         });
         setLoading(false);
@@ -243,19 +253,35 @@ const Tenantboard = (props) => {
   };
 
   useEffect(() => {
-    getBills();
-    getContracts();
-    getTasks();
-    getTenantFile();
+    props.match.params.tenantid
+      ? setUserToFetch(props.match.params.tenantid)
+      : setUserToFetch(user._id);
+    if (userToFetch) {
+      getBills();
+      getContracts();
+      getTasks();
+      getTenants();
+    }
+
     if (!window.location.hash) {
       window.location = window.location + "#loaded";
       window.location.reload();
     }
-  }, [count]);
+  }, [count, userToFetch]);
 
   return (
     <Fragment>
       <Container maxWidthLg>
+        {user.role == "Admin" && (
+          <Button
+            startIcon={<KeyboardBackspaceIcon />}
+            className={classes.button}
+          >
+            <Link to="/tenants" className={classes.link}>
+              Retour aux locataires
+            </Link>
+          </Button>
+        )}
         <div style={{ marginBottom: "10px" }}>
           {err && <Alert severity="error">{err}</Alert>}
           {success && <Alert severity="success">{success}</Alert>}
@@ -266,7 +292,7 @@ const Tenantboard = (props) => {
               <PersonIcon style={{ fontSize: 85 }} />
             </Avatar>
             <Typography variant="h3">
-              {user && user.name + " " + user.lastname}
+              {name && lastname && name + " " + lastname}
             </Typography>
             <Typography variant="overline">
               Créé le {user && moment(user.createdAt).format("DD/MM/YY")}

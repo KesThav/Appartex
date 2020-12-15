@@ -26,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
   mainBox: {
     display: "flex",
     flexDirection: " row",
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+    },
     margin: 10,
   },
 }));

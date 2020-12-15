@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   drawer: {
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("md")]: {
       width: drawerWidth,
       flexShrink: 0,
       backgroundColor: "#eceff1",
@@ -250,20 +250,22 @@ const Layout = (props) => {
           >
             <MenuIcon />
           </IconButton>
-          <Chip
-            avatar={
-              <Avatar>
-                {" "}
-                {user &&
-                  user.name.charAt(0).toUpperCase() +
-                    user.lastname.charAt(0).toUpperCase()}
-              </Avatar>
-            }
-            label={user && user.name + " " + user.lastname}
-            clickable
-            onClick={() => console.log("hello")}
-            variant="outlined"
-          />
+          <Hidden smDown>
+            <Chip
+              avatar={
+                <Avatar>
+                  {" "}
+                  {user &&
+                    user.name.charAt(0).toUpperCase() +
+                      user.lastname.charAt(0).toUpperCase()}
+                </Avatar>
+              }
+              label={user && user.name + " " + user.lastname}
+              clickable
+              onClick={() => console.log("hello")}
+              variant="outlined"
+            />
+          </Hidden>
           <Button onClick={logout}>
             <Link to="/" className={classes.link}>
               <FormControlLabel
@@ -339,7 +341,6 @@ const Layout = (props) => {
             {user && user.role == "Admin" ? ownerDrawer : tenantDrawer}
           </Drawer>
         </Hidden>
-        )
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />

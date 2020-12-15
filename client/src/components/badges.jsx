@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Paper, Box, Typography, makeStyles } from "@material-ui/core";
+import { Paper, Box, Typography, makeStyles, Hidden } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -8,8 +8,6 @@ const useStyles = makeStyles((theme) => ({
     height: 150,
   },
   Box: {
-    paddingRight: "10%",
-    paddingLeft: "10%",
     width: "100%",
     display: "flex",
     alignItems: "center",
@@ -38,9 +36,11 @@ const Badges = ({ icon, value, style, name }) => {
             {name}
           </Typography>
         </Box>
-        <Box className={classes.iconBox} style={style}>
-          {icon}
-        </Box>
+        <Hidden xsDown>
+          <Box className={classes.iconBox} style={style}>
+            {icon}
+          </Box>
+        </Hidden>
       </Paper>
     </Fragment>
   );

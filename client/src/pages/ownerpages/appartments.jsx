@@ -44,10 +44,13 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: "60vh",
     boxShadow: "none",
   },
-  header: {
-    backgroundColor: "#fff",
-    position: "sticky",
-    top: 0,
+  title: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+    },
   },
   box: {
     width: "100%",
@@ -73,6 +76,13 @@ const useStyles = makeStyles((theme) => ({
   },
   divider: {
     marginBottom: 20,
+  },
+  overrides: {
+    MuiTableCell: {
+      stickyHeader: {
+        backgroundColor: "red",
+      },
+    },
   },
 }));
 const Appart = () => {
@@ -190,13 +200,7 @@ const Appart = () => {
         when={editing}
         message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
-      <Box
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <Box className={classes.title}>
         <Typography variant="h3">Les appartements</Typography>
         {appart && <AppartToExcel dynamicSearch={dynamicSearch()} />}
       </Box>
