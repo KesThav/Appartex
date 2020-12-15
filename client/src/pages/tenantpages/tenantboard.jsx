@@ -295,9 +295,9 @@ const Tenantboard = (props) => {
               {name && lastname && name + " " + lastname}
             </Typography>
             <Typography variant="overline">
-              Créé le {user && moment(user.createdAt).format("DD/MM/YY")}
+              Créé le {date && moment(date).format("DD/MM/YY")}
             </Typography>
-            <Typography variant="caption">{user && user.email}</Typography>
+            <Typography variant="caption">{email && email}</Typography>
           </Paper>
 
           <Box className={classes.flex3}>
