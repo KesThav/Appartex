@@ -295,7 +295,7 @@ const Tenantboard = (props) => {
               {name && lastname && name + " " + lastname}
             </Typography>
             <Typography variant="overline">
-              Créé le {date && moment(date).format("DD/MM/YY")}
+              Créé le {dateofbirth && moment(dateofbirth).format("DD/MM/YY")}
             </Typography>
             <Typography variant="caption">{email && email}</Typography>
           </Paper>
