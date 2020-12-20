@@ -284,8 +284,8 @@ const Contract = () => {
             }}
           />
         </Box>
-        <TableContainer component={Paper} square>
-          <Table stickyHeader className={classes.table}>
+        <TableContainer component={Paper} square className={classes.table}>
+          <Table stickyHeader>
             <TableHead className={classes.thead}>
               <TableRow>
                 <Fragment>

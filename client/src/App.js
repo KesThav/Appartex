@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Landing from "./pages/commonpages/newlanding";
+import Landing from "./pages/commonpages/landing";
 import Layout from "./Layout/Layout";
 import Ownerboard from "./pages/ownerpages/ownerboard";
 import "./App.css";
