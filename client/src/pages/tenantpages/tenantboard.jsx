@@ -32,14 +32,16 @@ import KeyboardBackspaceIcon from "@material-ui/icons/KeyboardBackspace";
 const useStyles = makeStyles((theme) => ({
   flex: {
     display: "flex",
-    [theme.breakpoints.up("md")]: {
-      flexDirection: "row",
+    flexDirection: "row",
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
     },
-    flexDirection: "column",
   },
   paper: {
     [theme.breakpoints.down("sm")]: {
       width: "100%",
+      display: "flex",
+      marginRight: 0,
     },
     width: "40%",
     display: "flex",
@@ -71,17 +73,48 @@ const useStyles = makeStyles((theme) => ({
   form: {
     marginTop: 20,
     marginBottom: 10,
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+    },
   },
   field: {
     width: "45%",
     marginRight: 10,
     marginBottom: 25,
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+      marginRight: 0,
+    },
   },
   box: {
     marginTop: 10,
     width: "98%",
     display: "flex",
     flexDirection: "row-reverse",
+  },
+  [theme.breakpoints.down("sm")]: {
+    thead: { display: "none" },
+    tbody: { display: "block", width: "100%" },
+    trow: {
+      display: "block",
+      width: "100%",
+      marginBottom: 20,
+      border: "1px solid grey",
+    },
+    tcell: {
+      display: "block",
+      width: "100%",
+      textAlign: "right",
+      paddingLeft: "40%",
+      position: "relative",
+      "&::before": {
+        content: "attr(data-label)",
+        position: "absolute",
+        left: 5,
+        justifyContent: "center",
+        fontWeight: "bold",
+      },
+    },
   },
 }));
 
@@ -271,7 +304,7 @@ const Tenantboard = (props) => {
 
   return (
     <Fragment>
-      <Container maxWidthLg>
+      <Container className={classes.container}>
         {user.role == "Admin" && (
           <Button
             startIcon={<KeyboardBackspaceIcon />}
@@ -300,7 +333,7 @@ const Tenantboard = (props) => {
             <Typography variant="caption">{email && email}</Typography>
           </Paper>
 
-          <Box className={classes.flex3}>
+          <Box>
             <Paper className={classes.details}>
               <Typography variant="h6">
                 <strong>Profil</strong>
@@ -362,7 +395,7 @@ const Tenantboard = (props) => {
                 </Box>
               </form>
             </Paper>
-            <div>
+            <div style={{ width: "100%" }}>
               <Accordion>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
@@ -376,7 +409,7 @@ const Tenantboard = (props) => {
                 <AccordionDetails>
                   <TableContainer>
                     <Table>
-                      <TableHead>
+                      <TableHead className={classes.thead}>
                         <TableRow>
                           {[
                             "Adresse",
@@ -392,18 +425,44 @@ const Tenantboard = (props) => {
                           ))}
                         </TableRow>
                       </TableHead>
-                      <TableBody>
+                      <TableBody className={classes.tbody}>
                         {contract.length > 0 &&
                           contract.map((data) => (
-                            <TableRow key={data._id}>
-                              <TableCell>{data.adress}</TableCell>
-                              <TableCell>{data.charge}</TableCell>
-                              <TableCell>{data.rent}</TableCell>
-                              <TableCell>{data.status}</TableCell>
-                              <TableCell>
+                            <TableRow key={data._id} className={classes.trow}>
+                              <TableCell
+                                data-label="Adresse"
+                                className={classes.tcell}
+                              >
+                                {data.adress}
+                              </TableCell>
+                              <TableCell
+                                data-label="Charge"
+                                className={classes.tcell}
+                              >
+                                {data.charge}
+                              </TableCell>
+                              <TableCell
+                                data-label="Loyer"
+                                className={classes.tcell}
+                              >
+                                {data.rent}
+                              </TableCell>
+                              <TableCell
+                                data-label="Statut"
+                                className={classes.tcell}
+                              >
+                                {data.status}
+                              </TableCell>
+                              <TableCell
+                                data-label="Valable depuis le"
+                                className={classes.tcell}
+                              >
                                 {moment(data.createdAt).format("DD/MM/YY")}
                               </TableCell>
-                              <TableCell>
+                              <TableCell
+                                data-label="Documents"
+                                className={classes.tcell}
+                              >
                                 {data.file.map((doc) => (
                                   <Fragment>
                                     <a href={doc.data} download={doc.name}>
@@ -432,8 +491,8 @@ const Tenantboard = (props) => {
                 </AccordionSummary>
                 <AccordionDetails>
                   <TableContainer>
-                    <Table>
-                      <TableHead>
+                    <Table className={classes.table}>
+                      <TableHead className={classes.thead}>
                         <TableRow>
                           {[
                             "Référence",
@@ -449,18 +508,44 @@ const Tenantboard = (props) => {
                           ))}
                         </TableRow>
                       </TableHead>
-                      <TableBody>
+                      <TableBody className={classes.tbody}>
                         {bills.length > 0 &&
                           bills.map((data) => (
-                            <TableRow key={data._id}>
-                              <TableCell>{data.reference}</TableCell>
-                              <TableCell>{data.reason}</TableCell>
-                              <TableCell>{data.amount}</TableCell>
-                              <TableCell>{data.status.name}</TableCell>
-                              <TableCell>
+                            <TableRow key={data._id} className={classes.trow}>
+                              <TableCell
+                                data-label="Référence"
+                                className={classes.tcell}
+                              >
+                                {data.reference}
+                              </TableCell>
+                              <TableCell
+                                data-label="Raison"
+                                className={classes.tcell}
+                              >
+                                {data.reason}
+                              </TableCell>
+                              <TableCell
+                                data-label="Montant"
+                                className={classes.tcell}
+                              >
+                                {data.amount}
+                              </TableCell>
+                              <TableCell
+                                data-label="Statut"
+                                className={classes.tcell}
+                              >
+                                {data.status}
+                              </TableCell>
+                              <TableCell
+                                data-label="Echéance"
+                                className={classes.tcell}
+                              >
                                 {moment(data.endDate).format("DD/MM/YY")}
                               </TableCell>
-                              <TableCell>
+                              <TableCell
+                                data-label="Documents"
+                                className={classes.tcell}
+                              >
                                 {data.file.map((doc) => (
                                   <Fragment>
                                     <a href={doc.data} download={doc.name}>
