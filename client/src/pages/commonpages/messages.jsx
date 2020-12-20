@@ -10,6 +10,7 @@ import {
   Tab,
   Typography,
   Box,
+  Hidden,
 } from "@material-ui/core";
 
 import ShowMessages from "../../components/MessagesComponents/ShowMessages";
@@ -49,16 +50,30 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     display: "flex",
     height: 224,
+    [theme.breakpoints.down("sm")]: {
+      display: "grid",
+      height: 50,
+    },
   },
   tabs: {
+    [theme.breakpoints.down("sm")]: {
+      orientation: "horizontal",
+      borderRight: "none",
+    },
     borderRight: `1px solid ${theme.palette.divider}`,
+  },
+  width: {
+    width: "50%",
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+    },
   },
 }));
 
 const Drawer = (props) => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-
+  const [screenWidth, setScreenWidth] = useState(0);
   const { user, authAxios, count } = useContext(UserContext);
   const [receivedmessage, setReceivedMessage] = useState("");
   const [sendedmessage, setSendedMessage] = useState("");
@@ -134,22 +149,42 @@ const Drawer = (props) => {
         {success && <Alert severity="success">{success}</Alert>}
       </div>
       <div className={classes.root}>
-        <Tabs
-          orientation="vertical"
-          variant="scrollable"
-          value={value}
-          onChange={handleChange}
-          aria-label="Vertical tabs example"
-          className={classes.tabs}
-        >
-          <Tab label="Messages envoyés" {...a11yProps(0)} />
+        <Hidden only={["sm", "xs"]}>
+          <Tabs
+            orientation="vertical"
+            variant="scrollable"
+            value={value}
+            onChange={handleChange}
+            aria-label="Vertical tabs example"
+            className={classes.tabs}
+          >
+            <Tab label="Messages envoyés" {...a11yProps(0)} />
 
-          <Tab label="Messages reçus" {...a11yProps(1)} />
-          {user && user.role == "Admin" ? (
-            <Tab label="Messages Archivés" {...a11yProps(2)} />
-          ) : null}
-        </Tabs>
-        <TabPanel value={value} index={0} style={{ width: "50%" }}>
+            <Tab label="Messages reçus" {...a11yProps(1)} />
+            {user && user.role == "Admin" ? (
+              <Tab label="Messages Archivés" {...a11yProps(2)} />
+            ) : null}
+          </Tabs>
+        </Hidden>
+
+        <Hidden only={["lg", "md", "xl"]}>
+          <Tabs
+            orientation="horizontal"
+            variant="scrollable"
+            value={value}
+            onChange={handleChange}
+            aria-label="Vertical tabs example"
+            className={classes.tabs}
+          >
+            <Tab label="Messages envoyés" {...a11yProps(0)} />
+
+            <Tab label="Messages reçus" {...a11yProps(1)} />
+            {user && user.role == "Admin" ? (
+              <Tab label="Messages Archivés" {...a11yProps(2)} />
+            ) : null}
+          </Tabs>
+        </Hidden>
+        <TabPanel value={value} index={0} className={classes.width}>
           <Fragment>
             {sendedmessage.length > 0 && (
               <ShowMessages
@@ -165,7 +200,7 @@ const Drawer = (props) => {
             )}
           </Fragment>
         </TabPanel>
-        <TabPanel value={value} index={1} style={{ width: "50%" }}>
+        <TabPanel value={value} index={1} className={classes.width}>
           {receivedmessage.length > 0 && (
             <ShowMessages
               getMessages={getMessages}
@@ -179,7 +214,7 @@ const Drawer = (props) => {
             />
           )}
         </TabPanel>
-        <TabPanel value={value} index={2} style={{ width: "50%" }}>
+        <TabPanel value={value} index={2} className={classes.width}>
           {archivedmessage.length > 0 && (
             <ShowMessages
               getMessages={getMessages}

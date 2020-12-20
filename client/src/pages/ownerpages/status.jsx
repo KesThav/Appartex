@@ -33,11 +33,6 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: "60vh",
     boxShadow: "none",
   },
-  header: {
-    backgroundColor: "#fff",
-    position: "sticky",
-    top: 0,
-  },
   box: {
     width: "100%",
     display: "flex",
@@ -65,6 +60,45 @@ const useStyles = makeStyles((theme) => ({
   },
   box4: {
     display: "flex",
+  },
+
+  searchBar: {
+    width: "30%",
+    marginRight: 20,
+  },
+  [theme.breakpoints.down("sm")]: {
+    thead: { display: "none" },
+    tbody: { display: "block", width: "100%" },
+    trow: {
+      display: "block",
+      width: "100%",
+      marginBottom: 20,
+      border: "1px solid grey",
+    },
+    tcell: {
+      display: "block",
+      width: "100%",
+      textAlign: "right",
+      paddingLeft: "50%",
+      position: "relative",
+      "&::before": {
+        content: "attr(data-label)",
+        position: "absolute",
+        fontWeight: "bold",
+        left: 5,
+        justifyContent: "center",
+      },
+    },
+    searchBar: {
+      width: "100%",
+    },
+    header: {
+      flexDirection: "column",
+      textAlign: "center",
+    },
+    box3: {
+      flexDirection: "column",
+    },
   },
 }));
 const Status = () => {
@@ -141,7 +175,9 @@ const Status = () => {
         when={editing}
         message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
-      <Typography variant="h3">Les statuts</Typography>
+      <Typography variant="h3" className={classes.header}>
+        Les statuts
+      </Typography>
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}
@@ -157,7 +193,7 @@ const Status = () => {
             onChange={(e) => {
               setSearch(e.target.value);
             }}
-            style={{ width: "30%" }}
+            className={classes.searchBar}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -167,9 +203,9 @@ const Status = () => {
             }}
           />
         </Box>
-        <TableContainer className={classes.table} component={Paper} square>
-          <Table stickyHeader style={{ tableLayout: "fixed" }}>
-            <TableHead>
+        <TableContainer component={Paper} square>
+          <Table stickyHeader className={classes.table}>
+            <TableHead className={classes.thead}>
               <TableRow>
                 <Fragment>
                   {["Nom", "Créé le", "Dernière modification", "Actions"].map(
@@ -182,15 +218,15 @@ const Status = () => {
                 </Fragment>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody className={classes.tbody}>
               <Fragment>
                 {!loading ? (
                   status.length > 0 &&
                   dynamicSearch()
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((status) => (
-                      <TableRow key={status._id}>
-                        <TableCell component="th" scope="row">
+                      <TableRow key={status._id} className={classes.trow}>
+                        <TableCell className={classes.tcell} data-label="Nom">
                           {editing && data === status._id ? (
                             <TextField
                               id={status.name}
@@ -203,13 +239,22 @@ const Status = () => {
                             status.name
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          className={classes.tcell}
+                          data-label="Créé le"
+                        >
                           {moment(status.createdAt).format("DD/MM/YY")}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          className={classes.tcell}
+                          data-label="Dernière modification"
+                        >
                           {moment(status.updatedAt).format("DD/MM/YY")}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          className={classes.tcell}
+                          data-label="Actions"
+                        >
                           {editing && data === status._id ? (
                             <Fragment>
                               <IconButton>

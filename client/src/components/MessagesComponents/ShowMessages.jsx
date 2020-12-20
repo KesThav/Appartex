@@ -94,7 +94,6 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
                 <CardActions disableSpacing>
                   {data.comments.length}
                   <ChatBubbleOutlineOutlinedIcon />
-
                   {user &&
                     user.role == "Admin" &&
                     (data.status !== "Archivé" ? (

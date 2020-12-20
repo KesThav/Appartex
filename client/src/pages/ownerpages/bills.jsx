@@ -43,9 +43,12 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "none",
   },
   header: {
-    backgroundColor: "#fff",
-    position: "sticky",
-    top: 0,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+    },
   },
   box: {
     width: "100%",
@@ -97,6 +100,64 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  searchBar: {
+    width: "30%",
+    marginRight: 20,
+  },
+  filter1: { width: "30%", marginRight: "20px" },
+  filter2: { width: "20%", marginRight: "20px" },
+  date: {
+    marginRight: 20,
+  },
+  [theme.breakpoints.down("sm")]: {
+    thead: { display: "none" },
+    tbody: { display: "block", width: "100%" },
+    trow: {
+      display: "block",
+      width: "100%",
+      marginBottom: 20,
+      border: "1px solid grey",
+    },
+    tcell: {
+      display: "block",
+      width: "100%",
+      textAlign: "right",
+      paddingLeft: "40%",
+      position: "relative",
+      "&::before": {
+        content: "attr(data-label)",
+        position: "absolute",
+        left: 5,
+        justifyContent: "center",
+        fontWeight: "bold",
+      },
+    },
+    searchBar: {
+      width: "100%",
+    },
+    header: {
+      flexDirection: "column",
+      textAlign: "center",
+    },
+    box3: {
+      flexDirection: "column",
+    },
+    filter1: {
+      width: "100%",
+      marginBottom: 10,
+      marginRight: 0,
+    },
+    filter2: {
+      width: "100%",
+      marginBottom: 10,
+      marginRight: 0,
+    },
+    date: {
+      width: "100%",
+      marginBottom: 10,
+      marginRight: 0,
+    },
   },
 }));
 const Bills = () => {
@@ -222,13 +283,7 @@ const Bills = () => {
         when={editing}
         message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
-      <Box
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <Box className={classes.header}>
         <Typography variant="h3">Les factures</Typography>{" "}
         {bill && <BillToExcel dynamicSearch={dynamicSearch()} />}
       </Box>
@@ -257,7 +312,7 @@ const Bills = () => {
                   {option.name}
                 </React.Fragment>
               )}
-              style={{ width: "20%", marginRight: "20px" }}
+              className={classes.filter2}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -276,7 +331,7 @@ const Bills = () => {
             onChange={(e) => {
               setSearch(e.target.value);
             }}
-            style={{ width: "30%", marginRight: 20 }}
+            className={classes.filter1}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -286,7 +341,7 @@ const Bills = () => {
             }}
           />
           <TextField
-            style={{ marginRight: 20 }}
+            className={classes.date}
             onChange={(e) => setLowbound(e.target.value)}
             value={lowbound}
             variant="outlined"
@@ -295,7 +350,7 @@ const Bills = () => {
           />
           <TextField
             onChange={(e) => setUpbound(e.target.value)}
-            style={{ marginRight: 20 }}
+            className={classes.date}
             value={upbound}
             variant="outlined"
             label="date de fin"
@@ -315,9 +370,9 @@ const Bills = () => {
           />
         </Box>
 
-        <TableContainer className={classes.table} component={Paper} square>
-          <Table stickyHeader /* style={{ tableLayout: "fixed" }} */>
-            <TableHead style={{ background: "#fff" }}>
+        <TableContainer component={Paper} square>
+          <Table stickyHeader className={classes.table}>
+            <TableHead className={classes.thead}>
               <TableRow>
                 {[
                   "Facture n°",
@@ -337,22 +392,48 @@ const Bills = () => {
                 ))}
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody className={classes.tbody}>
               <Fragment>
                 {!loading ? (
                   bill.length > 0 &&
                   dynamicSearch()
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((bill) => (
-                      <TableRow key={bill._id}>
-                        <TableCell>{bill._id}</TableCell>
-                        <TableCell>
+                      <TableRow key={bill._id} className={classes.trow}>
+                        <TableCell
+                          data-label="Facture n°"
+                          className={classes.tcell}
+                        >
+                          {bill._id}
+                        </TableCell>
+                        <TableCell
+                          data-label="Locataire"
+                          className={classes.tcell}
+                        >
                           {bill.tenant.name + " " + bill.tenant.lastname}
                         </TableCell>
-                        <TableCell>{bill.reference}</TableCell>
-                        <TableCell>{bill.reason}</TableCell>
-                        <TableCell>{bill.amount}</TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Référence"
+                          className={classes.tcell}
+                        >
+                          {bill.reference}
+                        </TableCell>
+                        <TableCell
+                          data-label="Raison"
+                          className={classes.tcell}
+                        >
+                          {bill.reason}
+                        </TableCell>
+                        <TableCell
+                          data-label="Montant (CHF)"
+                          className={classes.tcell}
+                        >
+                          {bill.amount}
+                        </TableCell>
+                        <TableCell
+                          data-label="Statut"
+                          className={classes.tcell}
+                        >
                           {editing && data === bill._id ? (
                             <TextField
                               id="Status"
@@ -372,7 +453,10 @@ const Bills = () => {
                             bill.status.name
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Echeance"
+                          className={classes.tcell}
+                        >
                           {editing && data === bill._id ? (
                             <TextField
                               id="endDate"
@@ -408,13 +492,22 @@ const Bills = () => {
                             />
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Créé le"
+                          className={classes.tcell}
+                        >
                           {moment(bill.createdAt).format("DD/MM/YY")}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Dernière modification"
+                          className={classes.tcell}
+                        >
                           {moment(bill.updateddAt).format("DD/MM/YY")}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Actions"
+                          className={classes.tcell}
+                        >
                           {editing && data === bill._id ? (
                             <Fragment>
                               <IconButton>

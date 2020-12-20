@@ -67,6 +67,48 @@ const useStyles = makeStyles((theme) => ({
   box4: {
     display: "flex",
   },
+  searchBar: {
+    width: "30%",
+  },
+  filter1: { width: "30%", marginRight: "20px" },
+  [theme.breakpoints.down("sm")]: {
+    thead: { display: "none" },
+    tbody: { display: "block", width: "100%" },
+    trow: {
+      display: "block",
+      width: "100%",
+      marginBottom: 20,
+      border: "1px solid grey",
+    },
+    tcell: {
+      display: "block",
+      width: "100%",
+      textAlign: "right",
+      paddingLeft: "50%",
+      position: "relative",
+      "&::before": {
+        content: "attr(data-label)",
+        position: "absolute",
+        left: 5,
+        justifyContent: "center",
+        fontWeight: "bold",
+      },
+    },
+    searchBar: {
+      width: "100%",
+    },
+    header: {
+      flexDirection: "column",
+      textAlign: "center",
+    },
+    box3: {
+      flexDirection: "column",
+    },
+    filter1: {
+      width: "100%",
+      marginBottom: 10,
+    },
+  },
 }));
 const TaskViewTask = ({ setError, setSuccess, task }) => {
   const classes = useStyles();
@@ -139,7 +181,7 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
                   {option.name}
                 </React.Fragment>
               )}
-              style={{ width: "30%", marginRight: "20px" }}
+              className={classes.filter1}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -158,7 +200,7 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
             onChange={(e) => {
               setSearch(e.target.value);
             }}
-            style={{ width: "30%" }}
+            className={classes.searchBar}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -169,15 +211,15 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
           />
         </Box>
 
-        <TableContainer className={classes.table} component={Paper} square>
-          <Table stickyHeader style={{ tableLayout: "fixed" }}>
-            <TableHead>
+        <TableContainer component={Paper} square>
+          <Table stickyHeader className={classes.table}>
+            <TableHead className={classes.thead}>
               <TableRow>
                 <Fragment>
                   {[
                     "Titre",
                     "Contenu",
-                    "Message n°",
+                    "Message",
                     "Statut",
                     "Date de début",
                     "Date de fin",
@@ -192,16 +234,20 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
                 </Fragment>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody className={classes.tbody}>
               {!loading ? (
                 task.length > 0 &&
                 dynamicSearch()
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((task) => (
-                    <TableRow key={task._id}>
-                      <TableCell>{task.title}</TableCell>
-                      <TableCell>{task.content}</TableCell>
-                      <TableCell>
+                    <TableRow key={task._id} className={classes.trow}>
+                      <TableCell className={classes.tcell} data-label="Titre">
+                        {task.title}
+                      </TableCell>
+                      <TableCell className={classes.tcell} data-label="Contenu">
+                        {task.content}
+                      </TableCell>
+                      <TableCell className={classes.tcell} data-label="Message">
                         {task.messageid ? (
                           <ExpandMessage
                             id={task.messageid._id}
@@ -211,20 +257,31 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
                           ""
                         )}
                       </TableCell>
-                      <TableCell>{task.status.name}</TableCell>
-                      <TableCell>
+                      <TableCell className={classes.tcell} data-label="Statut">
+                        {task.status.name}
+                      </TableCell>
+                      <TableCell
+                        className={classes.tcell}
+                        data-label="Ddate de début"
+                      >
                         {moment(task.startDate).format("DD/MM/YY HH:MM")}
                       </TableCell>
-                      <TableCell>
+                      <TableCell
+                        className={classes.tcell}
+                        data-label="Date de fin"
+                      >
                         {moment(task.endDate).format("DD/MM/YY HH:MM")}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className={classes.tcell} data-label="Créé le">
                         {moment(task.createdAt).format("DD/MM/YY")}
                       </TableCell>
-                      <TableCell>
+                      <TableCell
+                        className={classes.tcell}
+                        data-label="Dernière modification"
+                      >
                         {moment(task.updatedAt).format("DD/MM/YY")}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className={classes.tcell} data-label="Actions">
                         <Fragment>
                           <TaskHistory data={task._id} setError={setError} />
                           <EditTask

@@ -14,7 +14,6 @@ import {
   Paper,
   Typography,
   TablePagination,
-  Button,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import AddBuilding from "../../components/Building/AddBuilding";
@@ -35,11 +34,6 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "100%",
     maxHeight: "60vh",
     boxShadow: "none",
-  },
-  header: {
-    backgroundColor: "#fff",
-    position: "sticky",
-    top: 0,
   },
   box: {
     width: "100%",
@@ -68,6 +62,45 @@ const useStyles = makeStyles((theme) => ({
   },
   box4: {
     display: "flex",
+  },
+  searchBar: {
+    width: "30%",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  [theme.breakpoints.down("sm")]: {
+    thead: { display: "none" },
+    tbody: { display: "block", width: "100%" },
+    trow: {
+      display: "block",
+      width: "100%",
+      marginBottom: 20,
+      border: "1px solid grey",
+    },
+    tcell: {
+      display: "block",
+      width: "100%",
+      textAlign: "right",
+      paddingLeft: "50%",
+      position: "relative",
+      "&::before": {
+        content: "attr(data-label)",
+        position: "absolute",
+        left: 5,
+        justifyContent: "center",
+        fontWeight: "bold",
+      },
+    },
+    searchBar: {
+      width: "100%",
+    },
+    header: {
+      flexDirection: "column",
+      textAlign: "center",
+    },
   },
 }));
 const Building = (props) => {
@@ -147,13 +180,7 @@ const Building = (props) => {
         when={editing}
         message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
-      <Box
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <Box className={classes.header}>
         <Typography variant="h3">Les immeubles</Typography>
         {building && <BuildingToExcel dynamicSearch={dynamicSearch()} />}
       </Box>
@@ -173,7 +200,7 @@ const Building = (props) => {
             onChange={(e) => {
               setSearch(e.target.value);
             }}
-            style={{ width: "30%" }}
+            className={classes.searchBar}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -183,10 +210,10 @@ const Building = (props) => {
             }}
           />
         </Box>
-        <TableContainer className={classes.table} component={Paper} square>
-          <Table stickyHeader style={{ tableLayout: "fixed" }}>
-            <TableHead>
-              <TableRow>
+        <TableContainer component={Paper} square>
+          <Table stickyHeader className={classes.table}>
+            <TableHead className={classes.thead}>
+              <TableRow className={classes.trow}>
                 <Fragment>
                   {[
                     "Adresse",
@@ -205,14 +232,14 @@ const Building = (props) => {
                 </Fragment>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody className={classes.tbody}>
               {!loading ? (
                 building.length > 0 &&
                 dynamicSearch()
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((building) => (
-                    <TableRow key={building._id}>
-                      <TableCell>
+                    <TableRow key={building._id} className={classes.trow}>
+                      <TableCell data-label="Adresse" className={classes.tcell}>
                         {editing && data === building._id ? (
                           <TextField
                             id={building.adress}
@@ -225,7 +252,10 @@ const Building = (props) => {
                           building.adress
                         )}
                       </TableCell>
-                      <TableCell>
+                      <TableCell
+                        data-label="Code postale"
+                        className={classes.tcell}
+                      >
                         {editing && data === building._id ? (
                           <TextField
                             id={building.postalcode.toString()}
@@ -238,7 +268,7 @@ const Building = (props) => {
                           building.postalcode
                         )}
                       </TableCell>
-                      <TableCell>
+                      <TableCell data-label="Ville" className={classes.tcell}>
                         {editing && data === building._id ? (
                           <TextField
                             id={building.city}
@@ -251,15 +281,28 @@ const Building = (props) => {
                           building.city
                         )}
                       </TableCell>
-                      <TableCell>{building.numberofAppart}</TableCell>
-                      <TableCell>{building.counter}</TableCell>
-                      <TableCell>
+                      <TableCell
+                        data-label="Nombre d'appartements"
+                        className={classes.tcell}
+                      >
+                        {building.numberofAppart}
+                      </TableCell>
+                      <TableCell
+                        data-label="Nombre d'appartements occupés"
+                        className={classes.tcell}
+                      >
+                        {building.counter}
+                      </TableCell>
+                      <TableCell data-label="Créé le" className={classes.tcell}>
                         {moment(building.createdAt).format("DD/MM/YY")}
                       </TableCell>
-                      <TableCell>
+                      <TableCell
+                        data-label="Dernière modification"
+                        className={classes.tcell}
+                      >
                         {moment(building.updatedAt).format("DD/MM/YY")}
                       </TableCell>
-                      <TableCell>
+                      <TableCell data-label="Actions" className={classes.tcell}>
                         {editing && data === building._id ? (
                           <Fragment>
                             <IconButton>
@@ -299,7 +342,7 @@ const Building = (props) => {
                     </TableRow>
                   ))
               ) : (
-                <TableRow>
+                <TableRow className={classes.trow}>
                   <LoadingScreen />
                 </TableRow>
               )}

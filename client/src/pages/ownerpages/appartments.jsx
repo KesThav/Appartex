@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     [theme.breakpoints.down("sm")]: {
       flexDirection: "column",
+      textAlign: "center",
     },
   },
   box: {
@@ -77,11 +78,52 @@ const useStyles = makeStyles((theme) => ({
   divider: {
     marginBottom: 20,
   },
-  overrides: {
-    MuiTableCell: {
-      stickyHeader: {
-        backgroundColor: "red",
+  searchBar: {
+    width: "30%",
+    marginRight: 20,
+  },
+  filter1: { width: "30%", marginRight: "20px" },
+  filter2: { width: "10%", marginRight: "20px" },
+  [theme.breakpoints.down("sm")]: {
+    thead: { display: "none" },
+    tbody: { display: "block", width: "100%" },
+    trow: {
+      display: "block",
+      width: "100%",
+      marginBottom: 20,
+      border: "1px solid grey",
+    },
+    tcell: {
+      display: "block",
+      width: "100%",
+      textAlign: "right",
+      paddingLeft: "50%",
+      position: "relative",
+      "&::before": {
+        content: "attr(data-label)",
+        position: "absolute",
+        left: 5,
+        justifyContent: "center",
+        fontWeight: "bold",
       },
+    },
+    searchBar: {
+      width: "100%",
+    },
+    header: {
+      flexDirection: "column",
+      textAlign: "center",
+    },
+    box3: {
+      flexDirection: "column",
+    },
+    filter1: {
+      width: "100%",
+      marginBottom: 10,
+    },
+    filter2: {
+      width: "100%",
+      marginBottom: 10,
     },
   },
 }));
@@ -231,7 +273,7 @@ const Appart = () => {
                   {option.adress + " " + option.postalcode + " " + option.city}
                 </React.Fragment>
               )}
-              style={{ width: "30%", marginRight: "20px" }}
+              className={classes.filter1}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -242,7 +284,7 @@ const Appart = () => {
             />
           )}
           <TextField
-            style={{ width: "10%", marginRight: "20px" }}
+            className={classes.filter2}
             label="Statut"
             id="statut"
             select
@@ -264,7 +306,7 @@ const Appart = () => {
             onChange={(e) => {
               setSearch(e.target.value);
             }}
-            style={{ width: "30%", marginRight: "20px" }}
+            className={classes.searchBar}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -291,9 +333,9 @@ const Appart = () => {
           </FormControl>
         </Box>
 
-        <TableContainer className={classes.table} component={Paper} square>
-          <Table stickyHeader style={{ tableLayout: "fixed" }}>
-            <TableHead>
+        <TableContainer component={Paper} square>
+          <Table stickyHeader className={classes.table}>
+            <TableHead className={classes.thead}>
               <TableRow>
                 {[
                   "Appartient à un immeuble ?",
@@ -312,17 +354,26 @@ const Appart = () => {
                 ))}
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody className={classes.tbody}>
               <Fragment>
-                {appart.length > 0 &&
+                {!loading ? (
+                  appart.length > 0 &&
                   dynamicSearch()
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((appart) => (
-                      <TableRow key={appart._id}>
-                        <TableCell component="th" scope="row">
+                      <TableRow key={appart._id} className={classes.trow}>
+                        <TableCell
+                          component="th"
+                          scope="row"
+                          data-label="Appartient à un immeuble ?"
+                          className={classes.tcell}
+                        >
                           {appart.hasBuilding ? "Oui" : "Non"}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Adresse"
+                          className={classes.tcell}
+                        >
                           {editing &&
                           data === appart._id &&
                           !appart.hasBuilding ? (
@@ -337,7 +388,10 @@ const Appart = () => {
                             appart.adress
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Code postale"
+                          className={classes.tcell}
+                        >
                           {editing &&
                           data === appart._id &&
                           !appart.hasBuilding ? (
@@ -352,7 +406,7 @@ const Appart = () => {
                             appart.postalcode
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell data-label="Ville" className={classes.tcell}>
                           {editing &&
                           data === appart._id &&
                           !appart.hasBuilding ? (
@@ -367,7 +421,10 @@ const Appart = () => {
                             appart.city
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Pièces"
+                          className={classes.tcell}
+                        >
                           {editing && data === appart._id ? (
                             <TextField
                               id={appart.size.toString()}
@@ -380,7 +437,10 @@ const Appart = () => {
                             appart.size
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Statut"
+                          className={classes.tcell}
+                        >
                           <div>
                             {appart.status == "Libre" ? (
                               <Chip
@@ -398,13 +458,22 @@ const Appart = () => {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Créé le "
+                          className={classes.tcell}
+                        >
                           {moment(appart.createdAt).format("DD/MM/YY")}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Dernière modification"
+                          className={classes.tcell}
+                        >
                           {moment(appart.updatedAt).format("DD/MM/YY")}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Actions"
+                          className={classes.tcell}
+                        >
                           {editing && data === appart._id ? (
                             <Fragment>
                               <Button>
@@ -460,7 +529,10 @@ const Appart = () => {
                           )}
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ))
+                ) : (
+                  <LoadingScreen />
+                )}
               </Fragment>
             </TableBody>
           </Table>

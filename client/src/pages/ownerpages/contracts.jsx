@@ -38,9 +38,12 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "none",
   },
   header: {
-    backgroundColor: "#fff",
-    position: "sticky",
-    top: 0,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+    },
   },
   box: {
     width: "100%",
@@ -70,8 +73,59 @@ const useStyles = makeStyles((theme) => ({
   box4: {
     display: "flex",
   },
+
+  searchBar: {
+    width: "30%",
+    marginRight: 20,
+  },
+  filter1: { width: "30%", marginRight: "20px" },
+  filter2: { width: "10%", marginRight: "20px" },
+  [theme.breakpoints.down("sm")]: {
+    thead: { display: "none" },
+    tbody: { display: "block", width: "100%" },
+    trow: {
+      display: "block",
+      width: "100%",
+      marginBottom: 20,
+      border: "1px solid grey",
+    },
+    tcell: {
+      display: "block",
+      width: "100%",
+      textAlign: "right",
+      paddingLeft: "40%",
+      position: "relative",
+      "&::before": {
+        content: "attr(data-label)",
+        position: "absolute",
+        left: 5,
+        justifyContent: "center",
+        fontWeight: "bold",
+      },
+    },
+    searchBar: {
+      width: "100%",
+    },
+    header: {
+      flexDirection: "column",
+      textAlign: "center",
+    },
+    box3: {
+      flexDirection: "column",
+    },
+    filter1: {
+      width: "100%",
+      marginBottom: 10,
+    },
+    filter2: {
+      width: "100%",
+      marginBottom: 10,
+    },
+  },
 }));
+
 const Contract = () => {
+  const classes = useStyles();
   const {
     contract,
     getContracts,
@@ -104,7 +158,6 @@ const Contract = () => {
     setPage(0);
   };
 
-  const classes = useStyles();
   useEffect(() => {
     getContracts();
   }, [count]);
@@ -187,13 +240,7 @@ const Contract = () => {
         when={editing}
         message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
-      <Box
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <Box className={classes.header}>
         <Typography variant="h3">Les contrats</Typography>{" "}
         {contract && <ContractToExcel dynamicSearch={dynamicSearch()} />}
       </Box>
@@ -205,7 +252,7 @@ const Contract = () => {
       <Paper>
         <Box className={classes.box3}>
           <TextField
-            style={{ width: "10%", marginRight: "20px" }}
+            className={classes.filter2}
             label="Statut"
             id="statut"
             select
@@ -227,7 +274,7 @@ const Contract = () => {
             onChange={(e) => {
               setSearch(e.target.value);
             }}
-            style={{ width: "30%", marginRight: "20px" }}
+            className={classes.filter1}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -237,9 +284,9 @@ const Contract = () => {
             }}
           />
         </Box>
-        <TableContainer className={classes.table} component={Paper} square>
-          <Table stickyHeader /* style={{ tableLayout: "fixed" }} */>
-            <TableHead>
+        <TableContainer component={Paper} square>
+          <Table stickyHeader className={classes.table}>
+            <TableHead className={classes.thead}>
               <TableRow>
                 <Fragment>
                   {[
@@ -261,22 +308,36 @@ const Contract = () => {
                 </Fragment>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody className={classes.tbody}>
               <Fragment>
                 {!loading ? (
                   contract.length > 0 &&
                   dynamicSearch()
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((contract) => (
-                      <TableRow key={contract._id}>
-                        <TableCell component="th" scope="row">
+                      <TableRow key={contract._id} className={classes.trow}>
+                        <TableCell
+                          data-label="Contrat n°"
+                          className={classes.tcell}
+                        >
                           {contract._id}
                         </TableCell>
-                        <TableCell>{contract.tenant}</TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Locataire"
+                          className={classes.tcell}
+                        >
+                          {contract.tenant}
+                        </TableCell>
+                        <TableCell
+                          data-label="Adresse"
+                          className={classes.tcell}
+                        >
                           {`${contract.adress} ${contract.postalcode} ${contract.city}, ${contract.size} pièces`}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Charge"
+                          className={classes.tcell}
+                        >
                           {editing && data === contract._id ? (
                             <TextField
                               id={contract.charge}
@@ -289,7 +350,7 @@ const Contract = () => {
                             contract.charge
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell data-label="Loyer" className={classes.tcell}>
                           {editing && data === contract._id ? (
                             <TextField
                               id={contract.rent}
@@ -302,7 +363,7 @@ const Contract = () => {
                             contract.rent
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell data-label="Autre" className={classes.tcell}>
                           {editing && data === contract._id ? (
                             <TextField
                               id={contract.other}
@@ -315,14 +376,28 @@ const Contract = () => {
                             contract.other
                           )}
                         </TableCell>
-                        <TableCell>{contract.status}</TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Statut"
+                          className={classes.tcell}
+                        >
+                          {contract.status}
+                        </TableCell>
+                        <TableCell
+                          data-label="Créé le"
+                          className={classes.tcell}
+                        >
                           {moment(contract.createdAt).format("DD/MM/YY")}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Dernière modification"
+                          className={classes.tcell}
+                        >
                           {moment(contract.updatedAt).format("DD/MM/YY")}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Actions"
+                          className={classes.tcell}
+                        >
                           {editing && data === contract._id ? (
                             <Fragment>
                               <IconButton>

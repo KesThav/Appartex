@@ -39,9 +39,12 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "none",
   },
   header: {
-    backgroundColor: "#fff",
-    position: "sticky",
-    top: 0,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+    },
   },
   box: {
     width: "100%",
@@ -66,6 +69,53 @@ const useStyles = makeStyles((theme) => ({
   link: {
     textDecoration: "none",
     color: "#000000",
+  },
+  searchBar: {
+    width: "30%",
+    marginRight: 20,
+  },
+  filter2: { width: "10%", marginRight: "20px" },
+  [theme.breakpoints.down("sm")]: {
+    thead: { display: "none" },
+    tbody: { display: "block", width: "100%" },
+    trow: {
+      display: "block",
+      width: "100%",
+      marginBottom: 20,
+      border: "1px solid grey",
+    },
+    tcell: {
+      display: "block",
+      width: "100%",
+      textAlign: "right",
+      paddingLeft: "50%",
+      position: "relative",
+      "&::before": {
+        content: "attr(data-label)",
+        position: "absolute",
+        left: 5,
+        justifyContent: "center",
+        fontWeight: "bold",
+      },
+    },
+    searchBar: {
+      width: "100%",
+    },
+    header: {
+      flexDirection: "column",
+      textAlign: "center",
+    },
+    box3: {
+      flexDirection: "column",
+    },
+    filter1: {
+      width: "100%",
+      marginBottom: 10,
+    },
+    filter2: {
+      width: "100%",
+      marginBottom: 10,
+    },
   },
 }));
 const Tenant = () => {
@@ -173,13 +223,7 @@ const Tenant = () => {
         when={editing}
         message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
-      <Box
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <Box className={classes.header}>
         <Typography variant="h3">Les locataires</Typography>{" "}
         {tenant && <TenantToExcel dynamicSearch={dynamicSearch()} />}
       </Box>
@@ -190,7 +234,7 @@ const Tenant = () => {
       <Paper>
         <Box className={classes.box3}>
           <TextField
-            style={{ width: "10%", marginRight: "20px" }}
+            className={classes.filter2}
             label="Statut"
             id="statut"
             select
@@ -212,7 +256,7 @@ const Tenant = () => {
             onChange={(e) => {
               setSearch(e.target.value);
             }}
-            style={{ width: "30%" }}
+            className={classes.searchBar}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -222,9 +266,9 @@ const Tenant = () => {
             }}
           />
         </Box>
-        <TableContainer className={classes.table} component={Paper} square>
-          <Table stickyHeader style={{ tableLayout: "fixed" }}>
-            <TableHead style={{ background: "#fff" }}>
+        <TableContainer component={Paper} square>
+          <Table stickyHeader className={classes.table}>
+            <TableHead className={classes.thead}>
               <TableRow>
                 <Fragment>
                   {[
@@ -244,15 +288,15 @@ const Tenant = () => {
                 </Fragment>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody className={classes.tbody}>
               <Fragment>
                 {!loading ? (
                   tenant.length > 0 &&
                   dynamicSearch()
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((tenant) => (
-                      <TableRow key={tenant._id}>
-                        <TableCell>
+                      <TableRow key={tenant._id} className={classes.trow}>
+                        <TableCell data-label="Nom" className={classes.tcell}>
                           {editing && data === tenant._id ? (
                             <TextField
                               id={tenant.lastname}
@@ -265,7 +309,10 @@ const Tenant = () => {
                             tenant.lastname
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Prénom"
+                          className={classes.tcell}
+                        >
                           {editing && data === tenant._id ? (
                             <TextField
                               id={tenant.name}
@@ -278,7 +325,7 @@ const Tenant = () => {
                             tenant.name
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell data-label="Email" className={classes.tcell}>
                           {editing && data === tenant._id ? (
                             <TextField
                               id={tenant.email}
@@ -291,7 +338,10 @@ const Tenant = () => {
                             tenant.email
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Statut"
+                          className={classes.tcell}
+                        >
                           {editing && data === tenant._id ? (
                             <TextField
                               id={tenant.status}
@@ -327,7 +377,10 @@ const Tenant = () => {
                             </div>
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Date de naissance"
+                          className={classes.tcell}
+                        >
                           {editing && data === tenant._id ? (
                             <TextField
                               id={tenant.dateofbirth}
@@ -340,13 +393,22 @@ const Tenant = () => {
                             moment(tenant.dateofbirth).format("DD/MM/YY")
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Créé le"
+                          className={classes.tcell}
+                        >
                           {moment(tenant.createdAt).format("DD/MM/YY")}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Dernière modification"
+                          className={classes.tcell}
+                        >
                           {moment(tenant.updatedAt).format("DD/MM/YY")}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          data-label="Actions"
+                          className={classes.tcell}
+                        >
                           {editing && data === tenant._id ? (
                             <Fragment>
                               <IconButton>

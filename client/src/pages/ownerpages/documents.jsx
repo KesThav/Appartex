@@ -12,7 +12,7 @@ import UploadTenantFile from "../../components/Tenant/UploadFile";
 import Alert from "@material-ui/lab/Alert";
 import LoadingScreen from "../../components/LoadingScreen";
 import { UserContext } from "../../middlewares/ContextAPI";
-import { Typography } from "@material-ui/core";
+import { Typography, Hidden } from "@material-ui/core";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -46,6 +46,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "transparent",
     display: "flex",
     height: 333,
+    [theme.breakpoints.down("sm")]: {
+      display: "grid",
+      height: 150,
+    },
   },
   tabs: {
     borderRight: `1px solid ${theme.palette.divider}`,
@@ -72,19 +76,36 @@ export default function VerticalTabs() {
         {success && <Alert severity="success">{success}</Alert>}
       </div>
       <div className={classes.root}>
-        <Tabs
-          orientation="vertical"
-          variant="scrollable"
-          value={value}
-          onChange={handleChange}
-          className={classes.tabs}
-        >
-          <Tab label="Appartements" {...a11yProps(0)} />
-          <Tab label="Locataires" {...a11yProps(1)} />
-          <Tab label="Contrats" {...a11yProps(2)} />
-          <Tab label="Factures" {...a11yProps(3)} />
-          <Tab label="Réparations" {...a11yProps(4)} />
-        </Tabs>
+        <Hidden only={["sm", "xs"]}>
+          <Tabs
+            orientation="vertical"
+            variant="scrollable"
+            value={value}
+            onChange={handleChange}
+            className={classes.tabs}
+          >
+            <Tab label="Appartements" {...a11yProps(0)} />
+            <Tab label="Locataires" {...a11yProps(1)} />
+            <Tab label="Contrats" {...a11yProps(2)} />
+            <Tab label="Factures" {...a11yProps(3)} />
+            <Tab label="Réparations" {...a11yProps(4)} />
+          </Tabs>
+        </Hidden>
+        <Hidden only={["lg", "xl", "md"]}>
+          <Tabs
+            orientation="horizontal"
+            variant="scrollable"
+            value={value}
+            onChange={handleChange}
+            className={classes.tabs}
+          >
+            <Tab label="Appartements" {...a11yProps(0)} />
+            <Tab label="Locataires" {...a11yProps(1)} />
+            <Tab label="Contrats" {...a11yProps(2)} />
+            <Tab label="Factures" {...a11yProps(3)} />
+            <Tab label="Réparations" {...a11yProps(4)} />
+          </Tabs>
+        </Hidden>
         <TabPanel value={value} index={0}>
           <UploadImage setSuccess={setSuccess} setError={setError} />
         </TabPanel>

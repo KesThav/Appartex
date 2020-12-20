@@ -10,10 +10,13 @@ import {
   TextField,
   MenuItem,
   Tooltip,
+  Hidden,
+  IconButton,
 } from "@material-ui/core";
 import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import LoadingScreen from "../LoadingScreen";
+import AddIcon from "@material-ui/icons/Add";
 const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 650,
@@ -110,7 +113,17 @@ const AddTask = ({ id, setSuccess }) => {
 
   return (
     <Fragment>
-      <Button onClick={() => OnOpen()}>Créer une tâche</Button>
+      <Hidden only={["xs", "sm", "md"]}>
+        <Button onClick={() => OnOpen()}>Créer une tâche</Button>
+      </Hidden>
+      <Hidden only={["lg", "xl"]}>
+        <Tooltip title="Créer une tâche">
+          <IconButton onClick={() => OnOpen()}>
+            <AddIcon />
+          </IconButton>
+        </Tooltip>
+      </Hidden>
+
       {loading && <LoadingScreen />}
       <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
         <DialogTitle>Créer une tâche</DialogTitle>

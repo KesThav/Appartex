@@ -43,9 +43,12 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "none",
   },
   header: {
-    backgroundColor: "#fff",
-    position: "sticky",
-    top: 0,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+    },
   },
   box: {
     width: "100%",
@@ -73,6 +76,50 @@ const useStyles = makeStyles((theme) => ({
   },
   divider: {
     marginBottom: 20,
+  },
+  searchBar: {
+    width: "30%",
+  },
+  filter1: { width: "20%", marginRight: "20px" },
+  [theme.breakpoints.down("sm")]: {
+    thead: { display: "none" },
+    tbody: { display: "block", width: "100%" },
+    trow: {
+      display: "block",
+      width: "100%",
+      marginBottom: 20,
+      border: "1px solid grey",
+    },
+    tcell: {
+      display: "block",
+      width: "100%",
+      textAlign: "right",
+      paddingLeft: "40%",
+      position: "relative",
+      "&::before": {
+        content: "attr(data-label)",
+        position: "absolute",
+        left: 5,
+        justifyContent: "center",
+        fontWeight: "bold",
+      },
+    },
+    searchBar: {
+      width: "100%",
+      marginBottom: 10,
+    },
+    header: {
+      flexDirection: "column",
+      textAlign: "center",
+    },
+    box3: {
+      flexDirection: "column",
+    },
+    filter1: {
+      width: "100%",
+      marginRight: 0,
+      marginBottom: 10,
+    },
   },
 }));
 const Repair = () => {
@@ -179,13 +226,7 @@ const Repair = () => {
         when={editing}
         message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
-      <Box
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <Box className={classes.header}>
         <Typography variant="h3">Les réparations</Typography>{" "}
         {repair && <RepairToExcel dynamicSearch={dynamicSearch()} />}
       </Box>
@@ -214,7 +255,7 @@ const Repair = () => {
                   {option.name}
                 </React.Fragment>
               )}
-              style={{ width: "20%", marginRight: "20px" }}
+              className={classes.filter1}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -233,7 +274,7 @@ const Repair = () => {
             onChange={(e) => {
               setSearch(e.target.value);
             }}
-            style={{ width: "30%", marginRight: 20 }}
+            className={classes.searchBar}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -255,16 +296,16 @@ const Repair = () => {
             onDelete={() => console.log("wow")}
           />
         </Box>
-        <TableContainer className={classes.table} component={Paper} square>
-          <Table stickyHeader /* style={{ tableLayout: "fixed" }} */>
-            <TableHead style={{ background: "#fff" }}>
+        <TableContainer component={Paper} square>
+          <Table stickyHeader className={classes.table}>
+            <TableHead className={classes.thead}>
               <TableRow>
                 {[
                   "Réparation n°",
                   "Tâche",
-                  "raison",
-                  "montant (CHF)",
-                  "statut",
+                  "Raison",
+                  "Montant (CHF)",
+                  "Statut",
                   "Créé le",
                   "Dernière modification",
                   "Actions",
@@ -282,14 +323,20 @@ const Repair = () => {
                   dynamicSearch()
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((repair) => (
-                      <TableRow key={repair._id}>
-                        <TableCell component="th" scope="row">
+                      <TableRow key={repair._id} className={classes.trow}>
+                        <TableCell
+                          className={classes.tcell}
+                          data-label="Réparation n°"
+                        >
                           {repair._id}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className={classes.tcell} data-label="Tâche">
                           {repair.taskid.title + " - " + repair.taskid.content}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          className={classes.tcell}
+                          data-label="Raison"
+                        >
                           {editing && data === repair._id ? (
                             <TextField
                               id={repair.reason}
@@ -302,7 +349,10 @@ const Repair = () => {
                             repair.reason
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          className={classes.tcell}
+                          data-label="Montant (CHF)"
+                        >
                           {editing && data === repair._id ? (
                             <TextField
                               id={repair.amount.toString()}
@@ -315,7 +365,10 @@ const Repair = () => {
                             repair.amount
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          className={classes.tcell}
+                          data-label="Statut"
+                        >
                           {editing && data === repair._id ? (
                             <TextField
                               id="Status"
@@ -335,13 +388,22 @@ const Repair = () => {
                             repair.status.name
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          className={classes.tcell}
+                          data-label="Créé le"
+                        >
                           {moment(repair.createdAt).format("DD/MM/YY")}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          className={classes.tcell}
+                          data-label="Dernière modification"
+                        >
                           {moment(repair.updatedAt).format("DD/MM/YY")}
                         </TableCell>
-                        <TableCell>
+                        <TableCell
+                          className={classes.tcell}
+                          data-label="Actions"
+                        >
                           {editing && data === repair._id ? (
                             <Fragment>
                               <IconButton>
