@@ -33,6 +33,10 @@ const appartSchema = new Mongoose.Schema(
       type: String,
       default: "Libre",
     },
+    repartition: {
+      type: Number,
+      default: 0,
+    },
     createdBy: {
       type: Mongoose.Schema.Types.ObjectId,
       required: true,

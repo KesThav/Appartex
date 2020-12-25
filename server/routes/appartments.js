@@ -180,7 +180,7 @@ router.post(
   appartValidation,
   upload.array("file"),
   async (ctx) => {
-    const { size, adress, city } = ctx.request.body;
+    const { size, adress, city, repartition } = ctx.request.body;
     let { building, postalcode } = ctx.request.body;
 
     if (building == "") {
@@ -197,6 +197,7 @@ router.post(
         postalcode,
         city,
         building,
+        repartition,
         createdBy: new ObjectId(ctx.request.jwt._id),
       });
 
@@ -266,9 +267,9 @@ router.put(
       _id: 0,
     });
 
-    const { size, adress, building, postalcode, city } = ctx.request.body;
+    const { size, adress, building, postalcode, city, repartition } = ctx.request.body;
 
-    const update = { size, building, adress, postalcode, city };
+    const update = { size, building, adress, postalcode, city, repartition };
     try {
       //if there's not building and we add one
       if (!checkifbuilding.building && building) {
