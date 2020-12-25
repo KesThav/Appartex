@@ -28,7 +28,6 @@ const appartSchema = Joi.object({
   city: Joi.string().allow(null, "").default(null),
   building: Joi.objectId().allow(null, "").default(null),
   status: Joi.string(),
-  repartition: Joi.number().min(0).max(1).precision(2),
 });
 
 const contractSchema = Joi.object({
