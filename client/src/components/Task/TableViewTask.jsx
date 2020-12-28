@@ -77,10 +77,12 @@ const useStyles = makeStyles((theme) => ({
     trow: {
       display: "block",
       width: "100%",
-      marginBottom: 20,
-      border: "1px solid grey",
+      "&:nth-child(even)": {
+        backgroundColor: "#eceff1",
+      },
     },
     tcell: {
+      overflowWrap: "break-word",
       display: "block",
       width: "100%",
       textAlign: "right",
@@ -254,7 +256,7 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
                             setError={setError}
                           />
                         ) : (
-                          ""
+                          "-"
                         )}
                       </TableCell>
                       <TableCell className={classes.tcell} data-label="Statut">
@@ -262,7 +264,7 @@ const TaskViewTask = ({ setError, setSuccess, task }) => {
                       </TableCell>
                       <TableCell
                         className={classes.tcell}
-                        data-label="Ddate de début"
+                        data-label="Date de début"
                       >
                         {moment(task.startDate).format("DD/MM/YY HH:MM")}
                       </TableCell>

@@ -37,6 +37,7 @@ import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { AppartToExcel } from "./export";
+import { TableSkeleton } from '../../components/Skeleton/TableSkeleton'
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -51,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       flexDirection: "column",
       textAlign: "center",
+      
     },
   },
   box: {
@@ -88,12 +90,14 @@ const useStyles = makeStyles((theme) => ({
     thead: { display: "none" },
     tbody: { display: "block", width: "100%" },
     trow: {
+      "&:nth-child(even)": {
+        backgroundColor: "#eceff1",
+      },
       display: "block",
       width: "100%",
-      marginBottom: 20,
-      border: "1px solid grey",
     },
     tcell: {
+      overflowWrap: "break-word",
       display: "block",
       width: "100%",
       textAlign: "right",
@@ -243,7 +247,7 @@ const Appart = () => {
         message="Vous avez des changements non enregitrés, êtes-vous sûr de vouloir quitter la page ?"
       />
       <Box className={classes.title}>
-        <Typography variant="h3">Les appartements</Typography>
+        <Typography variant="h3" style={{overflowWrap: "break-word"}}>Les appartements</Typography>
         {appart && <AppartToExcel dynamicSearch={dynamicSearch()} />}
       </Box>
 
@@ -531,7 +535,7 @@ const Appart = () => {
                       </TableRow>
                     ))
                 ) : (
-                  <LoadingScreen />
+                    <TableSkeleton count={9}/>
                 )}
               </Fragment>
             </TableBody>

@@ -21,12 +21,17 @@ export default {
     fontFamily: "'Lato', sans-serif",
     textTransform: "none",
   },
-  props: {},
-  /*   shape: {
+  /* 
+     shape: {
     borderRadius: 0,
   }, */
   /* overrides: {
   }, */
+  props: {
+    MuiButtonBase: {
+      disableRipple: true,
+    },
+  },
   overrides: {
     MuiTableCell: {
       stickyHeader: {
@@ -51,13 +56,7 @@ export default {
         boxShadow: "none",
       },
     },
-    MuiCssBaseline: {
-      "@global": {
-        body: {
-          backgroundColor: "#f4f6f8",
-        },
-      },
-    },
+
     MuiButton: {
       disableElevation: true,
       containedPrimary: {

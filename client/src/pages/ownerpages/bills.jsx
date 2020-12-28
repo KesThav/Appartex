@@ -35,6 +35,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import { BillToExcel } from "./export";
+import { TableSkeleton } from "../../components/Skeleton/TableSkeleton";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -116,14 +117,16 @@ const useStyles = makeStyles((theme) => ({
     trow: {
       display: "block",
       width: "100%",
-      marginBottom: 20,
-      border: "1px solid grey",
+      "&:nth-child(even)": {
+        backgroundColor: "#eceff1",
+      },
     },
     tcell: {
+      overflowWrap: "break-word",
       display: "block",
       width: "100%",
       textAlign: "right",
-      paddingLeft: "40%",
+      paddingLeft: "50%",
       position: "relative",
       "&::before": {
         content: "attr(data-label)",
@@ -416,7 +419,7 @@ const Bills = () => {
                           data-label="Référence"
                           className={classes.tcell}
                         >
-                          {bill.reference}
+                          {bill.reference ? bill.reference : "-"}
                         </TableCell>
                         <TableCell
                           data-label="Raison"
@@ -554,7 +557,7 @@ const Bills = () => {
                       </TableRow>
                     ))
                 ) : (
-                  <LoadingScreen />
+                  <TableSkeleton count={10} />
                 )}
               </Fragment>
             </TableBody>

@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   drawer: {
-    [theme.breakpoints.up("md")]: {
+    [theme.breakpoints.up("lg")]: {
       width: drawerWidth,
       flexShrink: 0,
       backgroundColor: "#eceff1",
@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   menuButton: {
     marginRight: theme.spacing(2),
-    [theme.breakpoints.up("md")]: {
+    [theme.breakpoints.up("lg")]: {
       display: "none",
     },
   },
@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
     backgroundColor: "#1A1A1D",
     color: "#ffff",
-    height: "100vh",
+    height: "100%",
     overflowX: "hidden",
   },
   content: {
@@ -254,7 +254,6 @@ const Layout = (props) => {
             <Chip
               avatar={
                 <Avatar>
-                  {" "}
                   {user &&
                     user.name.charAt(0).toUpperCase() +
                       user.lastname.charAt(0).toUpperCase()}
@@ -284,7 +283,7 @@ const Layout = (props) => {
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">
-        <Hidden smDown implementation="css">
+        <Hidden mdDown implementation="css">
           <Drawer
             container={container}
             variant="temporary"
@@ -315,7 +314,7 @@ const Layout = (props) => {
             {user && user.role == "Admin" ? ownerDrawer : tenantDrawer}
           </Drawer>
         </Hidden>
-        <Hidden smDown implementation="css">
+        <Hidden mdDown implementation="css">
           <Drawer
             classes={{
               paper: classes.drawerPaper,

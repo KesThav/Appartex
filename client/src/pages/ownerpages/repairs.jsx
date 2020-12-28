@@ -35,6 +35,7 @@ import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import TrendingDownIcon from "@material-ui/icons/TrendingDown";
 import { RepairToExcel } from "./export";
+import { TableSkeleton } from "../../components/Skeleton/TableSkeleton";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -79,6 +80,7 @@ const useStyles = makeStyles((theme) => ({
   },
   searchBar: {
     width: "30%",
+    marginRight: 10,
   },
   filter1: { width: "20%", marginRight: "20px" },
   [theme.breakpoints.down("sm")]: {
@@ -87,14 +89,16 @@ const useStyles = makeStyles((theme) => ({
     trow: {
       display: "block",
       width: "100%",
-      marginBottom: 20,
-      border: "1px solid grey",
+      "&:nth-child(even)": {
+        backgroundColor: "#eceff1",
+      },
     },
     tcell: {
+      overflowWrap: "break-word",
       display: "block",
       width: "100%",
       textAlign: "right",
-      paddingLeft: "40%",
+      paddingLeft: "50%",
       position: "relative",
       "&::before": {
         content: "attr(data-label)",
@@ -107,6 +111,7 @@ const useStyles = makeStyles((theme) => ({
     searchBar: {
       width: "100%",
       marginBottom: 10,
+      marginRight: 0,
     },
     header: {
       flexDirection: "column",
@@ -446,9 +451,7 @@ const Repair = () => {
                       </TableRow>
                     ))
                 ) : (
-                  <TableRow>
-                    <LoadingScreen />
-                  </TableRow>
+                  <TableSkeleton count={8} />
                 )}
               </Fragment>
             </TableBody>

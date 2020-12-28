@@ -28,6 +28,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import { arrayBufferToBase64 } from "../../components/arrayBufferToBase64";
 import { Link } from "react-router-dom";
 import KeyboardBackspaceIcon from "@material-ui/icons/KeyboardBackspace";
+import LoadingScreen from "../../components/LoadingScreen";
 
 const useStyles = makeStyles((theme) => ({
   flex: {
@@ -38,10 +39,11 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   paper: {
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("md")]: {
       width: "100%",
-      display: "flex",
       marginRight: 0,
+      flexWrap: "wrap",
+      display: "none",
     },
     width: "40%",
     display: "flex",
@@ -98,14 +100,16 @@ const useStyles = makeStyles((theme) => ({
     trow: {
       display: "block",
       width: "100%",
-      marginBottom: 20,
-      border: "1px solid grey",
+      "&:nth-child(even)": {
+        backgroundColor: "#eceff1",
+      },
     },
     tcell: {
+      overflowWrap: "break-word",
       display: "block",
       width: "100%",
       textAlign: "right",
-      paddingLeft: "40%",
+      paddingLeft: "50%",
       position: "relative",
       "&::before": {
         content: "attr(data-label)",
@@ -120,7 +124,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Tenantboard = (props) => {
   const classes = useStyles();
-  const { authAxios, setLoading, user } = useContext(UserContext);
+  const { authAxios, setLoading, user, loading } = useContext(UserContext);
   const [bills, setBills] = useState("");
   const [contract, setContracts] = useState("");
   const [task, setTasks] = useState("");
@@ -304,6 +308,7 @@ const Tenantboard = (props) => {
 
   return (
     <Fragment>
+      {loading && <LoadingScreen />}
       <Container className={classes.container}>
         {user.role == "Admin" && (
           <Button
@@ -324,6 +329,7 @@ const Tenantboard = (props) => {
             <Avatar className={classes.avatar}>
               <PersonIcon style={{ fontSize: 85 }} />
             </Avatar>
+
             <Typography variant="h3">
               {name && lastname && name + " " + lastname}
             </Typography>
@@ -463,14 +469,16 @@ const Tenantboard = (props) => {
                                 data-label="Documents"
                                 className={classes.tcell}
                               >
-                                {data.file.map((doc) => (
-                                  <Fragment>
-                                    <a href={doc.data} download={doc.name}>
-                                      {doc.name}
-                                    </a>
-                                    <br />
-                                  </Fragment>
-                                ))}
+                                {data.file.length > 0
+                                  ? data.file.map((doc) => (
+                                      <Fragment>
+                                        <a href={doc.data} download={doc.name}>
+                                          {doc.name}
+                                        </a>
+                                        <br />
+                                      </Fragment>
+                                    ))
+                                  : "-"}
                               </TableCell>
                             </TableRow>
                           ))}
@@ -546,14 +554,16 @@ const Tenantboard = (props) => {
                                 data-label="Documents"
                                 className={classes.tcell}
                               >
-                                {data.file.map((doc) => (
-                                  <Fragment>
-                                    <a href={doc.data} download={doc.name}>
-                                      {doc.name}
-                                    </a>
-                                    <br />
-                                  </Fragment>
-                                ))}
+                                {data.file.length > 0
+                                  ? data.file.map((doc) => (
+                                      <Fragment>
+                                        <a href={doc.data} download={doc.name}>
+                                          {doc.name}
+                                        </a>
+                                        <br />
+                                      </Fragment>
+                                    ))
+                                  : "-"}
                               </TableCell>
                             </TableRow>
                           ))}

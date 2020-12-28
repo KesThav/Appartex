@@ -1,5 +1,7 @@
 import React, { Fragment } from "react";
 import { Paper, Box, Typography, makeStyles, Hidden } from "@material-ui/core";
+import { Link } from "react-router-dom";
+import Skeleton from "@material-ui/lab/Skeleton";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -23,25 +25,36 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
   },
+  link: {
+    textDecoration: "none",
+  },
 }));
 
-const Badges = ({ icon, value, style, name }) => {
+const Badges = ({ icon, value, style, name, link }) => {
   const classes = useStyles();
   return (
     <Fragment>
-      <Paper className={classes.paper} square>
-        <Box className={classes.Box}>
-          <Typography variant="h4">{value}</Typography>
-          <Typography variant="subtitle1" color="textSecondary">
-            {name}
-          </Typography>
-        </Box>
-        <Hidden xsDown>
-          <Box className={classes.iconBox} style={style}>
-            {icon}
+      <Link to={link} className={classes.link}>
+        <Paper className={classes.paper} square>
+          <Box className={classes.Box}>
+            <Typography variant="h4">
+              {value ? (
+                value
+              ) : (
+                <Skeleton variant="circle" width={40} height={40} />
+              )}
+            </Typography>
+            <Typography variant="subtitle1" color="textSecondary">
+              {value ? name : <Skeleton width={"100%"} />}
+            </Typography>
           </Box>
-        </Hidden>
-      </Paper>
+          <Hidden xsDown>
+            <Box className={classes.iconBox} style={style}>
+              {icon}
+            </Box>
+          </Hidden>
+        </Paper>
+      </Link>
     </Fragment>
   );
 };

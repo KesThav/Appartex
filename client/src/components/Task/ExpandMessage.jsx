@@ -4,9 +4,6 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Typography,
   makeStyles,
   Card,
@@ -17,11 +14,14 @@ import {
   Divider,
   IconButton,
   Tooltip,
+  Collapse,
+  CardActions,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { UserContext } from "../../middlewares/ContextAPI";
 import LoadingScreen from "../LoadingScreen";
 import moment from "moment";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,8 +46,12 @@ const ExpandMessage = ({ id, setError }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const { authAxios } = useContext(UserContext);
-  const [expanded, setExpanded] = useState(false);
+  const { authAxios, loading } = useContext(UserContext);
+  const [expanded, setExpanded] = useState("");
+
+  const handleExpandClick = (id) => {
+    expanded == id ? setExpanded("") : setExpanded(id);
+  };
 
   const getOneMessage = async (id) => {
     try {
@@ -85,85 +89,87 @@ const ExpandMessage = ({ id, setError }) => {
         <DialogTitle>Message</DialogTitle>
         <DialogContent>
           {message && (
-            <Accordion
-              key={message._id}
-              expanded={expanded === message._id}
-              className={classes.accordion}
-            >
-              <AccordionSummary
-                onClick={() =>
-                  setExpanded(expanded == message._id ? false : message._id)
-                }
-                component={"span"}
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1bh-content"
-                id="panel1bh-header"
-                className={classes.accordion}
-              >
-                <Card className={classes.root}>
-                  <CardHeader
-                    avatar={<Avatar className={classes.avatar} />}
-                    title={`${
-                      message.createdBy
-                        ? message.createdBy.name +
-                          " " +
-                          message.createdBy.lastname
-                        : "Compte supprimé"
-                    }  -> ${message.sendedTo.map((data) =>
-                      data ? data.name + " " + data.lastname : "Compte supprimé"
-                    )} `}
-                    subheader={moment(message.createdAt).format("YYYY-MM-DD")}
-                    action={<Chip label={message.status} color="primary" />}
-                  />
-                  <CardContent>
-                    <Typography variant="h6" color="textPrimary" component="p">
-                      {message.title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="textPrimary"
-                      component="p"
+            <>
+              <Card className={classes.root}>
+                <CardHeader
+                  avatar={<Avatar className={classes.avatar} />}
+                  title={`${
+                    message.createdBy
+                      ? message.createdBy.name +
+                        " " +
+                        message.createdBy.lastname
+                      : "Compte supprimé"
+                  }  -> ${message.sendedTo.map((data) =>
+                    data ? data.name + " " + data.lastname : "Compte supprimé"
+                  )} `}
+                  subheader={moment(message.createdAt).format("YYYY-MM-DD")}
+                  action={<Chip label={message.status} color="primary" />}
+                />
+                <CardContent>
+                  <Typography variant="h6" color="textPrimary" component="p">
+                    {message.title}
+                  </Typography>
+                  <Typography variant="body2" color="textPrimary" component="p">
+                    {message.content}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Tooltip title="Afficher les messages">
+                    <IconButton
+                      className={clsx(classes.expand, {
+                        [classes.expandOpen]: expanded == message._id,
+                      })}
+                      onClick={() => handleExpandClick(message._id)}
+                      aria-expanded={expanded}
+                      aria-label="show more"
                     >
-                      {message.content}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </AccordionSummary>
-              <AccordionDetails>
-                <div className={classes.root}>
-                  {message.comments.map((data) => (
-                    <Fragment key={data._id}>
-                      <Divider />
-                      <Card className={classes.root2}>
-                        <CardHeader
-                          avatar={
-                            <Avatar
-                              aria-label="recipe"
-                              className={classes.avatar}
-                            ></Avatar>
-                          }
-                          title={
-                            data.createdBy.name + " " + data.createdBy.lastname
-                          }
-                          subheader={moment(data.createdAt).format(
-                            "YYYY-MM-DD"
-                          )}
-                        />
-                        <CardContent>
-                          <Typography
-                            variant="body2"
-                            color="textPrimary"
-                            component="p"
-                          >
-                            {data.content}
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    </Fragment>
-                  ))}
-                </div>
-              </AccordionDetails>
-            </Accordion>
+                      <ExpandMoreIcon />
+                    </IconButton>
+                  </Tooltip>
+                </CardActions>
+
+                <Collapse
+                  in={expanded == message._id}
+                  timeout="auto"
+                  unmountOnExit
+                >
+                  <div className={classes.root}>
+                    {message.comments.map((data) => (
+                      <Fragment key={data._id}>
+                        <Divider />
+                        <Card className={classes.root2}>
+                          <CardHeader
+                            avatar={
+                              <Avatar
+                                aria-label="recipe"
+                                className={classes.avatar}
+                              ></Avatar>
+                            }
+                            title={
+                              data.createdBy.name +
+                              " " +
+                              data.createdBy.lastname
+                            }
+                            subheader={moment(data.createdAt).format(
+                              "YYYY-MM-DD"
+                            )}
+                          />
+                          <CardContent>
+                            <Typography
+                              variant="body2"
+                              color="textPrimary"
+                              component="p"
+                            >
+                              {data.content}
+                            </Typography>
+                          </CardContent>
+                        </Card>
+                      </Fragment>
+                    ))}
+                  </div>
+                </Collapse>
+              </Card>
+            </>
           )}
         </DialogContent>
         <Button onClick={() => setOpen(!open)}>Retour</Button>

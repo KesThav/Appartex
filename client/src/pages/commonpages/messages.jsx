@@ -48,6 +48,7 @@ function a11yProps(index) {
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    backgroundColor: "transparent",
     display: "flex",
     height: 224,
     [theme.breakpoints.down("sm")]: {
@@ -56,10 +57,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   tabs: {
-    [theme.breakpoints.down("sm")]: {
-      orientation: "horizontal",
-      borderRight: "none",
-    },
     borderRight: `1px solid ${theme.palette.divider}`,
   },
   width: {
@@ -73,8 +70,7 @@ const useStyles = makeStyles((theme) => ({
 const Drawer = (props) => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [screenWidth, setScreenWidth] = useState(0);
-  const { user, authAxios, count } = useContext(UserContext);
+  const { user, authAxios, count, setLoading } = useContext(UserContext);
   const [receivedmessage, setReceivedMessage] = useState("");
   const [sendedmessage, setSendedMessage] = useState("");
   const [archivedmessage, setArchivedMessage] = useState("");
@@ -84,13 +80,16 @@ const Drawer = (props) => {
 
   const getMessages = async () => {
     try {
+      setLoading(true);
       const received = await authAxios.get("/messages/received");
       setReceivedMessage(received.data);
       const send = await authAxios.get("/messages/sended");
       setSendedMessage(send.data);
       const archived = await authAxios.get("/messages/archived");
       setArchivedMessage(archived.data);
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
       setError(err.response.data);
     }
   };
@@ -155,7 +154,6 @@ const Drawer = (props) => {
             variant="scrollable"
             value={value}
             onChange={handleChange}
-            aria-label="Vertical tabs example"
             className={classes.tabs}
           >
             <Tab label="Messages envoyés" {...a11yProps(0)} />
@@ -173,7 +171,6 @@ const Drawer = (props) => {
             variant="scrollable"
             value={value}
             onChange={handleChange}
-            aria-label="Vertical tabs example"
             className={classes.tabs}
           >
             <Tab label="Messages envoyés" {...a11yProps(0)} />

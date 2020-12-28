@@ -30,6 +30,7 @@ import ArchiveContract from "../../components/Contract/ArchiveContract";
 import { Prompt } from "react-router-dom";
 import ContractDoc from "../../components/Contract/ContractDoc";
 import { ContractToExcel } from "./export";
+import { TableSkeleton } from "../../components/Skeleton/TableSkeleton";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -86,14 +87,16 @@ const useStyles = makeStyles((theme) => ({
     trow: {
       display: "block",
       width: "100%",
-      marginBottom: 20,
-      border: "1px solid grey",
+      "&:nth-child(even)": {
+        backgroundColor: "#eceff1",
+      },
     },
     tcell: {
+      overflowWrap: "break-word",
       display: "block",
       width: "100%",
       textAlign: "right",
-      paddingLeft: "40%",
+      paddingLeft: "50%",
       position: "relative",
       "&::before": {
         content: "attr(data-label)",
@@ -372,8 +375,10 @@ const Contract = () => {
                               onChange={(e) => setOther(e.target.value)}
                               placeholder="Autres"
                             />
-                          ) : (
+                          ) : contract.other ? (
                             contract.other
+                          ) : (
+                            "-"
                           )}
                         </TableCell>
                         <TableCell
@@ -452,7 +457,7 @@ const Contract = () => {
                       </TableRow>
                     ))
                 ) : (
-                  <LoadingScreen />
+                  <TableSkeleton count={10} />
                 )}
               </Fragment>
             </TableBody>

@@ -93,87 +93,77 @@ const AdminDashboard = (props) => {
           <Typography variant="h3">Adminboard</Typography>
         </Grid>
         <Grid item lg={2} md={12} sm={12} xs={12}>
-          {tenant && (
-            <Badges
-              icon={<PeopleIcon className={classes.icons} />}
-              value={tenant.length}
-              style={{ background: "#ff6f00" }}
-              name={"Locataires"}
-            />
-          )}
+          <Badges
+            icon={<PeopleIcon className={classes.icons} />}
+            value={tenant.length}
+            style={{ background: "#ff6f00" }}
+            name={"Locataires"}
+            link={"/tenants"}
+          />
         </Grid>
         <Grid item lg={2} md={12} sm={12} xs={12}>
-          {building && (
-            <Badges
-              icon={<BusinessIcon className={classes.icons} />}
-              value={building.length}
-              style={{ background: "#9c27b0" }}
-              name={"Immeubles"}
-            />
-          )}
-        </Grid>{" "}
-        <Grid item lg={2} md={12} sm={12} xs={12}>
-          {appart && (
-            <Badges
-              icon={<HomeIcon className={classes.icons} />}
-              value={appart.length}
-              style={{ background: "#007bb2" }}
-              name={"Appartements"}
-            />
-          )}
+          <Badges
+            icon={<BusinessIcon className={classes.icons} />}
+            value={building.length}
+            style={{ background: "#9c27b0" }}
+            name={"Immeubles"}
+            link={"/buildings"}
+          />
         </Grid>
         <Grid item lg={2} md={12} sm={12} xs={12}>
-          {contract && (
-            <Badges
-              icon={<FolderIcon className={classes.icons} />}
-              value={contract.length}
-              style={{ background: "#e91e63" }}
-              name={"Contrats"}
-            />
-          )}
+          <Badges
+            icon={<HomeIcon className={classes.icons} />}
+            value={appart.length}
+            style={{ background: "#007bb2" }}
+            name={"Appartements"}
+            link={"/appartments"}
+          />
         </Grid>
         <Grid item lg={2} md={12} sm={12} xs={12}>
-          {bill && (
-            <Badges
-              icon={<ReceiptIcon className={classes.icons} />}
-              value={bill.length}
-              style={{ background: "#00a152" }}
-              name={"Factures"}
-            />
-          )}
+          <Badges
+            icon={<FolderIcon className={classes.icons} />}
+            value={contract.length}
+            style={{ background: "#e91e63" }}
+            name={"Contrats"}
+            link={"/contracts"}
+          />
         </Grid>
         <Grid item lg={2} md={12} sm={12} xs={12}>
-          {repair && (
-            <Badges
-              icon={<TimelineIcon className={classes.icons} />}
-              value={repair.length}
-              style={{ background: "#482880" }}
-              name={"Réparations"}
-            />
-          )}
+          <Badges
+            icon={<ReceiptIcon className={classes.icons} />}
+            value={bill.length}
+            style={{ background: "#00a152" }}
+            name={"Factures"}
+            link={"/bills"}
+          />
+        </Grid>
+        <Grid item lg={2} md={12} sm={12} xs={12}>
+          <Badges
+            icon={<TimelineIcon className={classes.icons} />}
+            value={repair.length}
+            style={{ background: "#482880" }}
+            name={"Réparations"}
+            link={"/repairs"}
+          />
         </Grid>
         <Hidden smDown>
           <Grid item lg={6} md={12}>
-            {bill && (
-              <MyTable
-                data={bill}
-                title={"Dernières factures"}
-                link={"/bills"}
-                header={["Locataire", "Date", "Statut"]}
-                text={"Voir toutes les factures"}
-              />
-            )}
+            <MyTable
+              data={bill}
+              title={"Dernières factures"}
+              link={"/bills"}
+              header={["Locataire", "Date", "Statut"]}
+              text={"Voir toutes les factures"}
+            />
           </Grid>
           <Grid item lg={6} md={12}>
-            {contract && (
-              <MyTable
-                data={contract}
-                title={"Derniers Contrats"}
-                link={"/contracts"}
-                header={["Locataire", "Date", "Statut"]}
-                text={"Voir tous les contrats"}
-              />
-            )}
+            <MyTable
+              data={contract}
+              title={"Derniers Contrats"}
+              link={"/contracts"}
+              header={["Locataire", "Date", "Statut"]}
+              text={"Voir tous les contrats"}
+            />
           </Grid>
         </Hidden>
         <Grid item lg={12} md={12} sm={12} xs={12}>

@@ -25,12 +25,12 @@ function NotFound() {
       <Box className={classes.grid}>
         <Hidden smDown>
           <Typography variant="h1" className={classes.typography}>
-            ApparteX
+            Appartex
           </Typography>
         </Hidden>
         <Hidden only={["lg", "md", "xl"]}>
           <Typography variant="h2" className={classes.typography}>
-            ApparteX
+            Appartex
           </Typography>
         </Hidden>
         <Typography variant="h3" className={classes.typography}>

@@ -28,6 +28,7 @@ import DeleteBuilding from "../../components/Building/DeleteBuilding";
 import BuildingTenants from "../../components/Building/BuildingTenants";
 import { Prompt } from "react-router-dom";
 import { BuildingToExcel } from "./export";
+import { TableSkeleton } from '../../components/Skeleton/TableSkeleton'
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -75,12 +76,14 @@ const useStyles = makeStyles((theme) => ({
     thead: { display: "none" },
     tbody: { display: "block", width: "100%" },
     trow: {
+      "&:nth-child(even)": {
+        backgroundColor: "#eceff1",
+      },
       display: "block",
       width: "100%",
-      marginBottom: 20,
-      border: "1px solid grey",
     },
     tcell: {
+      overflowWrap: "break-word",
       display: "block",
       width: "100%",
       textAlign: "right",
@@ -342,9 +345,7 @@ const Building = (props) => {
                     </TableRow>
                   ))
               ) : (
-                <TableRow className={classes.trow}>
-                  <LoadingScreen />
-                </TableRow>
+                  <TableSkeleton count={8}/>
               )}
             </TableBody>
           </Table>

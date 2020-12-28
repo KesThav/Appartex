@@ -26,6 +26,7 @@ import LoadingScreen from "../../components/LoadingScreen";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import { Prompt } from "react-router-dom";
+import { TableSkeleton } from "../../components/Skeleton/TableSkeleton";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -72,10 +73,12 @@ const useStyles = makeStyles((theme) => ({
     trow: {
       display: "block",
       width: "100%",
-      marginBottom: 20,
-      border: "1px solid grey",
+      "&:nth-child(even)": {
+        backgroundColor: "#eceff1",
+      },
     },
     tcell: {
+      overflowWrap: "break-word",
       display: "block",
       width: "100%",
       textAlign: "right",
@@ -290,7 +293,7 @@ const Status = () => {
                       </TableRow>
                     ))
                 ) : (
-                  <LoadingScreen />
+                  <TableSkeleton count={4} />
                 )}
               </Fragment>
             </TableBody>

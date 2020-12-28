@@ -31,6 +31,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import DeleteTenant from "../../components/Tenant/DeleteTenant";
 import { Prompt } from "react-router-dom";
 import { TenantToExcel } from "./export";
+import { TableSkeleton } from "../../components/Skeleton/TableSkeleton";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -81,10 +82,12 @@ const useStyles = makeStyles((theme) => ({
     trow: {
       display: "block",
       width: "100%",
-      marginBottom: 20,
-      border: "1px solid grey",
+      "&:nth-child(even)": {
+        backgroundColor: "#eceff1",
+      },
     },
     tcell: {
+      overflowWrap: "break-word",
       display: "block",
       width: "100%",
       textAlign: "right",
@@ -456,7 +459,7 @@ const Tenant = () => {
                       </TableRow>
                     ))
                 ) : (
-                  <LoadingScreen />
+                  <TableSkeleton count={8} />
                 )}
               </Fragment>
             </TableBody>

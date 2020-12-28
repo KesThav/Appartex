@@ -1,8 +1,5 @@
-import React, { useState, useContext, useEffect, Fragment } from "react";
+import React, { useState, useContext, Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { UserContext } from "../../middlewares/ContextAPI";
@@ -23,11 +20,15 @@ import Chip from "@material-ui/core/Chip";
 import LoadingScreen from "../LoadingScreen";
 import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineOutlined";
 import { ButtonGroup } from "@material-ui/core";
+import { Collapse, IconButton, Box } from "@material-ui/core";
+import clsx from "clsx";
+import { MessageSkeleton } from "../Skeleton/MessageSkeleton";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     boxShadow: "none",
     width: "100%",
+    marginBottom: 20,
   },
   root2: {
     width: "100%",
@@ -40,87 +41,79 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     paddingBottom: 0,
   },
+  expandOpen: {
+    transform: "rotate(180deg)",
+  },
 }));
 
 const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
   const classes = useStyles();
   const { user, loading } = useContext(UserContext);
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState("");
+
+  const handleExpandClick = (id) => {
+    expanded == id ? setExpanded("") : setExpanded(id);
+  };
 
   return (
     <div className={classes.root}>
       {!loading ? (
         message.length > 0 &&
         message.map((data) => (
-          <Accordion
-            key={data._id}
-            expanded={expanded === data._id}
-            className={classes.accordion}
-          >
-            <AccordionSummary
-              component={"span"}
-              expandIcon={
-                <ExpandMoreIcon
-                  onClick={() =>
-                    setExpanded(expanded == data._id ? false : data._id)
-                  }
-                />
-              }
-              aria-controls="panel1bh-content"
-              id="panel1bh-header"
-              className={classes.accordion}
+          <Card className={classes.root} variant="outlined">
+            <CardHeader
+              avatar={<Avatar className={classes.avatar} />}
+              title={`${
+                data.createdBy
+                  ? data.createdBy.name + " " + data.createdBy.lastname
+                  : "Compte supprimé"
+              }  -> ${data.sendedTo.map((data) =>
+                data ? data.name + " " + data.lastname : "Compte supprimé"
+              )} `}
+              subheader={moment(data.createdAt).fromNow()}
+              action={<Chip label={data.status} color="primary" />}
+            />
+            <CardContent>
+              <Typography variant="h6" color="textPrimary" component="p">
+                {data.title}
+              </Typography>
+              <Typography variant="body2" color="textPrimary" component="p">
+                {data.content}
+              </Typography>
+            </CardContent>
+            <CardActions
+              disableSpacing
+              style={{ display: "flex", alignContent: "space-between" }}
             >
-              <Card className={classes.root}>
-                <CardHeader
-                  avatar={<Avatar className={classes.avatar} />}
-                  title={`${
-                    data.createdBy
-                      ? data.createdBy.name + " " + data.createdBy.lastname
-                      : "Compte supprimé"
-                  }  -> ${data.sendedTo.map((data) =>
-                    data ? data.name + " " + data.lastname : "Compte supprimé"
-                  )} `}
-                  subheader={moment(data.createdAt).fromNow()}
-                  action={<Chip label={data.status} color="primary" />}
-                />
-                <CardContent>
-                  <Typography variant="h6" color="textPrimary" component="p">
-                    {data.title}
-                  </Typography>
-                  <Typography variant="body2" color="textPrimary" component="p">
-                    {data.content}
-                  </Typography>
-                </CardContent>
-                <CardActions disableSpacing>
-                  {data.comments.length}
-                  <ChatBubbleOutlineOutlinedIcon />
-                  {user &&
-                    user.role == "Admin" &&
-                    (data.status !== "Archivé" ? (
-                      <Fragment>
-                        <ButtonGroup>
-                          <ArchiveMessage
-                            getMessages={getMessages}
-                            id={data._id}
-                            setError={setError}
-                            setSuccess={setSuccess}
-                          />
-                          <DeleteMessage
-                            getMessages={getMessages}
-                            id={data._id}
-                            setError={setError}
-                            setSuccess={setSuccess}
-                          />
-                          <EditMessageStatus
-                            getMessages={getMessages}
-                            id={data._id}
-                            statustype={data.status}
-                          />
-                          <AddTask id={data._id} setSuccess={setSuccess} />
-                        </ButtonGroup>
-                      </Fragment>
-                    ) : (
-                      <Fragment>
+              <Box style={{ width: "100%" }}>
+                {user &&
+                  user.role == "Admin" &&
+                  (data.status !== "Archivé" ? (
+                    <Fragment>
+                      <ButtonGroup>
+                        <ArchiveMessage
+                          getMessages={getMessages}
+                          id={data._id}
+                          setError={setError}
+                          setSuccess={setSuccess}
+                        />
+                        <DeleteMessage
+                          getMessages={getMessages}
+                          id={data._id}
+                          setError={setError}
+                          setSuccess={setSuccess}
+                        />
+                        <EditMessageStatus
+                          getMessages={getMessages}
+                          id={data._id}
+                          statustype={data.status}
+                        />
+                        <AddTask id={data._id} setSuccess={setSuccess} />
+                      </ButtonGroup>
+                    </Fragment>
+                  ) : (
+                    <Fragment>
+                      <ButtonGroup>
                         <UnArchiveMessage
                           getMessages={getMessages}
                           id={data._id}
@@ -133,29 +126,41 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
                           setError={setError}
                           setSuccess={setSuccess}
                         />
-                      </Fragment>
-                    ))}
-                </CardActions>
-                <CardActions>
-                  {user && data.status !== "Archivé" && (
-                    <div className={classes.root}>
-                      <Divider />
-                      <AddComments
-                        getMessages={getMessages}
-                        id={data._id}
-                        setError={setError}
-                        setSuccess={setSuccess}
-                      />
-                    </div>
-                  )}
-                </CardActions>
-              </Card>
-            </AccordionSummary>
-            <AccordionDetails>
+                      </ButtonGroup>
+                    </Fragment>
+                  ))}
+              </Box>
+              {data.comments.length}
+              <ChatBubbleOutlineOutlinedIcon />
+              <IconButton
+                className={clsx(classes.expand, {
+                  [classes.expandOpen]: expanded == data._id,
+                })}
+                onClick={() => handleExpandClick(data._id)}
+                aria-expanded={expanded}
+                aria-label="show more"
+              >
+                <ExpandMoreIcon />
+              </IconButton>
+            </CardActions>
+            <CardActions>
+              {user && data.status !== "Archivé" && (
+                <div className={classes.root}>
+                  <Divider variant="middle" style={{ marginBottom: "10px" }} />
+                  <AddComments
+                    getMessages={getMessages}
+                    id={data._id}
+                    setError={setError}
+                    setSuccess={setSuccess}
+                  />
+                </div>
+              )}
+            </CardActions>
+            <Collapse in={expanded == data._id} timeout="auto" unmountOnExit>
               <div className={classes.root}>
                 {data.comments.map((data) => (
                   <Fragment key={data._id}>
-                    <Divider />
+                    <Divider variant="middle" />
                     <Card className={classes.root2}>
                       <CardHeader
                         avatar={
@@ -186,11 +191,15 @@ const ShowMessages = ({ message, getMessages, setError, setSuccess }) => {
                   </Fragment>
                 ))}
               </div>
-            </AccordionDetails>
-          </Accordion>
+            </Collapse>
+          </Card>
         ))
       ) : (
-        <LoadingScreen />
+        <Fragment>
+          <MessageSkeleton />
+          <MessageSkeleton />
+          <MessageSkeleton />
+        </Fragment>
       )}
     </div>
   );

@@ -12,7 +12,9 @@ import {
   Paper,
   makeStyles,
 } from "@material-ui/core";
+import Skeleton from "@material-ui/lab/Skeleton";
 import moment from "moment";
+import { TableSkeleton } from "./Skeleton/TableSkeleton";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -43,36 +45,42 @@ const MyTable = ({ data, title, link, header, text }) => {
       <Paper className={classes.paper}>
         <Box className={classes.box}>
           <Typography variant="h6" color="primary">
-            {title}
+            {data ? title : <Skeleton width={"50%"} />}
           </Typography>
         </Box>
         <TableContainer component={Paper} square className={classes.table}>
-          <Table style={{ tableLayout: "fixed" }}>
+          <Table>
             <TableHead>
               <TableRow>
                 {header.map((header, index) => (
-                  <TableCell key={index}>{header}</TableCell>
+                  <TableCell key={index}>
+                    <strong>{header}</strong>
+                  </TableCell>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.slice(0, 5).map((data) => (
-                <TableRow key={data._id}>
-                  <TableCell component="th" scope="row">
-                    {data.tenant.name
-                      ? `${data.tenant.name} ${data.tenant.lastname}`
-                      : data.tenant}
-                  </TableCell>
-                  <TableCell>
-                    {moment(data.updatedAt).format("DD/MM/YY")}
-                  </TableCell>
-                  <TableCell>
-                    {typeof data.status == "string"
-                      ? data.status
-                      : data.status.name}
-                  </TableCell>
-                </TableRow>
-              ))}
+              {data ? (
+                data.slice(0, 5).map((data) => (
+                  <TableRow key={data._id}>
+                    <TableCell component="th" scope="row">
+                      {data.tenant.name
+                        ? `${data.tenant.name} ${data.tenant.lastname}`
+                        : data.tenant}
+                    </TableCell>
+                    <TableCell>
+                      {moment(data.updatedAt).format("DD/MM/YY")}
+                    </TableCell>
+                    <TableCell>
+                      {typeof data.status == "string"
+                        ? data.status
+                        : data.status.name}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableSkeleton count={3} />
+              )}
             </TableBody>
           </Table>
         </TableContainer>
