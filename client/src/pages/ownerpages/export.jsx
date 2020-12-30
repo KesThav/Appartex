@@ -200,7 +200,8 @@ export const BillHistoryToExcel = ({ billHistory }) => {
       _id: data._id,
       billid: data.billid._id,
       status: data.status.name,
-      endDate: moment(data.billid.endDate).format("DD/MM/YYYY"),
+      tenant: `${data.billid.tenant.name} ${data.billid.tenant.lastname}`,
+      endDate: moment(data.endDate).format("DD/MM/YYYY"),
       createdAt: moment(data.createdAt).format("DD/MM/YYYY"),
     };
   });
@@ -216,6 +217,7 @@ export const BillHistoryToExcel = ({ billHistory }) => {
       <ExcelSheet data={data} name="Factures_historique">
         <ExcelColumn label="N°" value="_id" />
         <ExcelColumn label="Facture n°" value="billid" />
+        <ExcelColumn label="Locataire" value="tenant" />
         <ExcelColumn label="Statut" value="status" />
         <ExcelColumn label="Echeance" value="endDate" />
         <ExcelColumn label="Créé le" value="createdAt" />

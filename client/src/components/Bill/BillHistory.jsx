@@ -23,13 +23,39 @@ import { arrayBufferToBase64 } from "../arrayBufferToBase64";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   box: {
     display: "flex",
     flexDirection: "row-reverse",
     marginRight: 10,
   },
-});
+  [theme.breakpoints.down("sm")]: {
+    thead: { display: "none" },
+    tbody: { display: "block", width: "100%" },
+    trow: {
+      "&:nth-child(even)": {
+        backgroundColor: "#eceff1",
+      },
+      display: "block",
+      width: "100%",
+    },
+    tcell: {
+      overflowWrap: "break-word",
+      display: "block",
+      width: "100%",
+      textAlign: "right",
+      paddingLeft: "50%",
+      position: "relative",
+      "&::before": {
+        content: "attr(data-label)",
+        position: "absolute",
+        left: 5,
+        justifyContent: "center",
+        fontWeight: "bold",
+      },
+    },
+  },
+}));
 
 const BillHistory = ({ data, setError }) => {
   const [open, setOpen] = useState(false);
@@ -101,24 +127,24 @@ const BillHistory = ({ data, setError }) => {
         <DialogContent>
           {billhistory && <BillHistoryToExcel billHistory={billhistory} />}
           <Table>
-            <TableHead>
+            <TableHead className={classes.thead}>
               <TableRow>
                 <TableCell>Date</TableCell>
                 <TableCell>Statut</TableCell>
-                <TableCell>date de fin</TableCell>
+                <TableCell>Echeance</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody className={classes.tbody}>
               {billhistory &&
                 billhistory.map((bh) => (
-                  <TableRow key={bh._id}>
-                    <TableCell>
+                  <TableRow key={bh._id} className={classes.trow}>
+                    <TableCell className={classes.tcell} data-label="Date">
                       {moment(bh.createdAt).format("DD/MM/YY")}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className={classes.tcell} data-label="Statut">
                       {bh.status ? bh.status.name : "état supprimé"}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className={classes.tcell} data-label="Echeance">
                       {bh.endDate ? moment(bh.endDate).format("DD/MM/YY") : "-"}
                     </TableCell>
                   </TableRow>

@@ -16,6 +16,7 @@ import moment from "moment";
 import { UserContext } from "../../middlewares/ContextAPI";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
+import Alert from "@material-ui/lab/Alert";
 
 const useStyle = makeStyles({
   table: {
@@ -34,7 +35,8 @@ const useStyle = makeStyles({
   },
 });
 
-const EditTaks = ({ appointmentData, setSuccess, setError }) => {
+const EditTaks = ({ appointmentData, setSuccess }) => {
+  const [err, setError] = useState("");
   const [open, setOpen] = useState(false);
   const classes = useStyle();
   const [statusid, setStatusid] = useState(appointmentData.status._id);
@@ -106,6 +108,9 @@ const EditTaks = ({ appointmentData, setSuccess, setError }) => {
         fullScreen={fullScreen}
       >
         <DialogTitle>Editer une tâche</DialogTitle>
+        <div style={{ marginBottom: "10px" }}>
+          {err && <Alert severity="error">{err}</Alert>}
+        </div>
         <DialogContent>
           <form onSubmit={submit} autoComplete="off">
             <TextField

@@ -13,7 +13,7 @@ import {
   IconButton,
 } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
-import HistoryIcon from "@material-ui/icons/History";
+import FolderIcon from "@material-ui/icons/Folder";
 import { arrayBufferToBase64 } from "../arrayBufferToBase64";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
@@ -68,7 +68,7 @@ const ContractDoc = ({ data, setError }) => {
             setOpen(!open);
           }}
         >
-          <HistoryIcon />
+          <FolderIcon />
         </IconButton>
       </Tooltip>
 

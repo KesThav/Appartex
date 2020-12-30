@@ -23,13 +23,39 @@ import { arrayBufferToBase64 } from "../arrayBufferToBase64";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   box: {
     display: "flex",
     flexDirection: "row-reverse",
     marginRight: 10,
   },
-});
+  [theme.breakpoints.down("sm")]: {
+    thead: { display: "none" },
+    tbody: { display: "block", width: "100%" },
+    trow: {
+      "&:nth-child(even)": {
+        backgroundColor: "#eceff1",
+      },
+      display: "block",
+      width: "100%",
+    },
+    tcell: {
+      overflowWrap: "break-word",
+      display: "block",
+      width: "100%",
+      textAlign: "right",
+      paddingLeft: "50%",
+      position: "relative",
+      "&::before": {
+        content: "attr(data-label)",
+        position: "absolute",
+        left: 5,
+        justifyContent: "center",
+        fontWeight: "bold",
+      },
+    },
+  },
+}));
 
 const RepairHistory = ({ data, setError }) => {
   const [open, setOpen] = useState(false);
@@ -101,20 +127,20 @@ const RepairHistory = ({ data, setError }) => {
             <RepairHistoryToExcel repairHistory={repairhistory} />
           )}
           <Table>
-            <TableHead>
+            <TableHead className={classes.thead}>
               <TableRow>
                 <TableCell>Date</TableCell>
                 <TableCell>Statut</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody className={classes.tbody}>
               {repairhistory &&
                 repairhistory.map((rp) => (
-                  <TableRow key={rp._id}>
-                    <TableCell>
+                  <TableRow key={rp._id} className={classes.trow}>
+                    <TableCell className={classes.tcell} data-label="Date">
                       {moment(rp.createdAt).format("DD/MM/YY")}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className={classes.tcell} data-label="Statut">
                       {rp.status ? rp.status.name : "état supprimé"}
                     </TableCell>
                   </TableRow>
