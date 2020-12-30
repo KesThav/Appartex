@@ -15,6 +15,8 @@ import EmailIcon from "@material-ui/icons/Email";
 import LockIcon from "@material-ui/icons/Lock";
 import Alert from "@material-ui/lab/Alert";
 import moment from "moment";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -44,6 +46,8 @@ const AddTenant = ({ setSuccess }) => {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [dateofbirth, setDate] = useState();
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const submit = async (e) => {
     e.preventDefault();
@@ -101,7 +105,12 @@ const AddTenant = ({ setSuccess }) => {
         </Button>
       </Box>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        disableBackdropClick
+        fullScreen={fullScreen}
+      >
         <DialogTitle>{"Créer un locataire"}</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>

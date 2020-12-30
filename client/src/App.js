@@ -130,6 +130,7 @@ const App = () => {
           return {
             _id: data._id,
             tenantid: data.tenant._id,
+            /*             repartition: data.tenant.repartition, */
             tenant: `${data.tenant.name} ${data.tenant.lastname}`,
             appartid: data.appartmentid._id,
             adress: data.appartmentid.building
@@ -141,6 +142,9 @@ const App = () => {
             postalcode: data.appartmentid.building
               ? data.appartmentid.building.postalcode
               : data.appartmentid.postalcode,
+            /*             buildingid: data.appartmentid.building
+              ? data.appartmentid.building._id
+              : null, */
             size: data.appartmentid.size,
             createdAt: data.createdAt,
             updatedAt: data.updatedAt,
@@ -151,6 +155,7 @@ const App = () => {
             status: data.status,
           };
         });
+      console.log(data);
       setContract(data);
       setLoading(false);
     } catch (err) {

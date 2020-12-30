@@ -17,6 +17,9 @@ import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import LoadingScreen from "../LoadingScreen";
 import AddIcon from "@material-ui/icons/Add";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
+
 const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 650,
@@ -53,6 +56,8 @@ const AddTask = ({ id, setSuccess }) => {
   const [endDate, setEndDate] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const submit = async (e) => {
     e.preventDefault();
@@ -125,7 +130,12 @@ const AddTask = ({ id, setSuccess }) => {
       </Hidden>
 
       {loading && <LoadingScreen />}
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        disableBackdropClick
+        fullScreen={fullScreen}
+      >
         <DialogTitle>Créer une tâche</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>

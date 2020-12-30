@@ -10,7 +10,8 @@ import {
   TextField,
   MenuItem,
 } from "@material-ui/core";
-
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
@@ -50,6 +51,8 @@ const AddContract = ({ setSuccess }) => {
   const [appartid, setAppartid] = useState(null);
   const [rent, setRent] = useState("");
   const [other, setOther] = useState(null);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const submit = async (e) => {
     e.preventDefault();
@@ -104,7 +107,12 @@ const AddContract = ({ setSuccess }) => {
         </Button>
       </Box>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        disableBackdropClick
+        fullScreen={fullScreen}
+      >
         <DialogTitle>{"Créer un contrat"}</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>

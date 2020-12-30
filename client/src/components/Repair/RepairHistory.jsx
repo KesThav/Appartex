@@ -20,6 +20,8 @@ import HistoryIcon from "@material-ui/icons/History";
 import moment from "moment";
 import { RepairHistoryToExcel } from "../../pages/ownerpages/export";
 import { arrayBufferToBase64 } from "../arrayBufferToBase64";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   box: {
@@ -35,6 +37,8 @@ const RepairHistory = ({ data, setError }) => {
   const { authAxios } = useContext(UserContext);
   const [repairhistory, setRepairhistory] = useState("");
   const [doc, setDoc] = useState("");
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const getRepairHistories = async (data) => {
     try {
@@ -84,7 +88,12 @@ const RepairHistory = ({ data, setError }) => {
         </IconButton>
       </Tooltip>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        disableBackdropClick
+        fullScreen={fullScreen}
+      >
         <DialogTitle>Détail de la réparation</DialogTitle>
         <Divider />
         <DialogContent>

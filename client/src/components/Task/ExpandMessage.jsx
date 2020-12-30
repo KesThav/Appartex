@@ -19,9 +19,10 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { UserContext } from "../../middlewares/ContextAPI";
-import LoadingScreen from "../LoadingScreen";
 import moment from "moment";
 import clsx from "clsx";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,6 +41,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     boxShadow: "none",
   },
+  expandOpen: {
+    transform: "rotate(180deg)",
+  },
 }));
 
 const ExpandMessage = ({ id, setError }) => {
@@ -48,6 +52,8 @@ const ExpandMessage = ({ id, setError }) => {
   const [message, setMessage] = useState("");
   const { authAxios, loading } = useContext(UserContext);
   const [expanded, setExpanded] = useState("");
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleExpandClick = (id) => {
     expanded == id ? setExpanded("") : setExpanded(id);
@@ -85,6 +91,7 @@ const ExpandMessage = ({ id, setError }) => {
         onClose={() => setOpen(!open)}
         disableBackdropClick
         classeName={classes.root}
+        fullScreen={fullScreen}
       >
         <DialogTitle>Message</DialogTitle>
         <DialogContent>
@@ -117,7 +124,7 @@ const ExpandMessage = ({ id, setError }) => {
                   <Tooltip title="Afficher les messages">
                     <IconButton
                       className={clsx(classes.expand, {
-                        [classes.expandOpen]: expanded == message._id,
+                        [classes.expandOpen]: expanded,
                       })}
                       onClick={() => handleExpandClick(message._id)}
                       aria-expanded={expanded}

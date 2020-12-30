@@ -20,6 +20,8 @@ import HistoryIcon from "@material-ui/icons/History";
 import moment from "moment";
 import { BillHistoryToExcel } from "../../pages/ownerpages/export";
 import { arrayBufferToBase64 } from "../arrayBufferToBase64";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   box: {
@@ -35,6 +37,8 @@ const BillHistory = ({ data, setError }) => {
   const { authAxios, count } = useContext(UserContext);
   const [billhistory, setBillhistory] = useState("");
   const [doc, setDoc] = useState("");
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const getBillHistories = async (data) => {
     try {
@@ -90,6 +94,7 @@ const BillHistory = ({ data, setError }) => {
           setOpen(false);
         }}
         disableBackdropClick
+        fullScreen={fullScreen}
       >
         <DialogTitle>Historique de la facture</DialogTitle>
 

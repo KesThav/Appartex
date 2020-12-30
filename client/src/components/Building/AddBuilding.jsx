@@ -11,6 +11,8 @@ import {
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import LoadingScreen from "../LoadingScreen";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -37,6 +39,8 @@ const AddBuilding = ({ setSuccess }) => {
   const [adress, setAdress] = useState("");
   const [postalcode, setPostalcode] = useState("");
   const [city, setCity] = useState("");
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const submit = async (e) => {
     e.preventDefault();
@@ -81,7 +85,12 @@ const AddBuilding = ({ setSuccess }) => {
         </Button>
       </Box>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        disableBackdropClick
+        fullScreen={fullScreen}
+      >
         <DialogTitle>{"Créer un immeuble"}</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>

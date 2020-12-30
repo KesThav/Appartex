@@ -8,6 +8,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     height: 150,
+    "&:hover": {
+      
+    },
   },
   Box: {
     width: "100%",

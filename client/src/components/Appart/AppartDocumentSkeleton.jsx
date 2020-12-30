@@ -1,14 +1,24 @@
 import React, { useState, useContext, Fragment, useEffect } from "react";
-import { Tooltip, IconButton, Dialog, DialogContent } from "@material-ui/core";
+import {
+  Tooltip,
+  IconButton,
+  Dialog,
+  DialogContent,
+  Button,
+} from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
 import Carousel from "react-material-ui-carousel";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 import { arrayBufferToBase64 } from "../arrayBufferToBase64";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const ShowAppartDocuments = ({ appart, setError }) => {
   const [open, setOpen] = useState(false);
   const { authAxios, setCount } = useContext(UserContext);
   const [picture, setPicture] = useState([]);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const getOneAppart = async (appart) => {
     try {
@@ -44,7 +54,11 @@ const ShowAppartDocuments = ({ appart, setError }) => {
         </IconButton>
       </Tooltip>
 
-      <Dialog open={open} onClose={() => setOpen(!open)}>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        fullScreen={fullScreen}
+      >
         <DialogContent>
           <Carousel>
             {picture.length > 0 &&
@@ -53,6 +67,7 @@ const ShowAppartDocuments = ({ appart, setError }) => {
               ))}
           </Carousel>
         </DialogContent>
+        {fullScreen && <Button onClick={() => setOpen(!open)}>Retour</Button>}
       </Dialog>
     </Fragment>
   );

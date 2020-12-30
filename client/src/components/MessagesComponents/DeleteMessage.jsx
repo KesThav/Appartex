@@ -13,6 +13,8 @@ import {
 } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   box: {
@@ -26,6 +28,8 @@ const DeleteMessage = ({ id, setSuccess, setError }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const { authAxios, setLoading, setCount } = useContext(UserContext);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const submit = async (id) => {
     setOpen(!open);
@@ -55,7 +59,12 @@ const DeleteMessage = ({ id, setSuccess, setError }) => {
         </Tooltip>
       </IconButton>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        disableBackdropClick
+        fullScreen={fullScreen}
+      >
         <DialogTitle>Supprimer un message</DialogTitle>
         <DialogContent>
           {" "}

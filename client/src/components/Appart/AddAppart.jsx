@@ -14,7 +14,8 @@ import {
   Tab,
   AppBar,
 } from "@material-ui/core";
-
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert";
 
 const TabPanel = (props) => {
@@ -88,6 +89,8 @@ const AddAppart = ({ setSuccess }) => {
   const [size, setSize] = useState("");
   const [build, setBuild] = useState(null);
   const [value, setValue] = useState(0);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -161,7 +164,12 @@ const AddAppart = ({ setSuccess }) => {
         </Button>
       </Box>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        disableBackdropClick
+        fullScreen={fullScreen}
+      >
         <DialogTitle>{"Créer un appartment"}</DialogTitle>
 
         <DialogContent>

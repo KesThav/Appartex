@@ -12,6 +12,8 @@ import {
 } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
 import DeleteIcon from "@material-ui/icons/Delete";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   box: {
@@ -32,6 +34,8 @@ const DeleteAppart = ({
   const classes = useStyles();
   const { setLoading, authAxios, setCount } = useContext(UserContext);
   const [doc, setDoc] = useState("");
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const deletePicture = async (dt) => {
     setError("");
@@ -80,7 +84,12 @@ const DeleteAppart = ({
         </IconButton>
       </Tooltip>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        disableBackdropClick
+        fullScreen={fullScreen}
+      >
         <DialogTitle>Supprimer une image</DialogTitle>
         <Divider />
         <DialogContent>

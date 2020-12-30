@@ -15,6 +15,8 @@ import Alert from "@material-ui/lab/Alert";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   button: {
@@ -48,6 +50,8 @@ const AddMessage = ({ setSuccess }) => {
   const [err, setError] = useState("");
   const [tenantid, setTenantid] = useState([]);
   const [content, setContent] = useState("");
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const submit = async (e) => {
     e.preventDefault();
@@ -125,7 +129,12 @@ const AddMessage = ({ setSuccess }) => {
       >
         Envoyer un message
       </Button>
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        disableBackdropClick
+        fullScreen={fullScreen}
+      >
         <DialogTitle>{"Envoyer un message"}</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>

@@ -14,6 +14,8 @@ import {
 import { UserContext } from "../../middlewares/ContextAPI";
 import Alert from "@material-ui/lab/Alert";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   box: {
@@ -35,6 +37,8 @@ const EditMessageStatus = ({ id, statustype }) => {
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [status, setStatus] = useState(statustype);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const submit = async (e) => {
     e.preventDefault();
@@ -71,7 +75,12 @@ const EditMessageStatus = ({ id, statustype }) => {
         </IconButton>
       </Tooltip>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        disableBackdropClick
+        fullScreen={fullScreen}
+      >
         <DialogTitle>{"Editer un statut"}</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>

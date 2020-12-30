@@ -12,6 +12,8 @@ import {
 } from "@material-ui/core";
 import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -51,6 +53,8 @@ const AddBills = ({ setSuccess }) => {
   const [reason, setReason] = useState("");
   const [tenantid, setTenantid] = useState("");
   const [statusid, setStatusid] = useState("");
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const submit = async (e) => {
     e.preventDefault();
@@ -112,7 +116,12 @@ const AddBills = ({ setSuccess }) => {
         </Button>
       </Box>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        disableBackdropClick
+        fullScreen={fullScreen}
+      >
         <DialogTitle>{"Créer une facture"}</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>

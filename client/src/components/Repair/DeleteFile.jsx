@@ -14,6 +14,8 @@ import {
 } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
 import DeleteIcon from "@material-ui/icons/Delete";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   box: {
@@ -27,6 +29,8 @@ const DeleteFile = ({ data, repairid, setSuccess, setError, getOneRepair }) => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const { setLoading, authAxios, setCount } = useContext(UserContext);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const deleteFile = async (dt) => {
     setError("");
@@ -59,7 +63,7 @@ const DeleteFile = ({ data, repairid, setSuccess, setError, getOneRepair }) => {
         </IconButton>
       </Tooltip>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick fullScreen={fullScreen}>
         <DialogTitle>Supprimer un document</DialogTitle>
         <Divider />
         <DialogContent>

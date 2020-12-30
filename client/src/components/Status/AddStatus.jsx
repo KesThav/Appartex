@@ -9,6 +9,8 @@ import {
   DialogContent,
   TextField,
 } from "@material-ui/core";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 import Alert from "@material-ui/lab/Alert";
 
@@ -35,6 +37,8 @@ const AddStatus = ({ setSuccess }) => {
   const { setCount, setLoading, authAxios, loading } = useContext(UserContext);
   const [err, setError] = useState("");
   const [name, setName] = useState("");
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const submit = async (e) => {
     e.preventDefault();
@@ -75,7 +79,12 @@ const AddStatus = ({ setSuccess }) => {
         </Button>
       </Box>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        disableBackdropClick
+        fullScreen={fullScreen}
+      >
         <DialogTitle>{"Créer un statut"}</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>

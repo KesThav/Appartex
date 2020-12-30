@@ -10,7 +10,8 @@ import {
   TextField,
   MenuItem,
 } from "@material-ui/core";
-
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
@@ -48,6 +49,8 @@ const AddRepair = ({ setSuccess }) => {
   const [statusid, setStatusid] = useState(null);
   const [taskid, setTaskid] = useState("");
   const [amount, setAmount] = useState(null);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const submit = async (e) => {
     e.preventDefault();
@@ -99,7 +102,12 @@ const AddRepair = ({ setSuccess }) => {
         Enregistrer une facture de réparation
       </Button>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        disableBackdropClick
+        fullScreen={fullScreen}
+      >
         <DialogTitle>{"Créer une réparation"}</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: "10px" }}>

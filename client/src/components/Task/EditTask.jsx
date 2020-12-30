@@ -14,6 +14,8 @@ import {
 } from "@material-ui/core";
 import moment from "moment";
 import { UserContext } from "../../middlewares/ContextAPI";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const useStyle = makeStyles({
   table: {
@@ -49,6 +51,8 @@ const EditTaks = ({ appointmentData, setSuccess, setError }) => {
   const [content, setContent] = useState(appointmentData.content);
   const [taskid, setTaskid] = useState(appointmentData._id);
   const { authAxios, status, setCount } = useContext(UserContext);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const submit = async (e) => {
     e.preventDefault();
@@ -95,7 +99,12 @@ const EditTaks = ({ appointmentData, setSuccess, setError }) => {
         </IconButton>
       </Tooltip>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        disableBackdropClick
+        fullScreen={fullScreen}
+      >
         <DialogTitle>Editer une tâche</DialogTitle>
         <DialogContent>
           <form onSubmit={submit} autoComplete="off">

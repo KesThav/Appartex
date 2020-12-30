@@ -11,6 +11,8 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { UserContext } from "../../middlewares/ContextAPI";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   box: {
@@ -24,6 +26,8 @@ const DeleteTask = ({ id, setSuccess, setError }) => {
   const classes = useStyles();
   const { setLoading, setCount, authAxios } = useContext(UserContext);
   const [open, setOpen] = useState(false);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const deleteTask = async (taskid) => {
     setOpen(!open);
@@ -45,7 +49,12 @@ const DeleteTask = ({ id, setSuccess, setError }) => {
         <DeleteIcon onClick={() => setOpen(!open)} />
       </IconButton>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        disableBackdropClick
+        fullScreen={fullScreen}
+      >
         <DialogTitle>Supprimer une tâche</DialogTitle>
         <Divider />
         <DialogContent>
