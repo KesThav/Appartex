@@ -10,7 +10,7 @@ let ObjectId = require("mongodb").ObjectId;
  *
  * components:
  *   schemas:
- *     Repair history:
+ *     RepairHistory:
  *       properties:
  *         repairid:
  *           type: id
@@ -82,7 +82,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *        content :
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Repair history'
+ *              $ref: '#/components/schemas/RepairHistory'
  *      '403':
  *         description: Forbidden
  *      '404':

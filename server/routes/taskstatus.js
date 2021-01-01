@@ -10,7 +10,7 @@ let ObjectId = require("mongodb").ObjectId;
  *
  * components:
  *   schemas:
- *     Task history:
+ *     TaskHistory:
  *       properties:
  *         taskid:
  *           type: id
@@ -84,7 +84,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *        content :
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Task history'
+ *              $ref: '#/components/schemas/TaskHistory'
  *      '403':
  *         description: Forbidden
  *      '404':
