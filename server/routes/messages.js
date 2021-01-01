@@ -23,7 +23,9 @@ const Task = require("../models/task.model");
  *           example: 507f1f77bcf86cd799439011
  *         sendedToType:
  *           type: String
- *           enum : ["Owner", "Tenant"]
+ *           enum :
+ *             - "Owner"
+ *             - "Tenant"
  *           summary : ajoute la ref vers le bon schema
  *         content:
  *            type: String
@@ -37,7 +39,9 @@ const Task = require("../models/task.model");
  *            example: Greeting
  *         createdByType:
  *            type : String
- *            enum: ["Owner", "Tenant"]
+ *            enum:
+ *              - "Owner"
+ *              - "Tenant"
  *            summary : ajoute la ref vers le bon schema
  *       required:
  *          - sendedTo
@@ -115,7 +119,7 @@ router.get("/sended", jwt, async (ctx) => {
  *  /messages/received:
  *  get :
  *    summary : Return all received messages
- *    operationId : getsendedmessages
+ *    operationId : getreceivedmessages
  *    tags :
  *        - message
  *    security:
