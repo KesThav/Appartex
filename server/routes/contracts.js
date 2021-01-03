@@ -84,8 +84,10 @@ const upload = multer({
  *            type: Number
  *            example: 457
  *         tenant:
+ *            schema:
  *            $ref : '#/components/schemas/TenantPartial'
  *         appartmentid:
+ *            schema:
  *            $ref : '#/components/schemas/Appartment_populate'
  *         other:
  *            type: String
@@ -95,6 +97,7 @@ const upload = multer({
  *            example: Actif
  *            default : Actif
  *         file:
+ *            schema:
  *            $ref: '#/components/schemas/File'
  *       required:
  *          - charge
