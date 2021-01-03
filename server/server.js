@@ -9,7 +9,6 @@ const { koaSwagger } = require("koa2-swagger-ui");
 const Swagger = require("./middlewares/swagger");
 const serve = require("koa-static");
 
-
 require("dotenv").config();
 
 const app = new Koa();
@@ -54,6 +53,7 @@ const swaggerOptions = {
   ],
 
   path: "/swagger.json",
+  validatorUrl: null,
 };
 
 const swagger = Swagger(swaggerOptions);
@@ -62,6 +62,7 @@ const swaggerUi = koaSwagger({
   routePrefix: "/doc",
   swaggerOptions: {
     url: swaggerOptions.path,
+    validatorUrl: null,
   },
 });
 
