@@ -25,12 +25,11 @@ import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
-import LoadingScreen from "../../components/LoadingScreen";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteTenant from "../../components/Tenant/DeleteTenant";
 import { Prompt } from "react-router-dom";
-import { TenantToExcel } from "./export";
+import { TenantToExcel } from "../../components/export";
 import { TableSkeleton } from "../../components/Skeleton/TableSkeleton";
 
 const useStyles = makeStyles((theme) => ({

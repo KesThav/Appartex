@@ -26,7 +26,7 @@ import TaskHistory from "./TaskHistory";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
-import { TaskToExcel } from "../../pages/ownerpages/export";
+import { TaskToExcel } from "../export";
 
 const useStyles = makeStyles((theme) => ({
   table: {

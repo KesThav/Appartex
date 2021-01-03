@@ -155,7 +155,6 @@ const App = () => {
             status: data.status,
           };
         });
-      console.log(data);
       setContract(data);
       setLoading(false);
     } catch (err) {

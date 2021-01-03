@@ -1,26 +1,27 @@
 import React, { useContext, useState } from "react";
-
-import AppBar from "@material-ui/core/AppBar";
-import CssBaseline from "@material-ui/core/CssBaseline";
-
-import Drawer from "@material-ui/core/Drawer";
-import Hidden from "@material-ui/core/Hidden";
-import IconButton from "@material-ui/core/IconButton";
-
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-
+import {
+  Box,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  Hidden,
+  Drawer,
+  CssBaseline,
+  AppBar,
+  Toolbar,
+  makeStyles,
+  Avatar,
+  Button,
+  Switch,
+  Chip,
+  useMediaQuery,
+} from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import Toolbar from "@material-ui/core/Toolbar";
-import { makeStyles } from "@material-ui/core/styles";
-import Avatar from "@material-ui/core/Avatar";
 import { UserContext } from "../middlewares/ContextAPI";
 import { FormControlLabel } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
-import Switch from "@material-ui/core/switch";
 import BusinessIcon from "@material-ui/icons/Business";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import ReceiptIcon from "@material-ui/icons/Receipt";
@@ -28,13 +29,13 @@ import GroupIcon from "@material-ui/icons/Group";
 import HomeIcon from "@material-ui/icons/Home";
 import FolderIcon from "@material-ui/icons/Folder";
 import StorageIcon from "@material-ui/icons/Storage";
-import Chip from "@material-ui/core/Chip";
 import PersonIcon from "@material-ui/icons/Person";
 import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 import ForumIcon from "@material-ui/icons/Forum";
 import InfoIcon from "@material-ui/icons/Info";
 import TimelineIcon from "@material-ui/icons/Timeline";
 import AssignmentIcon from "@material-ui/icons/Assignment";
+import { useTheme } from "@material-ui/core/styles";
 
 const drawerWidth = 250;
 
@@ -52,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   appBar: {
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("lg")]: {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
     },
@@ -61,6 +62,13 @@ const useStyles = makeStyles((theme) => ({
     color: "#000000",
     display: "flex",
     alignItems: "flex-end",
+    justifyContent: "space-between",
+    [theme.breakpoints.down("md")]: {
+      alignItems: "unset !important",
+      justifyContent: "unset !important",
+      backgroundColor: theme.palette.background.default,
+      boxShadow: "unset !important",
+    },
   },
   toolbar: theme.mixins.toolbar,
   menuButton: {
@@ -97,6 +105,12 @@ const useStyles = makeStyles((theme) => ({
   divider: {
     color: "#fff",
   },
+  toolbarstyle: {
+    [theme.breakpoints.down("md")]: {
+      display: "flex",
+      justifyContent: "space-between",
+    },
+  },
 }));
 
 const Layout = (props) => {
@@ -106,6 +120,8 @@ const Layout = (props) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [checked, setChecked] = useState(true);
   const [select, setSelect] = useState(null);
+  const theme = useTheme();
+  const breakValue = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -116,7 +132,7 @@ const Layout = (props) => {
       {[
         {
           id: 0,
-          name: "Vue Général",
+          name: "Accueil",
           icon: <DashboardIcon />,
           link: "/owner",
         },
@@ -187,7 +203,12 @@ const Layout = (props) => {
           to={data.link}
           onClick={() => setSelect(data.id)}
         >
-          <ListItem button key={data.id} selected={select === data.id}>
+          <ListItem
+            button
+            key={data.id}
+            selected={select === data.id}
+            onClick={() => breakValue && handleDrawerToggle}
+          >
             <ListItemIcon style={{ color: "#fff" }}>{data.icon}</ListItemIcon>
             <ListItemText primary={data.name} />
           </ListItem>
@@ -201,7 +222,7 @@ const Layout = (props) => {
       {[
         {
           id: 0,
-          name: "Vue Général",
+          name: "Accueil",
           icon: <DashboardIcon />,
           link: "/tenant",
         },
@@ -239,8 +260,8 @@ const Layout = (props) => {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
+      <AppBar position="fixed" className={classes.appBar} >
+        <Toolbar className={classes.toolbarstyle}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -250,7 +271,7 @@ const Layout = (props) => {
           >
             <MenuIcon />
           </IconButton>
-          <Hidden smDown>
+          <Box>
             <Chip
               avatar={
                 <Avatar>
@@ -264,22 +285,22 @@ const Layout = (props) => {
               onClick={() => console.log("hello")}
               variant="outlined"
             />
-          </Hidden>
-          <Button onClick={logout}>
-            <Link to="/" className={classes.link}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={checked}
-                    onChange={() => setChecked(!checked)}
-                    name="checked"
-                    color="default"
-                  />
-                }
-                label="déconnexion"
-              />
-            </Link>
-          </Button>
+            <Button onClick={logout}>
+              <Link to="/" className={classes.link}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={checked}
+                      onChange={() => setChecked(!checked)}
+                      name="checked"
+                      color="default"
+                    />
+                  }
+                  label={!breakValue && "déconnexion"}
+                />
+              </Link>
+            </Button>
+          </Box>
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">

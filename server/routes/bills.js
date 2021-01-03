@@ -64,12 +64,71 @@ const upload = multer({
  *         status:
  *            type: id
  *            example: 507f1f77bcf86cd799439011
+ *         file:
+ *            type: id
+ *            example : 5f954d4c94a4981bc4284277
  *       required:
  *          - tenant
  *          - endDate
  *          - amount
  *          - reason
- *
+ *     Bill_populate:
+ *       properties:
+ *         _id:
+ *           type: id
+ *           example: 5fd3275ee9ad210015711349
+ *         tenant:
+ *           $ref : '#/components/schemas/TenantPartial'
+ *         reference:
+ *           type: String
+ *           example: DC-134
+ *         endDate:
+ *           type: Date
+ *           example: 2021-02-17
+ *         amount:
+ *           type: Number
+ *           example: 1994
+ *         reason:
+ *            type: String
+ *            example: Rent
+ *         status:
+ *            $ref : '#/components/schemas/Status'
+ *         file:
+ *            type: id
+ *            example: 507f1f77bcf86cd799439011
+ *       required:
+ *          - tenant
+ *          - endDate
+ *          - amount
+ *          - reason
+ *     Bill_populate_file:
+ *       properties:
+ *         _id:
+ *           type: id
+ *           example: 5fd3275ee9ad210015711349
+ *         tenant:
+ *           $ref : '#/components/schemas/TenantPartial'
+ *         reference:
+ *           type: String
+ *           example: DC-134
+ *         endDate:
+ *           type: Date
+ *           example: 2021-02-17
+ *         amount:
+ *           type: Number
+ *           example: 1994
+ *         reason:
+ *            type: String
+ *            example: Rent
+ *         status:
+ *            $ref : '#/components/schemas/Status'
+ *         file:
+ *            $ref: '#/components/schemas/File'
+ *       required:
+ *          - tenant
+ *          - endDate
+ *          - amount
+ *          - reason
  */
 
 /**
@@ -86,6 +145,10 @@ const upload = multer({
  *    responses:
  *      '200':
  *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Bill_populate'
  *      '403':
  *         description: Forbidden
  *      '500':
@@ -98,7 +161,6 @@ router.get("/", jwt, adminAccess, async (ctx) => {
     let allbills = await Bill.find({ createdBy: ctx.request.jwt._id })
       .populate("status", "name")
       .populate("tenant", "name lastname")
-      .populate("file")
       .sort({ updatedAt: -1 });
     ctx.body = allbills;
   } catch (err) {
@@ -127,7 +189,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *        content :
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Bill'
+ *              $ref: '#/components/schemas/Bill_populate_file'
  *      '403':
  *         description: Forbidden
  *      '500':
@@ -441,8 +503,8 @@ router.put("/upload/:billid", jwt, adminAccess, async (ctx, next) => {
  *            type: object
  *            properties:
  *              file:
- *                type: string
- *                example: file/random-file.pdf
+ *                type: id
+ *                example: 5fd3275ee9ad210015711349
  *            required:
  *              - file
  *    responses:

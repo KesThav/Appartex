@@ -1,16 +1,15 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import { Paper, Box, Typography, makeStyles, Hidden } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import Skeleton from "@material-ui/lab/Skeleton";
+import { UserContext } from "../middlewares/ContextAPI";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     display: "flex",
     flexDirection: "row",
     height: 150,
-    "&:hover": {
-      
-    },
+    "&:hover": {},
   },
   Box: {
     width: "100%",
@@ -33,22 +32,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Badges = ({ icon, value, style, name, link }) => {
+const Badges = ({ icon, value, style, name, link, style2 }) => {
   const classes = useStyles();
+  const { loading } = useContext(UserContext);
+
   return (
     <Fragment>
       <Link to={link} className={classes.link}>
-        <Paper className={classes.paper} square>
+        <Paper className={classes.paper} square style={style2}>
           <Box className={classes.Box}>
             <Typography variant="h4">
-              {value ? (
+              {!loading ? (
                 value
               ) : (
                 <Skeleton variant="circle" width={40} height={40} />
               )}
             </Typography>
-            <Typography variant="subtitle1" color="textSecondary">
-              {value ? name : <Skeleton width={"100%"} />}
+            <Typography
+              variant="subtitle1"
+              color="textSecondary"
+              style={style2}
+            >
+              {name}
             </Typography>
           </Box>
           <Hidden xsDown>

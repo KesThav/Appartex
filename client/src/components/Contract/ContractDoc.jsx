@@ -5,7 +5,6 @@ import {
   DialogTitle,
   Button,
   TableRow,
-  TableCell,
   Box,
   makeStyles,
   Divider,
@@ -18,13 +17,17 @@ import { arrayBufferToBase64 } from "../arrayBufferToBase64";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   box: {
     display: "flex",
     flexDirection: "row-reverse",
     marginRight: 10,
+    [theme.breakpoints.down("sm")]: {
+      alignItems: "center",
+      justifyContent: "center",
+    },
   },
-});
+}));
 
 const ContractDoc = ({ data, setError }) => {
   const [open, setOpen] = useState(false);

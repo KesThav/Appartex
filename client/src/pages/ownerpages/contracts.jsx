@@ -29,7 +29,7 @@ import DeleteContract from "../../components/Contract/DeleteContract";
 import ArchiveContract from "../../components/Contract/ArchiveContract";
 import { Prompt } from "react-router-dom";
 import ContractDoc from "../../components/Contract/ContractDoc";
-import { ContractToExcel } from "./export";
+import { ContractToExcel } from "../../components/export";
 import { TableSkeleton } from "../../components/Skeleton/TableSkeleton";
 
 const useStyles = makeStyles((theme) => ({

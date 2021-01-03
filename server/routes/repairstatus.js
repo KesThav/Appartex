@@ -16,8 +16,7 @@ let ObjectId = require("mongodb").ObjectId;
  *           type: id
  *           example: 5f9820a2d32a1820dc695040
  *         status:
- *           type: id
- *           example : 5f981ffb579d301330c1c38d
+ *           $ref: '#/components/schemas/Status'
  *       required:
  *          - repairid
  *          - status
@@ -38,6 +37,10 @@ let ObjectId = require("mongodb").ObjectId;
  *    responses:
  *      '200':
  *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/RepairHistory'
  *      '403':
  *         description: Forbidden
  *      '500':

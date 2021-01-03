@@ -106,15 +106,13 @@ const BuildingTenants = ({ data, setError }) => {
             : "Pas de locataires"}
         </DialogContent>
         <Divider />
-        <Box className={classes.box}>
-          <Button
-            className={classes.button}
-            color="inherit"
-            onClick={() => setOpen(!open)}
-          >
-            Fermer
-          </Button>
-        </Box>
+        <Button
+          className={classes.button}
+          color="inherit"
+          onClick={() => setOpen(!open)}
+        >
+          Fermer
+        </Button>
       </Dialog>
     </Fragment>
   );

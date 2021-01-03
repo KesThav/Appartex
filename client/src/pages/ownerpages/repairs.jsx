@@ -34,7 +34,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import TrendingDownIcon from "@material-ui/icons/TrendingDown";
-import { RepairToExcel } from "./export";
+import { RepairToExcel } from "../../components/export";
 import { TableSkeleton } from "../../components/Skeleton/TableSkeleton";
 
 const useStyles = makeStyles((theme) => ({

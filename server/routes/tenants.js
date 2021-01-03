@@ -73,12 +73,76 @@ const upload = multer({
  *         dateofbirth:
  *            type: Date
  *            example: 1996-02-17
+ *         file:
+ *            type: id
+ *            example: 5fd3273ce9ad210015711348
  *       required:
  *          - name
  *          - lastname
  *          - email
  *          - password
  *
+ *     TenantPartial:
+ *       properties:
+ *         _id:
+ *           type: id
+ *           example: 5fd3275ee9ad210015711349
+ *         name:
+ *           type: String
+ *           example: Patrick
+ *         lastname:
+ *           type: string
+ *           example: Bruel
+ *         email:
+ *           type: String
+ *           example: Jean@paul.com
+ *         status:
+ *            type: String
+ *            default: "Actif"
+ *            example: Actif
+ *         dateofbirth:
+ *            type: Date
+ *            example: 1996-02-17
+ *         file:
+ *            type: id
+ *            example: 5fd3273ce9ad210015711348
+ *       required:
+ *          - name
+ *          - lastname
+ *          - email
+ *
+ *     Tenant_populate:
+ *       properties:
+ *         _id:
+ *           type: id
+ *           example: 5fd3275ee9ad210015711349
+ *         name:
+ *           type: String
+ *           example: Patrick
+ *         lastname:
+ *           type: string
+ *           example: Bruel
+ *         email:
+ *           type: String
+ *           example: Jean@paul.com
+ *         password:
+ *            type: String
+ *            minimum: 6
+ *            example: 1a3b5c
+ *         status:
+ *            type: String
+ *            default: "Actif"
+ *            example: Actif
+ *         dateofbirth:
+ *            type: Date
+ *            example: 1996-02-17
+ *         file:
+ *            $ref : '#/components/schemas/File'
+ *       required:
+ *          - name
+ *          - lastname
+ *          - email
+ *          - password
  */
 
 /**
@@ -95,6 +159,10 @@ const upload = multer({
  *    responses:
  *      '200':
  *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/TenantPartial'
  *      '403':
  *         description: Forbidden
  *      '500':
@@ -107,7 +175,15 @@ router.get("/", jwt, adminAccess, async (ctx) => {
     let alltenants = await Tenant.find({
       createdBy: ctx.request.jwt._id,
     })
-      .populate("file")
+      .select({
+        _id: 1,
+        name: 1,
+        lastname: 1,
+        email: 1,
+        status: 1,
+        dateofbirth: 1,
+        file: 1,
+      })
       .sort({ updatedAt: -1 });
     ctx.body = alltenants;
   } catch (err) {
@@ -136,7 +212,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *        content :
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Tenant'
+ *              $ref: '#/components/schemas/Tenant_populate'
  *      '403':
  *         description: Forbidden
  *      '404':
@@ -445,7 +521,7 @@ router.delete("/delete/:tenantid", jwt, adminAccess, async (ctx) => {
  *        content :
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Contract'
+ *              $ref: '#/components/schemas/Contract_populate'
  *      '403':
  *         description: Forbidden
  *      '404':
@@ -499,7 +575,7 @@ router.get("/contracts/:tenantid", jwt, filterAccess, async (ctx) => {
  *        content :
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Bill'
+ *              $ref: '#/components/schemas/Bill_populate'
  *      '403':
  *         description: Forbidden
  *      '404':
@@ -550,7 +626,7 @@ router.get("/bills/:tenantid", jwt, filterAccess, async (ctx) => {
  *        content :
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Task'
+ *              $ref: '#/components/schemas/Task_populate'
  *      '403':
  *         description: Forbidden
  *      '404':
@@ -697,7 +773,7 @@ router.put("/upload/:tenantid", jwt, adminAccess, async (ctx, next) => {
  *            properties:
  *              file:
  *                type: string
- *                example: tenant/random-file.pdf
+ *                example: 5fd32687e9ad210015711337
  *            required:
  *              - file
  *    responses:

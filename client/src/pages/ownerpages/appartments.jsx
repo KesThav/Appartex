@@ -28,7 +28,6 @@ import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
-import LoadingScreen from "../../components/LoadingScreen";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteAppart from "../../components/Appart/DeleteAppart";
@@ -36,7 +35,7 @@ import ShowDocument from "../../components/Appart/AppartDocumentSkeleton";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { AppartToExcel } from "./export";
+import { AppartToExcel } from "../../components/export";
 import { TableSkeleton } from '../../components/Skeleton/TableSkeleton'
 
 const useStyles = makeStyles((theme) => ({

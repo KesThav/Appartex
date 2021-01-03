@@ -16,6 +16,8 @@ import Alert from "@material-ui/lab/Alert";
 import axios from "axios";
 import PersonIcon from "@material-ui/icons/Person";
 import LoadingScreen from '../LoadingScreen'
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -43,6 +45,8 @@ const Login = ({ push }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const submit = async (e) => {
     e.preventDefault();
@@ -89,7 +93,7 @@ const Login = ({ push }) => {
         Vous êtes Propriétaire, Inscrivez-vous !
       </Button>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick fullScreen={fullScreen}>
         <DialogTitle>Inscription</DialogTitle>
 
         <DialogContent>

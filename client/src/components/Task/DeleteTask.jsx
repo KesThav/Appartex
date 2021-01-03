@@ -14,13 +14,17 @@ import { UserContext } from "../../middlewares/ContextAPI";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   box: {
     display: "flex",
     flexDirection: "row-reverse",
     marginRight: 10,
+    [theme.breakpoints.down("sm")]: {
+      alignItems: "center",
+      justifyContent: "center",
+    },
   },
-});
+}));
 
 const DeleteTask = ({ id, setSuccess, setError }) => {
   const classes = useStyles();

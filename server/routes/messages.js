@@ -43,6 +43,44 @@ const Task = require("../models/task.model");
  *              - "Owner"
  *              - "Tenant"
  *            summary : ajoute la ref vers le bon schema
+ *         comments:
+ *            type: id
+ *       required:
+ *          - sendedTo
+ *          - sendedToType
+ *          - content
+ *          - title
+ *          -  createdByType
+ *     Message_populate:
+ *       properties:
+ *         sendedTo:
+ *           type: Array
+ *           items : id
+ *           example: 507f1f77bcf86cd799439011
+ *         sendedToType:
+ *           type: String
+ *           enum :
+ *             - "Owner"
+ *             - "Tenant"
+ *           summary : ajoute la ref vers le bon schema
+ *         content:
+ *            type: String
+ *            example: Welcome to Fribourg
+ *         status:
+ *            type: String
+ *            default: "Non lu"
+ *            example: Non lu
+ *         title:
+ *            type: String
+ *            example: Greeting
+ *         createdByType:
+ *            type : String
+ *            enum:
+ *              - "Owner"
+ *              - "Tenant"
+ *            summary : ajoute la ref vers le bon schema
+ *         comments:
+ *            $ref : '#/components/schemas/Comment'
  *       required:
  *          - sendedTo
  *          - sendedToType
@@ -57,8 +95,24 @@ const Task = require("../models/task.model");
  *
  * components:
  *   schemas:
+ *     CommentPartial:
+ *       properties:
+ *         content:
+ *           type: String
+ *           example: Hello World
+ *         createdByType:
+ *            type : String
+ *            enum: ["Owner", "Tenant"]
+ *            summary : ajoute la ref vers le bon schema
+ *       required:
+ *          - content
+ *          -  createdByType
+ *
  *     Comment:
  *       properties:
+ *         _id:
+ *           type: id
+ *           example: 507f1f77bcf86cd799439011
  *         content:
  *           type: String
  *           example: Hello World
@@ -86,6 +140,10 @@ const Task = require("../models/task.model");
  *    responses:
  *      '200':
  *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Message_populate'
  *      '403':
  *         description: Forbidden
  *      '500':
@@ -127,6 +185,10 @@ router.get("/sended", jwt, async (ctx) => {
  *    responses:
  *      '200':
  *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Message_populate'
  *      '403':
  *         description: Forbidden
  *      '500':
@@ -168,6 +230,10 @@ router.get("/received", jwt, async (ctx) => {
  *    responses:
  *      '200':
  *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Message_populate'
  *      '403':
  *         description: Forbidden
  *      '500':
@@ -193,6 +259,37 @@ router.get("/archived", jwt, async (ctx) => {
     ctx.throw(400, err);
   }
 });
+
+/**
+ *  @swagger
+ * /messages/{message_id}:
+ *  get :
+ *    summary : Return one message
+ *    operationId : getonemessage
+ *    tags :
+ *        - message
+ *    security:
+ *        - bearerAuth: []
+ *    parameters:
+ *     - name: message_id
+ *       in: path
+ *       required: true
+ *       description: the id of the message
+ *    responses:
+ *      '200':
+ *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Message_populate'
+ *      '403':
+ *         description: Forbidden
+ *      '404':
+ *         description : Building not found
+ *      '500':
+ *         description: Server error
+ *
+ */
 
 router.get("/:messageid", jwt, adminAccess, async (ctx) => {
   let validate = ObjectId.isValid(ctx.params.messageid);
@@ -307,7 +404,7 @@ router.post("/add", jwt, async (ctx) => {
  *     content :
  *       application/json:
  *          schema:
- *            $ref: '#/components/schemas/Comment'
+ *            $ref: '#/components/schemas/CommentPartial'
  *    responses:
  *      '200':
  *        description: 'Success'

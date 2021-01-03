@@ -14,8 +14,31 @@ const Tenant = require("../models/tenant.model");
  *
  * components:
  *   schemas:
+ *     BuildingPartial:
+ *       properties:
+ *         numberofAppart:
+ *           type: Number
+ *           example: 14
+ *         adress:
+ *           type: string
+ *           example: Rte de Pérolles 21
+ *         postalcode:
+ *           type: Number
+ *           minimum : 4
+ *           maximum : 4
+ *           example: 1700
+ *         city:
+ *            type: String
+ *            example: Fribourg
+ *       required:
+ *          - adress
+ *          - postalcode
+ *          - city
  *     Building:
  *       properties:
+ *         _id:
+ *           type: id
+ *           example: 5fd3275ee9ad210015711349
  *         numberofAppart:
  *           type: Number
  *           example: 14
@@ -51,6 +74,10 @@ const Tenant = require("../models/tenant.model");
  *    responses:
  *      '200':
  *        description: Success
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Building'
  *      '403':
  *         description: Forbidden
  *      '500':
@@ -137,7 +164,7 @@ router.get("/:buildingid", jwt, adminAccess, async (ctx) => {
  *        content :
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Tenant'
+ *              $ref: '#/components/schemas/TenantPartial'
  *      '403':
  *         description: Forbidden
  *      '404':
@@ -169,7 +196,17 @@ router.get("/tenants/:buildingid", jwt, adminAccess, async (ctx) => {
     tenants = tenants.filter((tenants) => tenants !== null);
     for (i = 0; i < tenants.length; i++) {
       if (tenants[i].tenant) {
-        tenantlist.push(await Tenant.findOne({ _id: tenants[i].tenant }));
+        tenantlist.push(
+          await Tenant.findOne({ _id: tenants[i].tenant }).select({
+            id: 1,
+            name: 1,
+            lastname: 1,
+            status: 1,
+            email: 1,
+            dateofbirth: 1,
+            file : 1
+          })
+        );
       }
     }
     ctx.body = tenantlist;
@@ -193,7 +230,7 @@ router.get("/tenants/:buildingid", jwt, adminAccess, async (ctx) => {
  *     content :
  *       application/json:
  *          schema:
- *            $ref: '#/components/schemas/Building'
+ *            $ref: '#/components/schemas/BuildingPartial'
  *    responses:
  *      '200':
  *        description: Success
@@ -247,7 +284,7 @@ router.post("/add", jwt, adminAccess, async (ctx) => {
  *     content :
  *       application/json:
  *          schema:
- *            $ref: '#/components/schemas/Building'
+ *            $ref: '#/components/schemas/BuildingPartial'
  *    responses:
  *      '200':
  *        description: 'Success'

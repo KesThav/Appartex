@@ -16,6 +16,8 @@ import Alert from "@material-ui/lab/Alert";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 import LoadingScreen from "../LoadingScreen";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -41,6 +43,8 @@ const TenantLogin = ({ push }) => {
   const [password, setPassword] = useState("");
   const { loading, setLoading } = useContext(UserContext);
   const { setUser } = useContext(UserContext);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const submit = async (e) => {
     e.preventDefault();
@@ -85,7 +89,12 @@ const TenantLogin = ({ push }) => {
         Vous êtes locataire, Connectez-vous !
       </Button>
 
-      <Dialog open={open} onClose={() => setOpen(!open)} disableBackdropClick>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(!open)}
+        disableBackdropClick
+        fullScreen={fullScreen}
+      >
         <DialogTitle>Connexion</DialogTitle>
 
         <DialogContent>

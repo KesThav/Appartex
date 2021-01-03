@@ -21,13 +21,13 @@ import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckIcon from "@material-ui/icons/Check";
-import LoadingScreen from "../../components/LoadingScreen";
+
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteBuilding from "../../components/Building/DeleteBuilding";
 import BuildingTenants from "../../components/Building/BuildingTenants";
 import { Prompt } from "react-router-dom";
-import { BuildingToExcel } from "./export";
+import { BuildingToExcel } from "../../components/export";
 import { TableSkeleton } from '../../components/Skeleton/TableSkeleton'
 
 const useStyles = makeStyles((theme) => ({

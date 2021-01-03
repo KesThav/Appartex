@@ -11,7 +11,8 @@ import PeopleIcon from "@material-ui/icons/People";
 import TimelineIcon from "@material-ui/icons/Timeline";
 import Schedule from "../../components/Schedule";
 import { Link } from "react-router-dom";
-import LoadingScreen from "../../components/LoadingScreen";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useTheme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -69,6 +70,8 @@ const AdminDashboard = (props) => {
     getStatus,
     loading,
   } = useContext(UserContext);
+  const theme = useTheme();
+  const breakValue = useMediaQuery(theme.breakpoints.down("xs"));
 
   useEffect(() => {
     getTenants();
@@ -89,58 +92,82 @@ const AdminDashboard = (props) => {
     <div className={classes.root}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h3">Adminboard</Typography>
+          <Typography variant="h3">Accueil</Typography>
         </Grid>
-        <Grid item lg={2} md={12} sm={12} xs={12}>
+        <Grid item lg={2} md={6} sm={6} xs={6}>
           <Badges
             icon={<PeopleIcon className={classes.icons} />}
             value={tenant.length}
             style={{ background: "#ff6f00" }}
+            style2={{
+              background: breakValue && "#ff6f00",
+              color: breakValue && "#fff",
+            }}
             name={"Locataires"}
             link={"/tenants"}
           />
         </Grid>
-        <Grid item lg={2} md={12} sm={12} xs={12}>
+        <Grid item lg={2} md={6} sm={6} xs={6}>
           <Badges
             icon={<BusinessIcon className={classes.icons} />}
             value={building.length}
             style={{ background: "#9c27b0" }}
+            style2={{
+              background: breakValue && "#9c27b0",
+              color: breakValue && "#fff",
+            }}
             name={"Immeubles"}
             link={"/buildings"}
           />
         </Grid>
-        <Grid item lg={2} md={12} sm={12} xs={12}>
+        <Grid item lg={2} md={6} sm={6} xs={6}>
           <Badges
             icon={<HomeIcon className={classes.icons} />}
             value={appart.length}
             style={{ background: "#007bb2" }}
+            style2={{
+              background: breakValue && "#007bb2",
+              color: breakValue && "#fff",
+            }}
             name={"Appartements"}
             link={"/appartments"}
           />
         </Grid>
-        <Grid item lg={2} md={12} sm={12} xs={12}>
+        <Grid item lg={2} md={6} sm={6} xs={6}>
           <Badges
             icon={<FolderIcon className={classes.icons} />}
             value={contract.length}
             style={{ background: "#e91e63" }}
+            style2={{
+              background: breakValue && "#e91e63",
+              color: breakValue && "#fff",
+            }}
             name={"Contrats"}
             link={"/contracts"}
           />
         </Grid>
-        <Grid item lg={2} md={12} sm={12} xs={12}>
+        <Grid item lg={2} md={6} sm={6} xs={6}>
           <Badges
             icon={<ReceiptIcon className={classes.icons} />}
             value={bill.length}
             style={{ background: "#00a152" }}
+            style2={{
+              background: breakValue && "#00a152",
+              color: breakValue && "#fff",
+            }}
             name={"Factures"}
             link={"/bills"}
           />
         </Grid>
-        <Grid item lg={2} md={12} sm={12} xs={12}>
+        <Grid item lg={2} md={6} sm={6} xs={6}>
           <Badges
             icon={<TimelineIcon className={classes.icons} />}
             value={repair.length}
             style={{ background: "#482880" }}
+            style2={{
+              background: breakValue && "#482880",
+              color: breakValue && "#fff",
+            }}
             name={"Réparations"}
             link={"/repairs"}
           />

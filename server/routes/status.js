@@ -17,8 +17,18 @@ const { statusSchema } = require("../helpers/validation");
  *
  * components:
  *   schemas:
+ *     StatusPartial:
+ *       properties:
+ *         name:
+ *           type: String
+ *           example: Actif
+ *       required:
+ *          - name
  *     Status:
  *       properties:
+ *         _id:
+ *           type: id
+ *           example: 5fd3275ee9ad210015711349
  *         name:
  *           type: String
  *           example: Actif
@@ -41,6 +51,10 @@ const { statusSchema } = require("../helpers/validation");
  *    responses:
  *      '200':
  *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Status'
  *      '403':
  *         description: Forbidden
  *      '500':
@@ -121,7 +135,7 @@ router.get("/:statusid", jwt, adminAccess, async (ctx) => {
  *     content :
  *       application/json:
  *          schema:
- *            $ref: '#/components/schemas/Status'
+ *            $ref: '#/components/schemas/StatusPartial'
  *    responses:
  *      '200':
  *        description: Success
@@ -174,7 +188,7 @@ router.post("/add", jwt, adminAccess, async (ctx) => {
  *     content :
  *       application/json:
  *          schema:
- *            $ref: '#/components/schemas/Status'
+ *            $ref: '#/components/schemas/StatusPartial'
  *    responses:
  *      '200':
  *        description: 'Success'

@@ -44,6 +44,30 @@ const upload = multer({
  *
  * components:
  *   schemas:
+ *     Appartment_populate:
+ *       properties:
+ *         _id:
+ *           type: id
+ *           example: 5fd3275ee9ad210015711349
+ *         size:
+ *           type: Number
+ *           example: 14
+ *         adress:
+ *           type: string
+ *           example: Rte de Pérolles 21
+ *         postalcode:
+ *           type: Number
+ *           example: 1700
+ *         city:
+ *           type: string
+ *           example: Fribourg
+ *         building:
+ *           $ref: '#/components/schemas/Building'
+ *         picture:
+ *            type: id
+ *            example: 5fd506d5900bbc0ac0d2d863
+ *       required:
+ *          - size
  *     Appartment:
  *       properties:
  *         size:
@@ -52,16 +76,57 @@ const upload = multer({
  *         adress:
  *           type: string
  *           example: Rte de Pérolles 21
+ *         postalcode:
+ *           type: Number
+ *           example: 1700
+ *         city:
+ *           type: string
+ *           example: Fribourg
  *         building:
  *           type: id
- *           example: 507f1f77bcf86cd799439011
+ *           example: 5fd506d5900bbc0ac0d2d863
  *         picture:
- *            type: String
- *            example: www.image.com/mykitty.png
+ *            type: id
+ *            example: 5fd506d5900bbc0ac0d2d863
  *       required:
  *          - size
- *          - adress
- *
+ *     Appartment_populate_picture:
+ *       properties:
+ *         _id:
+ *           type: id
+ *           example: 5fd3275ee9ad210015711349
+ *         size:
+ *           type: Number
+ *           example: 14
+ *         adress:
+ *           type: string
+ *           example: Rte de Pérolles 21
+ *         postalcode:
+ *           type: Number
+ *           example: 1700
+ *         city:
+ *           type: string
+ *           example: Fribourg
+ *         building:
+ *           $ref: '#/components/schemas/Building'
+ *         picture:
+ *           $ref: '#/components/schemas/File'
+ *       required:
+ *          - size
+ *     File:
+ *       properties:
+ *         _id:
+ *           type: id
+ *           example: 5fd3275ee9ad210015711349
+ *         data:
+ *           type: Buffer
+ *           example : [123,234,245]
+ *         contentType:
+ *           type: string
+ *           example: image/jpeg
+ *         name:
+ *           type: string
+ *           example: 5507334-1765822b13e.jpg
  */
 
 /**
@@ -78,6 +143,10 @@ const upload = multer({
  *    responses:
  *      '200':
  *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Appartment_populate'
  *      '403':
  *         description: Forbidden
  *      '500':
@@ -119,7 +188,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *        content :
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Appartment'
+ *              $ref: '#/components/schemas/Appartment_populate_picture'
  *      '403':
  *         description: Forbidden
  *      '404':
@@ -496,7 +565,7 @@ router.put("/upload/:appartid", jwt, adminAccess, async (ctx, next) => {
  *            properties:
  *              picture:
  *                type: string
- *                example: appartment/random-image.png
+ *                example: 5fd32687e9ad210015711337
  *            required:
  *              - picture
  *    responses:

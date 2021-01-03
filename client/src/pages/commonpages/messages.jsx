@@ -11,12 +11,20 @@ import {
   Typography,
   Box,
   Hidden,
+  ListItem,
+  ListItemIcon,
+  List,
+  Collapse,
+  ListItemText,
+  Button,
 } from "@material-ui/core";
 
-import ShowMessages from "../../components/MessagesComponents/ShowMessages";
-import AddMessage from "../../components/MessagesComponents/AddMessage";
+import ShowMessages from "../../components/Message/ShowMessages";
+import AddMessage from "../../components/Message/AddMessage";
 import { UserContext } from "../../middlewares/ContextAPI";
 import Alert from "@material-ui/lab/Alert";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import clsx from "clsx";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -65,6 +73,30 @@ const useStyles = makeStyles((theme) => ({
       width: "100%",
     },
   },
+  statut: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    padding: 5,
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+    },
+  },
+
+  nav: {
+    marginBottom: 10,
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+  },
+  expandOpen: {
+    transform: "rotate(180deg)",
+  },
+  items: {
+    textAlign: "center",
+  },
 }));
 
 const Drawer = (props) => {
@@ -77,6 +109,7 @@ const Drawer = (props) => {
   const [err, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [activeFilter, setActiveFilter] = useState([]);
+  const [open, setOpen] = useState(false);
 
   const getMessages = async () => {
     try {
@@ -123,14 +156,11 @@ const Drawer = (props) => {
   return (
     <Fragment>
       <AddMessage getMessages={getMessages} setSuccess={setSuccess} />
-      <FormControl
-        component="fieldset"
-        className={classes.formControl}
-        style={{ display: "flex", flexDirection: "row", padding: 5 }}
-      >
+      <FormControl component="fieldset" className={classes.statut}>
         <FormLabel component="legend">Cochez pour filtrer</FormLabel>
         {statut.map((data, i) => (
           <FormControlLabel
+            className={classes.items}
             key={i}
             control={
               <Checkbox
@@ -143,6 +173,7 @@ const Drawer = (props) => {
           />
         ))}
       </FormControl>
+
       <div style={{ marginBottom: "10px" }}>
         {err && <Alert severity="error">{err}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}
@@ -163,42 +194,121 @@ const Drawer = (props) => {
               <Tab label="Messages Archivés" {...a11yProps(2)} />
             ) : null}
           </Tabs>
-        </Hidden>
-
-        <Hidden only={["lg", "md", "xl"]}>
-          <Tabs
-            orientation="horizontal"
-            variant="scrollable"
-            value={value}
-            onChange={handleChange}
-            className={classes.tabs}
-          >
-            <Tab label="Messages envoyés" {...a11yProps(0)} />
-
-            <Tab label="Messages reçus" {...a11yProps(1)} />
-            {user && user.role == "Admin" ? (
-              <Tab label="Messages Archivés" {...a11yProps(2)} />
-            ) : null}
-          </Tabs>
-        </Hidden>
-        <TabPanel value={value} index={0} className={classes.width}>
-          <Fragment>
-            {sendedmessage.length > 0 && (
+          <TabPanel value={value} index={0} className={classes.width}>
+            <Fragment>
+              {sendedmessage.length > 0 && (
+                <ShowMessages
+                  getMessages={getMessages}
+                  setError={setError}
+                  setSuccess={setSuccess}
+                  message={sendedmessage.filter((data) =>
+                    activeFilter.length == 0
+                      ? data
+                      : activeFilter.includes(data.status)
+                  )}
+                />
+              )}
+            </Fragment>
+          </TabPanel>
+          <TabPanel value={value} index={1} className={classes.width}>
+            {receivedmessage.length > 0 && (
               <ShowMessages
                 getMessages={getMessages}
                 setError={setError}
                 setSuccess={setSuccess}
-                message={sendedmessage.filter((data) =>
+                message={receivedmessage.filter((data) =>
                   activeFilter.length == 0
                     ? data
                     : activeFilter.includes(data.status)
                 )}
               />
             )}
-          </Fragment>
-        </TabPanel>
-        <TabPanel value={value} index={1} className={classes.width}>
-          {receivedmessage.length > 0 && (
+          </TabPanel>
+          <TabPanel value={value} index={2} className={classes.width}>
+            {archivedmessage.length > 0 && (
+              <ShowMessages
+                getMessages={getMessages}
+                setError={setError}
+                setSuccess={setSuccess}
+                message={archivedmessage.filter((data) =>
+                  activeFilter.length == 0
+                    ? data
+                    : activeFilter.includes(data.status)
+                )}
+              />
+            )}
+          </TabPanel>
+        </Hidden>
+        <Hidden only={["md", "lg", "xl"]}>
+          <div className={classes.nav}>
+            <List component="nav">
+              <ListItem>
+                <ListItemIcon>
+                  <ListItemText primary="Messages" />
+                  <Button
+                    className={clsx(classes.expand, {
+                      [classes.expandOpen]: open,
+                    })}
+                    onClick={() => setOpen(!open)}
+                  >
+                    <ExpandMoreIcon />
+                  </Button>
+                </ListItemIcon>
+              </ListItem>
+              <Collapse
+                in={open}
+                timeout="auto"
+                unmountOnExit
+                className={classes.nav}
+              >
+                <List component="div" disablePadding>
+                  <ListItem
+                    className={classes.items}
+                    button
+                    onClick={() => {
+                      setValue(0);
+                      setOpen(!open);
+                    }}
+                  >
+                    <ListItemText primary="Messages envoyés" />
+                  </ListItem>
+                  <ListItem
+                    className={classes.items}
+                    button
+                    onClick={() => {
+                      setValue(1);
+                      setOpen(!open);
+                    }}
+                  >
+                    <ListItemText primary="Messages reçus" />
+                  </ListItem>
+                  <ListItem
+                    className={classes.items}
+                    button
+                    onClick={() => {
+                      setValue(2);
+                      setOpen(!open);
+                    }}
+                  >
+                    <ListItemText primary="Messages archivés" />
+                  </ListItem>
+                </List>
+              </Collapse>
+            </List>
+          </div>
+          {value == 0 && sendedmessage.length > 0 && (
+            <ShowMessages
+              getMessages={getMessages}
+              setError={setError}
+              setSuccess={setSuccess}
+              message={sendedmessage.filter((data) =>
+                activeFilter.length == 0
+                  ? data
+                  : activeFilter.includes(data.status)
+              )}
+            />
+          )}
+          {value == 1 && receivedmessage.length > 0 && (
             <ShowMessages
               getMessages={getMessages}
               setError={setError}
@@ -210,21 +320,7 @@ const Drawer = (props) => {
               )}
             />
           )}
-        </TabPanel>
-        <TabPanel value={value} index={2} className={classes.width}>
-          {archivedmessage.length > 0 && (
-            <ShowMessages
-              getMessages={getMessages}
-              setError={setError}
-              setSuccess={setSuccess}
-              message={archivedmessage.filter((data) =>
-                activeFilter.length == 0
-                  ? data
-                  : activeFilter.includes(data.status)
-              )}
-            />
-          )}
-        </TabPanel>
+        </Hidden>
       </div>
     </Fragment>
   );

@@ -18,7 +18,7 @@ import {
 import { UserContext } from "../../middlewares/ContextAPI";
 import HistoryIcon from "@material-ui/icons/History";
 import moment from "moment";
-import { BillHistoryToExcel } from "../../pages/ownerpages/export";
+import { BillHistoryToExcel } from "../export";
 import { arrayBufferToBase64 } from "../arrayBufferToBase64";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
@@ -28,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row-reverse",
     marginRight: 10,
+    [theme.breakpoints.down("sm")]: {
+      alignItems: "center",
+      justifyContent: "center",
+    },
   },
   [theme.breakpoints.down("sm")]: {
     thead: { display: "none" },

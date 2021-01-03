@@ -50,6 +50,12 @@ const MyTable = ({ data, title, link, header, text }) => {
         </Box>
         <TableContainer component={Paper} square className={classes.table}>
           <Table>
+            <caption style={{ color: "black" }}>
+              <Link to={link} className={classes.link}>
+                {text}
+              </Link>
+            </caption>
+
             <TableHead>
               <TableRow>
                 {header.map((header, index) => (
@@ -84,13 +90,9 @@ const MyTable = ({ data, title, link, header, text }) => {
             </TableBody>
           </Table>
         </TableContainer>
-        <Box className={classes.box}>
-          <Typography variant="overline">
-            <Link to={link} className={classes.link}>
-              {text}
-            </Link>
-          </Typography>
-        </Box>
+        {/*         <Box className={classes.box}>
+          <Typography variant="overline"></Typography>
+        </Box> */}
       </Paper>
     </div>
   );

@@ -136,8 +136,8 @@ const AddBills = ({ setSuccess }) => {
           <br />
           {status && status.length == 0 && (
             <Alert severity="info">
-              Aucun état trouvé. Merci de créer un ou des états avant de créer
-              une facture
+              Aucun statut trouvé. Merci de créer un ou des statuts avant de
+              créer une facture
             </Alert>
           )}
           <br />

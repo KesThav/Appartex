@@ -17,13 +17,17 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   box: {
     display: "flex",
     flexDirection: "row-reverse",
     marginRight: 10,
+    [theme.breakpoints.down("sm")]: {
+      alignItems: "center",
+      justifyContent: "center",
+    },
   },
-});
+}));
 
 const DeleteBuilding = ({ data, setSuccess, setError }) => {
   const [open, setOpen] = useState(false);

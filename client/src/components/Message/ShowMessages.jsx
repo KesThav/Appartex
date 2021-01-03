@@ -17,7 +17,6 @@ import UnArchiveMessage from "./UnArchiveMessage";
 import EditMessageStatus from "./EditMessageStatus";
 import AddTask from "../Task/AddTask";
 import Chip from "@material-ui/core/Chip";
-import LoadingScreen from "../LoadingScreen";
 import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineOutlined";
 import { ButtonGroup } from "@material-ui/core";
 import { Collapse, IconButton, Box } from "@material-ui/core";

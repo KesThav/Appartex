@@ -12,36 +12,21 @@ export default {
       dark: "#b2102f",
       contrastText: "#fff",
     },
-    success: {
-      main: green[500],
-      contrastText: "#fff",
-    },
   },
   typography: {
     fontFamily: "'Lato', sans-serif",
     textTransform: "none",
   },
-  /* 
-     shape: {
-    borderRadius: 0,
-  }, */
-  /* overrides: {
-  }, */
   props: {
     MuiButtonBase: {
       disableRipple: true,
     },
   },
   overrides: {
-    MuiTableCell: {
-      stickyHeader: {
-        /* backgroundColor: "#ffff", */
-      },
-    },
     MuiTableFooter: {
       root: {
         left: 0,
-        bottom: 0, // <-- KEY
+        bottom: 0,
         zIndex: 2,
         position: "sticky",
       },
@@ -56,7 +41,6 @@ export default {
         boxShadow: "none",
       },
     },
-
     MuiButton: {
       disableElevation: true,
       containedPrimary: {
@@ -69,12 +53,5 @@ export default {
         boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
       },
     },
-    MuiFab: {
-      root: {
-        background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
-      },
-    },
   },
 };
-
-/**.MuiPaper-elevation4 MuiChip-root .MuiChip-avatarColorPrimary*/

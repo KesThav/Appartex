@@ -68,6 +68,39 @@ const upload = multer({
  *            type: String
  *            example: Actif
  *            default : Actif
+ *         file:
+ *            type: id
+ *            example : 5f954d4c94a4981bc4284277
+ *       required:
+ *          - charge
+ *          - rent
+ *          - tenant
+ *     Contract_populate:
+ *       properties:
+ *         _id:
+ *           type: id
+ *           example: 5fd3275ee9ad210015711349
+ *         charge:
+ *           type: Number
+ *           example: 1750
+ *         rent:
+ *            type: Number
+ *            example: 457
+ *         tenant:
+ *            $ref : '#/components/schemas/TenantPartial'
+ *         appartmentid:
+ *            $ref : '#/components/schemas/Appartment_populate'
+ *         buildingid:
+ *            $ref : '#/components/schemas/Building'
+ *         other:
+ *            type: String
+ *            example: Two rent paid in advance
+ *         status:
+ *            type: String
+ *            example: Actif
+ *            default : Actif
+ *         file:
+ *            $ref: '#/components/schemas/File'
  *       required:
  *          - charge
  *          - rent
@@ -89,6 +122,10 @@ const upload = multer({
  *    responses:
  *      '200':
  *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Contract_populate'
  *      '403':
  *         description: Forbidden
  *      '500':
@@ -129,7 +166,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *        content :
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Contract'
+ *              $ref: '#/components/schemas/Contract_populate'
  *      '403':
  *         description: Forbidden
  *      '404':
@@ -515,7 +552,7 @@ router.put("/upload/:contractid", jwt, adminAccess, async (ctx, next) => {
  *            properties:
  *              file:
  *                type: string
- *                example: file/random-file.pdf
+ *                example: 5fd506d5900bbc0ac0d2d863
  *            required:
  *              - file
  *    responses:

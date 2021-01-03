@@ -39,8 +39,35 @@ const Message = require("../models/message.model");
  *          - title
  *          - startDate
  *          - endDate
- *          - messageid
- *          - status 
+ *          - status
+ *     Task_populate:
+ *       properties:
+ *         _id:
+ *           type: id
+ *           example: 5fd3275ee9ad210015711349
+ *         content:
+ *           type: String
+ *           example: Cleaning
+ *         title:
+ *            type: String
+ *            example: New tenant
+ *         startDate:
+ *            type: Date
+ *            example: 2020-10-22
+ *         endDate:
+ *            type: Date
+ *            example: 2020-10-23
+ *         status:
+ *            $ref: '#/components/schemas/Status'
+ *         messageid:
+ *            type: id
+ *            example: 5f8c8096c7289130403d7e16
+ *       required:
+ *          - content
+ *          - title
+ *          - startDate
+ *          - endDate
+ *          - status
  */
 
 /**
@@ -57,6 +84,10 @@ const Message = require("../models/message.model");
  *    responses:
  *      '200':
  *        description: 'Success'
+ *        content :
+ *          application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/Task_populate'
  *      '403':
  *         description: Forbidden
  *      '500':

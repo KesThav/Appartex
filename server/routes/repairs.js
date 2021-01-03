@@ -63,6 +63,23 @@ const upload = multer({
  *          - taskid
  *          - amount
  *          - reason
+ *     Repair_populate:
+ *       properties:
+ *         status:
+ *           $ref : '#/components/schemas/Status'
+ *         reason:
+ *           type: String
+ *           example: DC-134
+ *         amount:
+ *           type: Number
+ *           example: 1994
+ *         taskid:
+ *          $ref : '#/components/schemas/Task_populate'
+ *       required:
+ *          - status
+ *          - taskid
+ *          - amount
+ *          - reason
  *
  */
 
@@ -80,6 +97,10 @@ const upload = multer({
  *    responses:
  *      '200':
  *        description: 'Success'
+ *        content :
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Repair_populate'
  *      '403':
  *         description: Forbidden
  *      '500':
@@ -121,7 +142,7 @@ router.get("/", jwt, adminAccess, async (ctx) => {
  *        content :
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Repair'
+ *              $ref: '#/components/schemas/Repair_populate'
  *      '403':
  *         description: Forbidden
  *      '500':
