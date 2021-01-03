@@ -54,7 +54,6 @@ const swaggerOptions = {
   ],
 
   path: "/swagger.json",
-  validatorUrl: null
 };
 
 const swagger = Swagger(swaggerOptions);

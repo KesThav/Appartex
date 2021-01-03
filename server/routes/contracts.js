@@ -58,9 +58,6 @@ const upload = multer({
  *         appartmentid:
  *            type: id
  *            example: 5f954d4c94a4981bc4284277
- *         buildingid:
- *            type: id
- *            example: 5f94453d1e0ad61a448d08b5
  *         other:
  *            type: String
  *            example: Two rent paid in advance
@@ -90,8 +87,6 @@ const upload = multer({
  *            $ref : '#/components/schemas/TenantPartial'
  *         appartmentid:
  *            $ref : '#/components/schemas/Appartment_populate'
- *         buildingid:
- *            $ref : '#/components/schemas/Building'
  *         other:
  *            type: String
  *            example: Two rent paid in advance
