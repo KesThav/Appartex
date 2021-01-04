@@ -168,6 +168,24 @@ router.get("/show", async (ctx) => {
   }
 });
 
+router.get("/show/:appartid", async (ctx) => {
+  let validate = ObjectId.isValid(ctx.params.appartid);
+  if (!validate) return ctx.throw(404, "appartment not found");
+  try {
+    let appartid = new ObjectId(ctx.params.appartid);
+    const oneappart = await Appart.findById(appartid)
+      .populate("building")
+      .populate("createdBy", "name lastname _id email");
+    if (!oneappart) {
+      ctx.throw(404, "appartment not found");
+    } else {
+      ctx.body = oneappart;
+    }
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
 router.get("/", jwt, adminAccess, async (ctx) => {
   try {
     let allapparts = await Appart.find({
