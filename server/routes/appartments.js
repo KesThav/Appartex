@@ -158,7 +158,9 @@ router.get("/show", async (ctx) => {
   try {
     let freeapparts = await Appart.find({
       status: "Libre",
-    });
+    })
+      .populate("createdBy", "name lastname _id email")
+      .sort({ createdAt: 1 });
     ctx.body = freeapparts;
   } catch (err) {
     ctx.throw(500, err);
