@@ -154,6 +154,17 @@ const upload = multer({
  *
  */
 
+router.get("/show", async (ctx) => {
+  try {
+    let freeapparts = await Appart.find({
+      status: "Libre",
+    });
+    ctx.body = freeapparts;
+  } catch (err) {
+    ctx.throw(500, err);
+  }
+});
+
 router.get("/", jwt, adminAccess, async (ctx) => {
   try {
     let allapparts = await Appart.find({
