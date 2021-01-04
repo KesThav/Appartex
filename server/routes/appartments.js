@@ -160,7 +160,8 @@ router.get("/show", async (ctx) => {
       status: "Libre",
     })
       .populate("createdBy", "name lastname _id email")
-      .sort({ createdAt: 1 });
+      .populate("building")
+      .sort({ createdAt: -1 });
     ctx.body = freeapparts;
   } catch (err) {
     ctx.throw(500, err);
