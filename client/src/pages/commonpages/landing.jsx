@@ -12,6 +12,7 @@ import {
 import Login from "../../components/landingPage/login";
 import TenantLogin from "../../components/landingPage/tenantlogin";
 import Signup from "../../components/landingPage/signup";
+import { Navbar } from "../../Layout/navbar";
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -6,7 +6,7 @@ const AdminRoute = ({ component: Component, ...props }) => {
   const { user, setUser } = useContext(UserContext);
 
   if (!user) {
-    return <Redirect to="/" />;
+    return <Redirect to="/landing" />;
   } else {
     return (
       <Route

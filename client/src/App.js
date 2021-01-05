@@ -26,6 +26,8 @@ import Tasks from "./pages/ownerpages/tasks";
 import Repair from "./pages/ownerpages/repairs";
 import AuthRoute from "./middlewares/AuthRoutes";
 import Document from "./pages/ownerpages/documents";
+import Main from "./pages/main";
+import Appartpage from "./pages/appartpage";
 
 const theme = createMuiTheme(themeSheet);
 
@@ -63,6 +65,7 @@ const App = () => {
   const [task, setTask] = useState("");
   const [repair, setRepair] = useState("");
   const [count, setCount] = useState(0);
+  const [data, setData] = useState("");
 
   //get data here and give it to children via Context API
   const getTenants = async () => {
@@ -82,6 +85,48 @@ const App = () => {
       setLoading(true);
       const res = await authAxios.get("/buildings");
       setBuilding(res.data);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const res = await Axios.get(
+        "https://appartex-server.herokuapp.com/appartments/show"
+      );
+      const appart =
+        res &&
+        res.data.map((data, i) => {
+          return {
+            _id: data._id,
+            adress: data.building ? data.building.adress : data.adress,
+            postalcode: data.building
+              ? data.building.postalcode
+              : data.postalcode,
+            city: data.building ? data.building.city : data.city,
+            owner: `${data.createdBy.name} ${data.createdBy.lastname}`,
+            ownerid: data.createdBy._id,
+            email: data.createdBy.email,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt,
+            size: data.size,
+            picture:
+              i % 2 == 0
+                ? "https://images.unsplash.com/photo-1601807112459-a894d5bd286b?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1347&q=80"
+                : i % 3 == 0
+                ? "https://cf.bstatic.com/images/hotel/max1024x768/162/162244085.jpg"
+                : i % 5 == 0
+                ? "https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
+                : i % 7 == 0
+                ? "https://images.unsplash.com/photo-1523217582562-09d0def993a6?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80"
+                : "https://images.unsplash.com/photo-1521574873411-508db8dbe55f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80 ",
+          };
+        });
+      setData(appart);
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -263,11 +308,19 @@ const App = () => {
             repair,
             setRepair,
             getRepairs,
+            fetchData,
+            data,
           }}
         >
           <Router>
             <Switch>
-              <AuthRoute exact path="/" component={Landing} />
+              <AuthRoute exact path="/" component={Main} />
+              <AuthRoute
+                exact
+                path="/appartments/details/:appartid"
+                component={Appartpage}
+              />
+              <AuthRoute exact path="/landing" component={Landing} />
               <Route>
                 <Layout>
                   <Switch>
